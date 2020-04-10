@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Monopoly"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1021.334">
+    <Grid Background="Gray" ShowGridLines="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Image Stretch="Uniform" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Source="board.jpg" StretchDirection="DownOnly"/>
+        <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
+            <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnStart_Click"/>
+            <Button x:Name="btnQuit" Content="Quit Game" HorizontalAlignment="Left" Margin="253,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnQuit_Click"/>
+            <Button x:Name="btnInfo" Content="Info" HorizontalAlignment="Left" Margin="173,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnInfo_Click"/>
+            <Button x:Name="btnRules" Content="Rules" HorizontalAlignment="Left" Margin="90,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnRules_Click"/>
+            <RadioButton x:Name="btn2Player" Content="2 Players" HorizontalAlignment="Left" Margin="10,522,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="2"/>
+            <RadioButton x:Name="btn3Player" Content="3 Players" HorizontalAlignment="Left" Margin="10,537,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="3"/>
+            <RadioButton x:Name="btn4Player" Content="4 Players" HorizontalAlignment="Left" Margin="10,552,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="4"/>
+            <RadioButton x:Name="btn5Player" Content="5 Players" HorizontalAlignment="Left" Margin="10,567,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="5"/>
+            <RadioButton x:Name="btn6Player" Content="6 Players" HorizontalAlignment="Left" Margin="10,582,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="6"/>
+            <RadioButton x:Name="btn7Player" Content="7 Players" HorizontalAlignment="Left" Margin="10,597,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="7"/>
+            <RadioButton x:Name="btn8Player" Content="8 Players" HorizontalAlignment="Left" Margin="10,612,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="8"/>
+
+
+        </Grid>
     </Grid>
 </Window>
