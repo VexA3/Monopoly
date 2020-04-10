@@ -98,7 +98,34 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="board.jpg" />
+    <Resource Include="Images\board.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\dogPiece.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\default.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\carPiece.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\boatPiece.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\hatPiece.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\thimblePiece.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ironPiece.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\wheelbarrowPiece.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bootPiece.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

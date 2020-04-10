@@ -14,7 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Image Stretch="Uniform" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Source="board.jpg" StretchDirection="DownOnly"/>
+        <Image Stretch="Uniform" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Source="Images/board.jpg" StretchDirection="DownOnly"/>
         <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
             <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnStart_Click"/>
             <Button x:Name="btnQuit" Content="Quit Game" HorizontalAlignment="Left" Margin="253,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnQuit_Click"/>
@@ -28,6 +28,20 @@
             <RadioButton x:Name="btn7Player" Content="7 Players" HorizontalAlignment="Left" Margin="10,597,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="7"/>
             <RadioButton x:Name="btn8Player" Content="8 Players" HorizontalAlignment="Left" Margin="10,612,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="8"/>
 
+            <Label x:Name="label1" Content="Pick Your Piece" HorizontalAlignment="Left" Margin="135,5,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+            <Label x:Name="label" Content="Current Player" HorizontalAlignment="Left" Margin="222,482,0,0" VerticalAlignment="Top" FontSize="14" RenderTransformOrigin="0.122,1.303" FontWeight="Bold"/>
+            <!--Default Image, Holds the image of the current player-->
+            <Image x:Name="imgCurrentPlayer" Margin="222,516,10.286,43.143" Source="Images/default.jpg" StretchDirection="DownOnly"/>
+
+            <!--Player Pieces-->
+            <Image x:Name="imgDogPiece" Margin="253,36,10.286,554.143" Source="Images/dogPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgDogPiece_MouseDown" Tag="1"/>
+            <Image x:Name="imgCarPiece" Margin="173,36,90.286,554.143" Source="Images/carPiece.jpg"  StretchDirection="DownOnly" MouseDown="ImgCarPiece_MouseDown" Tag="2"/>
+            <Image x:Name="imgBoatPiece" Margin="93,36,170.286,554.143" Source="Images/boatPiece.jpg" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="ImgBoatPiece_MouseDown" Tag="3"/>
+            <Image x:Name="imgHatPiece" Margin="14,36,250.286,555.143" Source="Images/hatPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgHatPiece_MouseDown"/>
+            <Image x:Name="imgThimblePiece" Margin="253,116,10.286,474.143" Source="Images/thimblePiece.jpg" StretchDirection="DownOnly" MouseDown="ImgThimblePiece_MouseDown"/>
+            <Image x:Name="imgIronPiece" Margin="173,116,90.286,474.143" Source="Images/ironPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgIronPiece_MouseDown"/>
+            <Image x:Name="imgwheelbarrowPiece" Margin="93,116,170.286,474.143" Source="Images/wheelbarrowPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgwheelbarrowPiece_MouseDown"/>
+            <Image x:Name="imgBootPiece" Margin="13,116,250.286,474.143" Source="Images/bootPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgBootPiece_MouseDown"/>
 
         </Grid>
     </Grid>

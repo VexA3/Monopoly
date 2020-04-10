@@ -97,5 +97,45 @@ namespace Monopoly
             RadioButton button = sender as RadioButton;
             numPlayers = Convert.ToInt32(button.Tag.ToString());            
         }
+
+        private void ImgDogPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/dogPiece.jpg", UriKind.Relative));
+        }
+
+        private void ImgCarPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/carPiece.jpg", UriKind.Relative));
+        }
+
+        private void ImgBoatPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/boatPiece.jpg", UriKind.Relative));
+        }
+
+        private void ImgHatPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/hatPiece.jpg", UriKind.Relative));
+        }
+
+        private void ImgThimblePiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/thimblePiece.jpg", UriKind.Relative));
+        }
+
+        private void ImgIronPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/ironPiece.jpg", UriKind.Relative));
+        }
+
+        private void ImgwheelbarrowPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/wheelbarrowPiece.jpg", UriKind.Relative));
+        }
+
+        private void ImgBootPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/bootPiece.jpg", UriKind.Relative));
+        }
     }
 }
