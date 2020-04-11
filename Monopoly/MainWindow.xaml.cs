@@ -62,6 +62,8 @@ namespace Monopoly
             ChangeCurrentImage("default");
             Opacity1();
             btnConfirmPlayerPiece.Visibility = Visibility.Visible;
+            pickedAPiece = false;
+            
             
             //Reset any variables to starting amounts.
         }
@@ -83,7 +85,7 @@ namespace Monopoly
             }
             else
             {
-                MessageBox.Show("Please choose number of players and pick a piece!");
+                MessageBox.Show("Please choose number of players and confirm a piece!");
             }
         }
 
