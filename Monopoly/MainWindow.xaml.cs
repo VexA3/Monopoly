@@ -27,6 +27,9 @@ namespace Monopoly
 
         public int numPlayers = 0;
 
+        public int playersPiece = 0;
+        public bool pickedAPiece = false;
+        
         private void StartGame(Button button)
         {
             //change text to restart
@@ -53,13 +56,20 @@ namespace Monopoly
                 b.IsChecked = false;
                 b.Visibility = Visibility.Visible;
             }
+
+            playersPiece = 0;
+            VisibleOrHide(true);
+            ChangeCurrentImage("default");
+            Opacity1();
+            btnConfirmPlayerPiece.Visibility = Visibility.Visible;
+            
             //Reset any variables to starting amounts.
         }
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
             //Check if numplayers has been set
-            if(numPlayers != 0)
+            if(numPlayers != 0 && pickedAPiece == true)
             {            
                 //Check if Starting or restarting the game
                 if (button.Content.ToString() == "Start")
@@ -73,7 +83,7 @@ namespace Monopoly
             }
             else
             {
-                MessageBox.Show("Please choose number of players!");
+                MessageBox.Show("Please choose number of players and pick a piece!");
             }
         }
 
@@ -98,44 +108,128 @@ namespace Monopoly
             numPlayers = Convert.ToInt32(button.Tag.ToString());            
         }
 
-        private void ImgDogPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        private void BtnConfirmPlayerPiece_Click(object sender, RoutedEventArgs e)
         {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/dogPiece.jpg", UriKind.Relative));
+            // Checks if the user picked a piece.
+            if (playersPiece != 0)
+            {
+                // Changes imgCurrentPiece to the selected piece.
+                CheckCurrentImage();
+
+                // Method used to hide all images
+                VisibleOrHide(false);
+
+                // Make the piece selected visible
+                imgCurrentPlayer.Visibility = Visibility.Visible;
+
+                // confirm button hidden
+                btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
+
+                pickedAPiece = true;
+            }
+            else
+            {
+                MessageBox.Show("Please pick a piece.");
+            }
         }
 
-        private void ImgCarPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        public void ChangeCurrentImage(string p)
         {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/carPiece.jpg", UriKind.Relative));
+            // Change the current Player image.
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/"+ p + ".jpg", UriKind.Relative));
         }
 
-        private void ImgBoatPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ImgMouseDown(object sender, MouseButtonEventArgs e)
         {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/boatPiece.jpg", UriKind.Relative));
+            // Use the last Image as sender.
+            Image img = sender as Image;
+
+            // Show the user what image they clicked
+            if (img.Opacity == 1)
+            {
+                Opacity1();
+                img.Opacity = 0.5;
+
+                // Uses the selected image's tag for the playerPiece variable.
+                playersPiece = Convert.ToInt32(img.Tag.ToString());
+            }
+            else
+            {
+                // show that the piece was deselected
+                playersPiece = 0;
+                img.Opacity = 1;
+            }
         }
 
-        private void ImgHatPiece_MouseDown(object sender, MouseButtonEventArgs e)
+        public void CheckCurrentImage()
         {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/hatPiece.jpg", UriKind.Relative));
+            int i = 0;
+            while (playersPiece > i)
+            {
+                if (playersPiece == 1)
+                {
+                    ChangeCurrentImage("dogPiece");
+                }
+                else if (playersPiece == 2)
+                {
+                    ChangeCurrentImage("carPiece");
+                }
+                else if (playersPiece == 3)
+                {
+                    ChangeCurrentImage("boatPiece");
+                }
+                else if (playersPiece == 4)
+                {
+                    ChangeCurrentImage("hatPiece");
+                }
+                else if (playersPiece == 5)
+                {
+                    ChangeCurrentImage("thimblePiece");
+                }
+                else if (playersPiece == 6)
+                {
+                    ChangeCurrentImage("ironPiece");
+                }
+                else if (playersPiece == 7)
+                {
+                    ChangeCurrentImage("wheelbarrowPiece");
+                }
+                else
+                {
+                    ChangeCurrentImage("bootPiece");
+                }
+                i++;
+            }
+        }
+        
+        public void VisibleOrHide(bool v)
+        {
+            // used to either make every image visible or hidden.
+            if(v == true)
+            {
+                // Foreach loop that makes every image Visible.
+                foreach (Image b in GridControls.Children.OfType<Image>())
+                {
+                    b.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                // Foreach loop that makes every image hidden.
+                foreach (Image b in GridControls.Children.OfType<Image>())
+                {
+                    b.Visibility = Visibility.Hidden;
+                }
+            }
         }
 
-        private void ImgThimblePiece_MouseDown(object sender, MouseButtonEventArgs e)
+        public void Opacity1()
         {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/thimblePiece.jpg", UriKind.Relative));
-        }
-
-        private void ImgIronPiece_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/ironPiece.jpg", UriKind.Relative));
-        }
-
-        private void ImgwheelbarrowPiece_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/wheelbarrowPiece.jpg", UriKind.Relative));
-        }
-
-        private void ImgBootPiece_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/bootPiece.jpg", UriKind.Relative));
+            // Foreach loop that makes every image's opacity 1.
+            foreach (Image b in GridControls.Children.OfType<Image>())
+            {
+                b.Opacity = 1;
+            }
         }
     }
 }

@@ -30,18 +30,21 @@
 
             <Label x:Name="label1" Content="Pick Your Piece" HorizontalAlignment="Left" Margin="135,5,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
             <Label x:Name="label" Content="Current Player" HorizontalAlignment="Left" Margin="222,482,0,0" VerticalAlignment="Top" FontSize="14" RenderTransformOrigin="0.122,1.303" FontWeight="Bold"/>
+
             <!--Default Image, Holds the image of the current player-->
             <Image x:Name="imgCurrentPlayer" Margin="222,516,10.286,43.143" Source="Images/default.jpg" StretchDirection="DownOnly"/>
 
             <!--Player Pieces-->
-            <Image x:Name="imgDogPiece" Margin="253,36,10.286,554.143" Source="Images/dogPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgDogPiece_MouseDown" Tag="1"/>
-            <Image x:Name="imgCarPiece" Margin="173,36,90.286,554.143" Source="Images/carPiece.jpg"  StretchDirection="DownOnly" MouseDown="ImgCarPiece_MouseDown" Tag="2"/>
-            <Image x:Name="imgBoatPiece" Margin="93,36,170.286,554.143" Source="Images/boatPiece.jpg" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="ImgBoatPiece_MouseDown" Tag="3"/>
-            <Image x:Name="imgHatPiece" Margin="14,36,250.286,555.143" Source="Images/hatPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgHatPiece_MouseDown"/>
-            <Image x:Name="imgThimblePiece" Margin="253,116,10.286,474.143" Source="Images/thimblePiece.jpg" StretchDirection="DownOnly" MouseDown="ImgThimblePiece_MouseDown"/>
-            <Image x:Name="imgIronPiece" Margin="173,116,90.286,474.143" Source="Images/ironPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgIronPiece_MouseDown"/>
-            <Image x:Name="imgwheelbarrowPiece" Margin="93,116,170.286,474.143" Source="Images/wheelbarrowPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgwheelbarrowPiece_MouseDown"/>
-            <Image x:Name="imgBootPiece" Margin="13,116,250.286,474.143" Source="Images/bootPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgBootPiece_MouseDown"/>
+            <Image x:Name="imgDogPiece" Margin="253,36,10.286,554.143" Source="Images/dogPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="1"/>
+            <Image x:Name="imgCarPiece" Margin="173,36,90.286,554.143" Source="Images/carPiece.jpg"  StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="2"/>
+            <Image x:Name="imgBoatPiece" Margin="93,36,170.286,554.143" Source="Images/boatPiece.jpg" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="3"/>
+            <Image x:Name="imgHatPiece" Margin="14,36,250.286,555.143" Source="Images/hatPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="4"/>
+            <Image x:Name="imgThimblePiece" Margin="253,116,10.286,474.143" Source="Images/thimblePiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="5"/>
+            <Image x:Name="imgIronPiece" Margin="173,116,90.286,474.143" Source="Images/ironPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="6"/>
+            <Image x:Name="imgwheelbarrowPiece" Margin="93,116,170.286,474.143" Source="Images/wheelbarrowPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="7"/>
+            <Image x:Name="imgBootPiece" Margin="13,116,250.286,474.143" Source="Images/bootPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="8"/>
+
+            <Button x:Name="btnConfirmPlayerPiece" Content="Confirm Piece" HorizontalAlignment="Left" Margin="123,208,0,0" VerticalAlignment="Top" Width="107" Height="26" Click="BtnConfirmPlayerPiece_Click"/>
 
         </Grid>
     </Grid>
