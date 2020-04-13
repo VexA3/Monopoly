@@ -63,7 +63,7 @@
                 </StackPanel>
             </Viewbox>
             <Viewbox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
-                <Label x:Name="lblDisplayTurnOrChoice" Content="Choose number of Players and then select Start" FontWeight="Bold" Visibility="Visible" />
+                <Label x:Name="lblDisplayTurnOrChoice" Content="Choose number of Players and then select Start" FontWeight="Bold" Visibility="Visible" Tag="display"/>
             </Viewbox>
             <Viewbox Grid.Row="7" Grid.Column="4">
                 <Label x:Name="lblCurrentPlayer" Content="Current Player" FontSize="14" FontWeight="Bold" Visibility="Hidden" Tag="CurrentPlayer"/>
@@ -101,23 +101,37 @@
             </Viewbox>
 
             <Button x:Name="btnConfirmPlayerPiece" Content="Confirm Piece" Click="BtnConfirmPlayerPiece_Click" Visibility="Hidden" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
-            
+
             <!--Controls-->
             <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
-                <Image x:Name="imgDice" Source="Images/diceImage.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="DiceImgMouseDown" Visibility="Hidden"/>
+                <Image x:Name="imgDice" Source="Images/diceImage.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="DiceImgMouseDown" Visibility="Hidden" Tag="Dice"/>
+            </Viewbox>
+            
+            
+            <!--Dice results-->
+            <Viewbox Grid.Column="1" Grid.Row="5">
+                <Label x:Name="label2" Content="Die one:"  FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            <Viewbox Grid.Column="1" Grid.Row="6">
+                <Label x:Name="lblDie1" Content="Label" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
             </Viewbox>
 
+            <Viewbox Grid.Column="2" Grid.Row="5">
+                <Label x:Name="label3" Content="Die Two:" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            <Viewbox Grid.Column="2" Grid.Row="6">
+                <Label x:Name="lblDie2" Content="Label" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            <Viewbox Grid.Column="6" Grid.Row="5">
+                <Label x:Name="lblTotal" Content="Total" FontWeight="Bold" BorderThickness="0" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            
+            
+
+            
+            
+            
         </Grid>
-        <Grid x:Name="grdDice" Grid.Column="1" HorizontalAlignment="Left" Height="286" Margin="135.429,259,-16.143,0" Background="#FFCDE3C7" VerticalAlignment="Top" Width="335">
 
-            <Button x:Name="btnRoll" Content="Roll" HorizontalAlignment="Left" Margin="127,223,0,0" VerticalAlignment="Top" Width="75" Click="BtnRoll_Click" FontSize="18"/>
-
-            <Label x:Name="label2" Content="Die one:" HorizontalAlignment="Left" Margin="19,81,0,0" VerticalAlignment="Top" FontSize="18"/>
-            <Label x:Name="lblDie1" Content="Label" HorizontalAlignment="Left" Margin="94,81,0,0" VerticalAlignment="Top" FontSize="18"/>
-
-            <Label x:Name="label3" Content="Die Two:" HorizontalAlignment="Left" Margin="167,81,0,0" VerticalAlignment="Top" FontSize="18"/>
-            <Label x:Name="lblDie2" Content="Label" HorizontalAlignment="Left" Margin="245,81,0,0" VerticalAlignment="Top" FontSize="18"/>
-            <Label x:Name="lblTotal" Content="Total" HorizontalAlignment="Left" Margin="139,157,0,0" VerticalAlignment="Top" FontWeight="Bold" BorderThickness="0" FontSize="18"/>
-        </Grid>
     </Grid>
 </Window>

@@ -28,21 +28,27 @@ namespace Monopoly
         public List<Player> currentPlayers = new List<Player>();
         public int numPlayers = 0;
 
+        // currentChoice is used for looping through the piece allocation
+        public int currentChoice = 1;
+
+        //Dice result is an array with 2 values. Those 2 values are your 2 dice rolls.
+        public int[] diceResult = new int[2];
+
+        // This holds the name of a piece to assign it to a player temporarily
+        public string playersPiece = null;
+
+        //
         int moveTotal;
         int diceTotal;
         int doublesCount;
-        public int playersPiece = -1;
-        public bool pickedAPiece = false;
-
-        const int SIZE = 8;
+        //
         // array that holds all the Player pieces.
-        string[] arrPlayerPieces = new string[SIZE] { "hatPiece","boatPiece", "carPiece", "dogPiece",
+        string[] arrPlayerPieces = new string[8] { "hatPiece","boatPiece", "carPiece", "dogPiece",
                                                     "bootPiece","wheelbarrowPiece", "ironPiece", "thimblePiece" };
         
-        public int currentChoice = 1;        
-        public int[] diceResult = new int[2];
+
         
-        public string playersPiece = null;
+
         private void ChoosePieces()
         {
             btnConfirmPlayerPiece.Visibility = Visibility.Visible;
@@ -123,6 +129,17 @@ namespace Monopoly
             // Display first player's turn.
             ChangeCurrentImage(currentPlayers[0].Piece);
             
+            //Make dice labels visible
+            foreach(Viewbox vb in GridControls.Children.OfType<Viewbox>())
+            {
+                if (vb.Child is Label)
+                {
+                    Label l = vb.Child as Label;
+                    if (l.Tag != null && l.Tag.ToString() == "DiceLabel")
+                        l.Visibility = Visibility.Visible;
+                }
+            }
+            
         }
         private void RestartGame(Button button)
         {
@@ -130,30 +147,33 @@ namespace Monopoly
             button.Content = "Start";
 
             //Set number of players radiobuttons to unchecked and visibile again
-            numPlayers = 0;
+            
             foreach(RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
             {
                 b.IsChecked = false;
                 b.Visibility = Visibility.Visible;
             }
 
-            VisibleOrHide(true);
-            ChangeCurrentImage("default");
-            Opacity1();
-            btnConfirmPlayerPiece.Visibility = Visibility.Visible;
-            
-            
 
-            playersPiece = -1;
-            VisibleOrHide(true);
-            ChangeImage("default", imgCurrentPlayer);
-            Opacity1();
-            btnConfirmPlayerPiece.Visibility = Visibility.Visible;
-            pickedAPiece = false;
-            lblPick.Visibility = Visibility.Visible;
-            diceTotal = 0;
+
 
             //Reset any variables to starting amounts.
+            playersPiece = "null";
+            diceResult[0] = 0;
+            diceResult[1] = 0;
+            VisibleOrHide(false);
+            ChangeCurrentImage("default");
+            imgCurrentPlayer.Visibility = Visibility.Hidden;
+            Opacity1();
+            numPlayers = 0;
+            currentChoice = 1;
+
+            ChangeImage("default", imgCurrentPlayer);
+
+            currentPlayers.Clear();
+
+
+
         }
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
@@ -205,6 +225,19 @@ namespace Monopoly
             {
                 //Make a new player class with the number of that player and their chosen piece. Add them to the list of players.
                 currentPlayers.Add(new Player(currentChoice, playersPiece));
+
+
+                // Changes imgCurrentPiece to the selected piece. TODO We will have next player turn button or a next player function that will either call this function or cycle image itself.
+                //CheckImage(imgCurrentPlayer);
+
+                // Put player 1 on the board. //TODO Move this to STARTGAME() and create the img of it dynamically instead of always having an imgPlayer1
+                //CheckImage(imgPlayer1);
+
+
+
+
+
+
 
                 // make chosen piece hidden.                
                 foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
@@ -271,125 +304,16 @@ namespace Monopoly
         private void DiceImgMouseDown(object sender, MouseButtonEventArgs e)
         {
             DiceRoll();
-            MessageBox.Show(diceResult[0].ToString() + "," + diceResult[1].ToString());
-        }
-        
-        public void VisibleOrHide(bool v)
-        {
-            // used to either make every piece image hidden or visible.
-            if(v == true)
-            {
-                // Foreach loop that makes every image Visible.
+            
 
-                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-                {
-                    if(vb.Child is Image)
-                    {
-                        Image i = vb.Child as Image;
-                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer")
-                            i.Visibility = Visibility.Visible;
-                    }
-                    
-                }
-            }
-            else
-            {
-                // Foreach loop that makes every image hidden.
-                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-                {
-                    if (vb.Child is Image)
-                    {
-                        Image i = vb.Child as Image;
-                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer")
-                            i.Visibility = Visibility.Hidden;
-                    }
+            int die1 = diceResult[0];
+            int die2 = diceResult[1];
 
-                }
 
-            }
-            // Also set labels visible/hidden
-            if (v == true)
-            {
-                // Foreach loop that makes every Label Visible.
-                foreach (Label l in GridControls.Children.OfType<Label>())
-                {
-
-                    if (l.Tag != null && l.Tag.ToString() != "CurrentPlayer")
-                        l.Visibility = Visibility.Visible;
-                }
-            }
-            else
-            {
-                // Foreach loop that makes every Label hidden.
-                foreach (Label l in GridControls.Children.OfType<Label>())
-                {
-                    if (l.Tag != null && l.Tag.ToString() != "CurrentPlayer")
-                        l.Visibility = Visibility.Hidden;
-                }
-            }
-        }
-
-        public void Opacity1()
-        {
-            // Foreach loop that makes every image's opacity 1.
-            foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-            {
-                if (vb.Child is Image)
-                {
-                    Image i = vb.Child as Image;
-                    i.Opacity = 1;
-                }
-
-            }
-        }
-        private void DiceRoll()
-        {
-            // Make a new random seed
-            Random roll = new Random();           
-
-            // Add two rolls to diceResult array
-            diceResult[0] = roll.Next(1, 6);
-            diceResult[1] = roll.Next(1, 6);
-        }
-
-        private void BtnConfirmPlayerPiece_Click(object sender, RoutedEventArgs e)
-        {
-            // Checks if the user picked a piece.
-            if (playersPiece != -1)
-            {
-                // Changes imgCurrentPiece to the selected piece.
-                CheckImage(imgCurrentPlayer);
-
-                // Put player 1 on the board.
-                CheckImage(imgPlayer1);
-
-                // Method used to hide all images
-                VisibleOrHide(false);
-
-                // Make the piece selected visible
-                imgCurrentPlayer.Visibility = Visibility.Visible;
-                
-                pickedAPiece = true;
-
-                btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
-                lblPick.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                MessageBox.Show("Please pick a piece.");
-            }
-        }
-
-        private void BtnRoll_Click(object sender, RoutedEventArgs e)
-        {
-            int die1, die2;
-
-            Random rnd = new Random();
-            if(playersPiece != -1 /*&& numPlayer != 0*/)
+            if (playersPiece != null /*&& numPlayer != 0*/)
             {
                 // Get random numbers for the user.
-                die1 = rnd.Next(1, 7);
-                die2 = rnd.Next(1, 7);
+                
 
                 // Set the DiceTotal
                 diceTotal = die1 + die2;
@@ -424,27 +348,104 @@ namespace Monopoly
                 MessageBox.Show("Please pick a Piece.");
             }
         }
-
-        private void ImgMouseDown(object sender, MouseButtonEventArgs e)
+        
+        public void VisibleOrHide(bool v)
         {
-            // Use the last Image as sender.
-            Image img = sender as Image;
-
-            // Show the user what image they clicked
-            if (img.Opacity == 1)
+            // used to either make every piece image hidden or visible.
+            if(v == true)
             {
-                Opacity1();
-                img.Opacity = 0.5;
+                // Foreach loop that makes every image Visible.
 
-                // Uses the selected image's tag for the playerPiece variable.
-                playersPiece = Convert.ToInt32(img.Tag.ToString());
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if(vb.Child is Image)
+                    {
+                        Image i = vb.Child as Image;
+                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer" && i.Tag.ToString() !="Dice")
+                            i.Visibility = Visibility.Visible;
+                    }
+                    
+                }
             }
             else
             {
-                // show that the piece was deselected
-                playersPiece = -1;
-                img.Opacity = 1;
+                // Foreach loop that makes every image hidden.
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if (vb.Child is Image)
+                    {
+                        Image i = vb.Child as Image;
+                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer")
+                            i.Visibility = Visibility.Hidden;
+                    }
+
+                }
+
             }
+            // Also set labels visible/hidden
+            if (v == true)
+            {
+                // Foreach loop that makes every Label Visible.
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if(vb.Child is Label)
+                    {
+                        Label l = vb.Child as Label;
+                        if (l.Tag != null)
+                        {
+                            if (l.Tag.ToString() != "CurrentPlayer" && l.Tag.ToString() != "DiceLabel")
+                                l.Visibility = Visibility.Visible;
+                        }
+                            
+                    }
+                }
+            }
+            else
+            {
+                // Foreach loop that makes every Label hidden.
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if (vb.Child is Label)
+                    {
+                        Label l = vb.Child as Label;
+                        if(l.Tag == null)
+                            l.Visibility = Visibility.Hidden;
+                        if(l.Tag != null)
+                        {
+                            if (l.Tag.ToString() != "display")
+                                l.Visibility = Visibility.Hidden;
+                            if (l.Tag.ToString() == "display")
+                                l.Content = "Choose number of Players then press Start.";
+
+                        }
+                        
+                    }
+                }
+            }
+
+        }
+
+        public void Opacity1()
+        {
+            // Foreach loop that makes every image's opacity 1.
+            foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+            {
+                if (vb.Child is Image)
+                {
+                    Image i = vb.Child as Image;
+                    i.Opacity = 1;
+                }
+
+            }
+        }
+        private void DiceRoll()
+        {
+            // Make a new random seed
+            Random roll = new Random();           
+
+            // Add two rolls to diceResult array
+            diceResult[0] = roll.Next(1, 7);
+            diceResult[1] = roll.Next(1, 7);
         }
 
         public void ChangeImage(string p, Image img)
@@ -452,59 +453,16 @@ namespace Monopoly
             // Change the current Player image.
             img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".jpg", UriKind.Relative));
         }
-
-        public void CheckImage(Image img)
-        {
-            int i = 0;
-            while (playersPiece >= i)
-            {
-                if(playersPiece == i)
-                {
-                    // Change the current image to the Image the user selected.
-                    ChangeImage(arrPlayerPieces[i], img);
-                }
-                i++;
-            }
-        }
         
-        public void VisibleOrHide(bool v)
-        {
-            // used to either make every image visible or hidden.
-            if(v == true)
-            {
-                // Foreach loop that makes every image Visible.
-                foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
-                {
-                    b.Visibility = Visibility.Visible;
-                }
-            }
-            else
-            {
-                // Foreach loop that makes every image hidden.
-                foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
-                {
-                    b.Visibility = Visibility.Hidden;
-                }
-            }
-        }
-
-        public void Opacity1()
-        {
-            // Foreach loop that makes every image's opacity 1.
-            foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
-            {
-                b.Opacity = 1;
-            }
-        }
         
         public void MovePiece()
         {
             // TODO: find the correct ratio.
-            int moveAmount = diceTotal * 10;
+            //int moveAmount = diceTotal * 10;
 
-            moveTotal += moveAmount;
+            //moveTotal += moveAmount;
             
-            imgPlayer1.Margin = new Thickness(640, moveTotal, 0,0);
+            //imgPlayer1.Margin = new Thickness(640, moveTotal, 0,0);
 
             // TODO: find the max movement downward then start moving left.
         }
