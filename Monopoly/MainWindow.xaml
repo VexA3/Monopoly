@@ -8,18 +8,17 @@
         Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1373.334">
     <Grid Background="Gray" ShowGridLines="True" Margin="0,0,0,1.143" HorizontalAlignment="Left" Width="1363">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1037*"/>
+            <ColumnDefinition Width="326*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <Image Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Source="Images/board.jpg" StretchDirection="DownOnly" Margin="0,0,215.286,-0.286"/>
+        <Image Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Source="Images/board.jpg" StretchDirection="DownOnly" Margin="0,0,343.962,-0.057"/>
 
         <!--Player1 image-->
-        <Image x:Name="imgPlayer1" HorizontalAlignment="Left" Height="40" Margin="640,30,0,0" VerticalAlignment="Top" Width="40"/>
 
-        <Grid x:Name="GridControls" Grid.Row="0" Background="#FFCDE3C7" Margin="693,1,317.857,0" Grid.ColumnSpan="2">
+        <Grid x:Name="GridControls" Grid.Row="0" Background="#FFCDE3C7" Margin="693,1,318.019,-0.057" Grid.ColumnSpan="2">
             <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnStart_Click"/>
             <Button x:Name="btnQuit" Content="Quit Game" HorizontalAlignment="Left" Margin="253,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnQuit_Click"/>
             <Button x:Name="btnInfo" Content="Info" HorizontalAlignment="Left" Margin="173,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnInfo_Click"/>
@@ -37,32 +36,39 @@
             <Image x:Name="imgCurrentPlayer" Margin="90,522,158,44" Source="Images/default.jpg" StretchDirection="DownOnly" Stretch="Fill"/>
 
         </Grid>
-        <Grid x:Name="grdPlayerPiece" Grid.Column="1" Grid.Row="0" Background="#FFCDE3C7" Margin="133.143,0,-15.714,395.714">
+        <Grid x:Name="grdPlayerPiece" Grid.Row="0" Background="#FFCDE3C7" Margin="5.038,0,-15.981,395.943" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="335*"/>
+            </Grid.ColumnDefinitions>
 
             <!--Player Pieces-->
-            <Image x:Name="image" HorizontalAlignment="Left" Height="70" Margin="20,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/hatPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="0"/>
-            <Image x:Name="image_Copy" HorizontalAlignment="Left" Height="70" Margin="94,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/boatPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="1"/>
-            <Image x:Name="image_Copy1" HorizontalAlignment="Left" Height="70" Margin="169,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/carPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="2"/>
-            <Image x:Name="image_Copy2" HorizontalAlignment="Left" Height="70" Margin="243,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/dogPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="3"/>
-            <Image x:Name="image_Copy3" HorizontalAlignment="Left" Height="70" Margin="20,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/bootPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="4"/>
-            <Image x:Name="image_Copy4" HorizontalAlignment="Left" Height="70" Margin="94,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/wheelbarrowPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="5"/>
-            <Image x:Name="image_Copy5" HorizontalAlignment="Left" Height="70" Margin="169,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/ironPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="6"/>
-            <Image x:Name="image_Copy6" HorizontalAlignment="Left" Height="70" Margin="243,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/thimblePiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="7"/>
+            <Image x:Name="image" HorizontalAlignment="Left" Height="70" Margin="18.208,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/hatPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="0" Grid.Column="1"/>
+            <Image x:Name="image_Copy" HorizontalAlignment="Left" Height="70" Margin="92.208,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/boatPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="1" Grid.Column="1"/>
+            <Image x:Name="image_Copy1" HorizontalAlignment="Left" Height="70" Margin="167.208,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/carPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="2" Grid.Column="1"/>
+            <Image x:Name="image_Copy2" HorizontalAlignment="Left" Height="70" Margin="241.208,67,0,0" VerticalAlignment="Top" Width="70" Source="Images/dogPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="3" Grid.Column="1"/>
+            <Image x:Name="image_Copy3" HorizontalAlignment="Left" Height="70" Margin="18.208,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/bootPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="4" Grid.Column="1"/>
+            <Image x:Name="image_Copy4" HorizontalAlignment="Left" Height="70" Margin="92.208,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/wheelbarrowPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="5" Grid.Column="1"/>
+            <Image x:Name="image_Copy5" HorizontalAlignment="Left" Height="70" Margin="167.208,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/ironPiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="6" Grid.Column="1"/>
+            <Image x:Name="image_Copy6" HorizontalAlignment="Left" Height="70" Margin="241.208,141,0,0" VerticalAlignment="Top" Width="70" Source="Images/thimblePiece.jpg" StretchDirection="DownOnly" MouseDown="ImgMouseDown" Tag="7" Grid.Column="1"/>
 
-            <Button x:Name="btnConfirmPlayerPiece" Content="Confirm Piece" HorizontalAlignment="Left" Margin="103,219,0,0" FontSize="18px" VerticalAlignment="Top" Width="132" Height="32" Click="BtnConfirmPlayerPiece_Click"/>
-            <Label x:Name="lblPick" Content="Pick Your Piece" FontSize="18px" HorizontalAlignment="Left" Margin="103,20,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,0.092" FontWeight="Bold"/>
+            <Button x:Name="btnConfirmPlayerPiece" Content="Confirm Piece" HorizontalAlignment="Left" Margin="101.208,219,0,0" FontSize="18px" VerticalAlignment="Top" Width="132" Height="32" Click="BtnConfirmPlayerPiece_Click" Grid.Column="1"/>
+            <Label x:Name="lblPick" Content="Pick Your Piece" FontSize="18px" HorizontalAlignment="Left" Margin="101.208,20,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.417,0.092" FontWeight="Bold" Grid.Column="1"/>
 
         </Grid>
-        <Grid x:Name="grdDice" Grid.Column="1" HorizontalAlignment="Left" Height="286" Margin="135.429,259,-16.143,0" Background="#FFCDE3C7" VerticalAlignment="Top" Width="335">
+        <Grid x:Name="grdDice" HorizontalAlignment="Left" Height="286" Margin="7.038,262,-15.981,0" Background="#FFCDE3C7" VerticalAlignment="Top" Width="335" Grid.Column="1">
 
             <Button x:Name="btnRoll" Content="Roll" HorizontalAlignment="Left" Margin="127,223,0,0" VerticalAlignment="Top" Width="75" Click="BtnRoll_Click" FontSize="18"/>
 
             <Label x:Name="label2" Content="Die one:" HorizontalAlignment="Left" Margin="19,81,0,0" VerticalAlignment="Top" FontSize="18"/>
-            <Label x:Name="lblDie1" Content="Label" HorizontalAlignment="Left" Margin="94,81,0,0" VerticalAlignment="Top" FontSize="18"/>
+            <Label x:Name="lblDie1" Content="" HorizontalAlignment="Left" Margin="94,81,0,0" VerticalAlignment="Top" FontSize="18"/>
 
             <Label x:Name="label3" Content="Die Two:" HorizontalAlignment="Left" Margin="167,81,0,0" VerticalAlignment="Top" FontSize="18"/>
-            <Label x:Name="lblDie2" Content="Label" HorizontalAlignment="Left" Margin="245,81,0,0" VerticalAlignment="Top" FontSize="18"/>
+            <Label x:Name="lblDie2" Content="" HorizontalAlignment="Left" Margin="245,81,0,0" VerticalAlignment="Top" FontSize="18"/>
             <Label x:Name="lblTotal" Content="Total" HorizontalAlignment="Left" Margin="139,157,0,0" VerticalAlignment="Top" FontWeight="Bold" BorderThickness="0" FontSize="18"/>
+        </Grid>
+        <Grid x:Name="board" HorizontalAlignment="Left" Height="662" Margin="0,1,0,-0.057" VerticalAlignment="Top" Width="692">
+            <Image x:Name="imgPlayer1" HorizontalAlignment="Left" Height="40" Margin="627,22,0,0" VerticalAlignment="Top" Width="40"/>
         </Grid>
     </Grid>
 </Window>
