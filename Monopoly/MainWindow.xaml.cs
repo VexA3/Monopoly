@@ -27,8 +27,16 @@ namespace Monopoly
 
         public int numPlayers = 0;
 
-        public int playersPiece = 0;
+        int moveTotal;
+        int diceTotal;
+        int doublesCount;
+        public int playersPiece = -1;
         public bool pickedAPiece = false;
+
+        const int SIZE = 8;
+        // array that holds all the Player pieces.
+        string[] arrPlayerPieces = new string[SIZE] { "hatPiece","boatPiece", "carPiece", "dogPiece",
+                                                    "bootPiece","wheelbarrowPiece", "ironPiece", "thimblePiece" };
         
         private void StartGame(Button button)
         {
@@ -57,14 +65,15 @@ namespace Monopoly
                 b.Visibility = Visibility.Visible;
             }
 
-            playersPiece = 0;
+            playersPiece = -1;
             VisibleOrHide(true);
-            ChangeCurrentImage("default");
+            ChangeImage("default", imgCurrentPlayer);
             Opacity1();
             btnConfirmPlayerPiece.Visibility = Visibility.Visible;
             pickedAPiece = false;
-            
-            
+            lblPick.Visibility = Visibility.Visible;
+            diceTotal = 0;
+
             //Reset any variables to starting amounts.
         }
         private void BtnStart_Click(object sender, RoutedEventArgs e)
@@ -113,21 +122,24 @@ namespace Monopoly
         private void BtnConfirmPlayerPiece_Click(object sender, RoutedEventArgs e)
         {
             // Checks if the user picked a piece.
-            if (playersPiece != 0)
+            if (playersPiece != -1)
             {
                 // Changes imgCurrentPiece to the selected piece.
-                CheckCurrentImage();
+                CheckImage(imgCurrentPlayer);
+
+                // Put player 1 on the board.
+                CheckImage(imgPlayer1);
 
                 // Method used to hide all images
                 VisibleOrHide(false);
 
                 // Make the piece selected visible
                 imgCurrentPlayer.Visibility = Visibility.Visible;
-
-                // confirm button hidden
-                btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
-
+                
                 pickedAPiece = true;
+
+                btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
+                lblPick.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -135,10 +147,49 @@ namespace Monopoly
             }
         }
 
-        public void ChangeCurrentImage(string p)
+        private void BtnRoll_Click(object sender, RoutedEventArgs e)
         {
-            // Change the current Player image.
-            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/"+ p + ".jpg", UriKind.Relative));
+            int die1, die2;
+
+            Random rnd = new Random();
+            if(playersPiece != -1 /*&& numPlayer != 0*/)
+            {
+                // Get random numbers for the user.
+                die1 = rnd.Next(1, 7);
+                die2 = rnd.Next(1, 7);
+
+                // Set the DiceTotal
+                diceTotal = die1 + die2;
+
+                // Set labels to let the user know what they rolled.
+                lblDie1.Content = die1.ToString();
+                lblDie2.Content = die2.ToString();
+                lblTotal.Content = diceTotal.ToString();
+
+                // Check if the user rolled doubles 3 times in a row.
+                if (doublesCount != 3)
+                {
+                    if (die1 == die2)
+                    {
+                        MessageBox.Show("You Rolled Doubles, Roll Again.");
+                        doublesCount++;
+                    }
+                    else
+                    {
+                        doublesCount = 0;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Go to jail.");
+                }
+
+                MovePiece();
+            }
+            else
+            {
+                MessageBox.Show("Please pick a Piece.");
+            }
         }
 
         private void ImgMouseDown(object sender, MouseButtonEventArgs e)
@@ -158,47 +209,26 @@ namespace Monopoly
             else
             {
                 // show that the piece was deselected
-                playersPiece = 0;
+                playersPiece = -1;
                 img.Opacity = 1;
             }
         }
 
-        public void CheckCurrentImage()
+        public void ChangeImage(string p, Image img)
+        {
+            // Change the current Player image.
+            img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".jpg", UriKind.Relative));
+        }
+
+        public void CheckImage(Image img)
         {
             int i = 0;
-            while (playersPiece > i)
+            while (playersPiece >= i)
             {
-                if (playersPiece == 1)
+                if(playersPiece == i)
                 {
-                    ChangeCurrentImage("dogPiece");
-                }
-                else if (playersPiece == 2)
-                {
-                    ChangeCurrentImage("carPiece");
-                }
-                else if (playersPiece == 3)
-                {
-                    ChangeCurrentImage("boatPiece");
-                }
-                else if (playersPiece == 4)
-                {
-                    ChangeCurrentImage("hatPiece");
-                }
-                else if (playersPiece == 5)
-                {
-                    ChangeCurrentImage("thimblePiece");
-                }
-                else if (playersPiece == 6)
-                {
-                    ChangeCurrentImage("ironPiece");
-                }
-                else if (playersPiece == 7)
-                {
-                    ChangeCurrentImage("wheelbarrowPiece");
-                }
-                else
-                {
-                    ChangeCurrentImage("bootPiece");
+                    // Change the current image to the Image the user selected.
+                    ChangeImage(arrPlayerPieces[i], img);
                 }
                 i++;
             }
@@ -210,7 +240,7 @@ namespace Monopoly
             if(v == true)
             {
                 // Foreach loop that makes every image Visible.
-                foreach (Image b in GridControls.Children.OfType<Image>())
+                foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
                 {
                     b.Visibility = Visibility.Visible;
                 }
@@ -218,7 +248,7 @@ namespace Monopoly
             else
             {
                 // Foreach loop that makes every image hidden.
-                foreach (Image b in GridControls.Children.OfType<Image>())
+                foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
                 {
                     b.Visibility = Visibility.Hidden;
                 }
@@ -228,10 +258,23 @@ namespace Monopoly
         public void Opacity1()
         {
             // Foreach loop that makes every image's opacity 1.
-            foreach (Image b in GridControls.Children.OfType<Image>())
+            foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
             {
                 b.Opacity = 1;
             }
         }
+        
+        public void MovePiece()
+        {
+            // TODO: find the correct ratio.
+            int moveAmount = diceTotal * 10;
+
+            moveTotal += moveAmount;
+            
+            imgPlayer1.Margin = new Thickness(640, moveTotal, 0,0);
+
+            // TODO: find the max movement downward then start moving left.
+        }
+
     }
 }
