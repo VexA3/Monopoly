@@ -108,5 +108,16 @@
             </Viewbox>
 
         </Grid>
+        <Grid x:Name="grdDice" Grid.Column="1" HorizontalAlignment="Left" Height="286" Margin="135.429,259,-16.143,0" Background="#FFCDE3C7" VerticalAlignment="Top" Width="335">
+
+            <Button x:Name="btnRoll" Content="Roll" HorizontalAlignment="Left" Margin="127,223,0,0" VerticalAlignment="Top" Width="75" Click="BtnRoll_Click" FontSize="18"/>
+
+            <Label x:Name="label2" Content="Die one:" HorizontalAlignment="Left" Margin="19,81,0,0" VerticalAlignment="Top" FontSize="18"/>
+            <Label x:Name="lblDie1" Content="Label" HorizontalAlignment="Left" Margin="94,81,0,0" VerticalAlignment="Top" FontSize="18"/>
+
+            <Label x:Name="label3" Content="Die Two:" HorizontalAlignment="Left" Margin="167,81,0,0" VerticalAlignment="Top" FontSize="18"/>
+            <Label x:Name="lblDie2" Content="Label" HorizontalAlignment="Left" Margin="245,81,0,0" VerticalAlignment="Top" FontSize="18"/>
+            <Label x:Name="lblTotal" Content="Total" HorizontalAlignment="Left" Margin="139,157,0,0" VerticalAlignment="Top" FontWeight="Bold" BorderThickness="0" FontSize="18"/>
+        </Grid>
     </Grid>
 </Window>

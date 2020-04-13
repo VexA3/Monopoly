@@ -27,6 +27,18 @@ namespace Monopoly
         //Make a list of players to add the current players to.
         public List<Player> currentPlayers = new List<Player>();
         public int numPlayers = 0;
+
+        int moveTotal;
+        int diceTotal;
+        int doublesCount;
+        public int playersPiece = -1;
+        public bool pickedAPiece = false;
+
+        const int SIZE = 8;
+        // array that holds all the Player pieces.
+        string[] arrPlayerPieces = new string[SIZE] { "hatPiece","boatPiece", "carPiece", "dogPiece",
+                                                    "bootPiece","wheelbarrowPiece", "ironPiece", "thimblePiece" };
+        
         public int currentChoice = 1;        
         public int[] diceResult = new int[2];
         
@@ -131,6 +143,16 @@ namespace Monopoly
             btnConfirmPlayerPiece.Visibility = Visibility.Visible;
             
             
+
+            playersPiece = -1;
+            VisibleOrHide(true);
+            ChangeImage("default", imgCurrentPlayer);
+            Opacity1();
+            btnConfirmPlayerPiece.Visibility = Visibility.Visible;
+            pickedAPiece = false;
+            lblPick.Visibility = Visibility.Visible;
+            diceTotal = 0;
+
             //Reset any variables to starting amounts.
         }
         private void BtnStart_Click(object sender, RoutedEventArgs e)
@@ -329,5 +351,163 @@ namespace Monopoly
             diceResult[0] = roll.Next(1, 6);
             diceResult[1] = roll.Next(1, 6);
         }
+
+        private void BtnConfirmPlayerPiece_Click(object sender, RoutedEventArgs e)
+        {
+            // Checks if the user picked a piece.
+            if (playersPiece != -1)
+            {
+                // Changes imgCurrentPiece to the selected piece.
+                CheckImage(imgCurrentPlayer);
+
+                // Put player 1 on the board.
+                CheckImage(imgPlayer1);
+
+                // Method used to hide all images
+                VisibleOrHide(false);
+
+                // Make the piece selected visible
+                imgCurrentPlayer.Visibility = Visibility.Visible;
+                
+                pickedAPiece = true;
+
+                btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
+                lblPick.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                MessageBox.Show("Please pick a piece.");
+            }
+        }
+
+        private void BtnRoll_Click(object sender, RoutedEventArgs e)
+        {
+            int die1, die2;
+
+            Random rnd = new Random();
+            if(playersPiece != -1 /*&& numPlayer != 0*/)
+            {
+                // Get random numbers for the user.
+                die1 = rnd.Next(1, 7);
+                die2 = rnd.Next(1, 7);
+
+                // Set the DiceTotal
+                diceTotal = die1 + die2;
+
+                // Set labels to let the user know what they rolled.
+                lblDie1.Content = die1.ToString();
+                lblDie2.Content = die2.ToString();
+                lblTotal.Content = diceTotal.ToString();
+
+                // Check if the user rolled doubles 3 times in a row.
+                if (doublesCount != 3)
+                {
+                    if (die1 == die2)
+                    {
+                        MessageBox.Show("You Rolled Doubles, Roll Again.");
+                        doublesCount++;
+                    }
+                    else
+                    {
+                        doublesCount = 0;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Go to jail.");
+                }
+
+                MovePiece();
+            }
+            else
+            {
+                MessageBox.Show("Please pick a Piece.");
+            }
+        }
+
+        private void ImgMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Use the last Image as sender.
+            Image img = sender as Image;
+
+            // Show the user what image they clicked
+            if (img.Opacity == 1)
+            {
+                Opacity1();
+                img.Opacity = 0.5;
+
+                // Uses the selected image's tag for the playerPiece variable.
+                playersPiece = Convert.ToInt32(img.Tag.ToString());
+            }
+            else
+            {
+                // show that the piece was deselected
+                playersPiece = -1;
+                img.Opacity = 1;
+            }
+        }
+
+        public void ChangeImage(string p, Image img)
+        {
+            // Change the current Player image.
+            img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".jpg", UriKind.Relative));
+        }
+
+        public void CheckImage(Image img)
+        {
+            int i = 0;
+            while (playersPiece >= i)
+            {
+                if(playersPiece == i)
+                {
+                    // Change the current image to the Image the user selected.
+                    ChangeImage(arrPlayerPieces[i], img);
+                }
+                i++;
+            }
+        }
+        
+        public void VisibleOrHide(bool v)
+        {
+            // used to either make every image visible or hidden.
+            if(v == true)
+            {
+                // Foreach loop that makes every image Visible.
+                foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
+                {
+                    b.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                // Foreach loop that makes every image hidden.
+                foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
+                {
+                    b.Visibility = Visibility.Hidden;
+                }
+            }
+        }
+
+        public void Opacity1()
+        {
+            // Foreach loop that makes every image's opacity 1.
+            foreach (Image b in grdPlayerPiece.Children.OfType<Image>())
+            {
+                b.Opacity = 1;
+            }
+        }
+        
+        public void MovePiece()
+        {
+            // TODO: find the correct ratio.
+            int moveAmount = diceTotal * 10;
+
+            moveTotal += moveAmount;
+            
+            imgPlayer1.Margin = new Thickness(640, moveTotal, 0,0);
+
+            // TODO: find the max movement downward then start moving left.
+        }
+
     }
 }
