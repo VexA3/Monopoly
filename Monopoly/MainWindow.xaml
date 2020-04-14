@@ -14,17 +14,38 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Viewbox Stretch="Uniform" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1">
-            <Image  Source="Images/board.jpg" StretchDirection="DownOnly" RenderTransformOrigin="0.5,0.5">
-                <Image.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="90"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Image.RenderTransform>
-            </Image>
+        <Viewbox x:Name="BoardViewBox"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1">
+            <Grid x:Name="GridBoard" ShowGridLines="True" Height="1000" Width="1000" >
+                <Grid.Background>
+                    <ImageBrush Stretch="Uniform" ImageSource="Images/board.jpg"/>
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.65*"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="1.65*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1.65*"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="1.65*"/>
+                </Grid.RowDefinitions>
+            </Grid>
         </Viewbox>
         <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
             <Grid.RowDefinitions>
@@ -106,8 +127,8 @@
             <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                 <Image x:Name="imgDice" Source="Images/diceImage.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="DiceImgMouseDown" Visibility="Hidden" Tag="Dice"/>
             </Viewbox>
-            
-            
+
+
             <!--Dice results-->
             <Viewbox Grid.Column="1" Grid.Row="5">
                 <Label x:Name="label2" Content="Die one:"  FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
@@ -125,13 +146,14 @@
             <Viewbox Grid.Column="6" Grid.Row="5">
                 <Label x:Name="lblTotal" Content="Total" FontWeight="Bold" BorderThickness="0" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
             </Viewbox>
-            
-            
 
-            
-            
-            
+
+
+
+
+
         </Grid>
+
 
     </Grid>
 </Window>

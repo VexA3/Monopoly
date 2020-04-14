@@ -41,13 +41,6 @@ namespace Monopoly
         int moveTotal;
         int diceTotal;
         int doublesCount;
-        //
-        // array that holds all the Player pieces.
-        string[] arrPlayerPieces = new string[8] { "hatPiece","boatPiece", "carPiece", "dogPiece",
-                                                    "bootPiece","wheelbarrowPiece", "ironPiece", "thimblePiece" };
-        
-
-        
 
         private void ChoosePieces()
         {
