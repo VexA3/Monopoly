@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Property.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -63,8 +64,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChanceCards.cs" />
-    <Compile Include="CommunityChest.cs" />
+    <Compile Include="Classes\ChanceCards.cs" />
+    <Compile Include="Classes\CommunityChest.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -98,7 +99,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="board.jpg" />
+    <Resource Include="Images\board.jpg" />
+    <Resource Include="Images\boatPiece.png" />
+    <Resource Include="Images\bootPiece.png" />
+    <Resource Include="Images\carPiece.png" />
+    <Resource Include="Images\default.jpg" />
+    <Resource Include="Images\diceImage.png" />
+    <Resource Include="Images\dogPiece.png" />
+    <Resource Include="Images\hatPiece.png" />
+    <Resource Include="Images\ironPiece.png" />
+    <Resource Include="Images\thimblePiece.png" />
+    <Resource Include="Images\wheelbarrowPiece.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

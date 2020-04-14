@@ -14,21 +14,124 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Image Stretch="Uniform" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Source="board.jpg" StretchDirection="DownOnly"/>
+        <Viewbox Stretch="Uniform" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1">
+            <Image  Source="Images/board.jpg" StretchDirection="DownOnly" RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+        </Viewbox>
         <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
-            <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnStart_Click"/>
-            <Button x:Name="btnQuit" Content="Quit Game" HorizontalAlignment="Left" Margin="253,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnQuit_Click"/>
-            <Button x:Name="btnInfo" Content="Info" HorizontalAlignment="Left" Margin="173,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnInfo_Click"/>
-            <Button x:Name="btnRules" Content="Rules" HorizontalAlignment="Left" Margin="90,633,0,0" VerticalAlignment="Top" Width="75" Click="BtnRules_Click"/>
-            <RadioButton x:Name="btn2Player" Content="2 Players" HorizontalAlignment="Left" Margin="10,522,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="2"/>
-            <RadioButton x:Name="btn3Player" Content="3 Players" HorizontalAlignment="Left" Margin="10,537,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="3"/>
-            <RadioButton x:Name="btn4Player" Content="4 Players" HorizontalAlignment="Left" Margin="10,552,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="4"/>
-            <RadioButton x:Name="btn5Player" Content="5 Players" HorizontalAlignment="Left" Margin="10,567,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="5"/>
-            <RadioButton x:Name="btn6Player" Content="6 Players" HorizontalAlignment="Left" Margin="10,582,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="6"/>
-            <RadioButton x:Name="btn7Player" Content="7 Players" HorizontalAlignment="Left" Margin="10,597,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="7"/>
-            <RadioButton x:Name="btn8Player" Content="8 Players" HorizontalAlignment="Left" Margin="10,612,0,0" VerticalAlignment="Top" Checked="RadioBtnPlayer_Checked" Tag="8"/>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btnStart" Content="Start" Click="BtnStart_Click" Grid.Row="11" Grid.Column="0"/>
+            <Button x:Name="btnQuit" Content="Quit Game" Click="BtnQuit_Click" Grid.Row="11" Grid.Column="1"/>
+            <Button x:Name="btnInfo" Content="Info" Click="BtnInfo_Click"  Grid.Row="11" Grid.Column="2"/>
+            <Button x:Name="btnRules" Content="Rules" Click="BtnRules_Click"  Grid.Row="11" Grid.Column="3"/>
+            <Viewbox Grid.Row="9" Grid.RowSpan="2" Grid.Column="0">
+                <StackPanel x:Name="StkRadioButtons">
+                    <RadioButton x:Name="btn2Player" Content="2 Players" Checked="RadioBtnPlayer_Checked" Tag="2" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
+                    <RadioButton x:Name="btn3Player" Content="3 Players" Checked="RadioBtnPlayer_Checked" Tag="3" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
+                    <RadioButton x:Name="btn4Player" Content="4 Players" Checked="RadioBtnPlayer_Checked" Tag="4" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
+                    <RadioButton x:Name="btn5Player" Content="5 Players" Checked="RadioBtnPlayer_Checked" Tag="5" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
+                    <RadioButton x:Name="btn6Player" Content="6 Players" Checked="RadioBtnPlayer_Checked" Tag="6" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
+                    <RadioButton x:Name="btn7Player" Content="7 Players" Checked="RadioBtnPlayer_Checked" Tag="7" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
+                    <RadioButton x:Name="btn8Player" Content="8 Players" Checked="RadioBtnPlayer_Checked" Tag="8" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
+                </StackPanel>
+            </Viewbox>
+            <Viewbox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
+                <Label x:Name="lblDisplayTurnOrChoice" Content="Choose number of Players and then select Start" FontWeight="Bold" Visibility="Visible" Tag="display"/>
+            </Viewbox>
+            <Viewbox Grid.Row="7" Grid.Column="4">
+                <Label x:Name="lblCurrentPlayer" Content="Current Player" FontSize="14" FontWeight="Bold" Visibility="Hidden" Tag="CurrentPlayer"/>
+            </Viewbox>
 
+            <!--Default Image, Holds the image of the current player-->
+            <Viewbox Grid.Row="8" Grid.Column="4">
+                <Image x:Name="imgCurrentPlayer" Source="Images/default.jpg" StretchDirection="DownOnly" Visibility="Hidden" Tag="CurrentPlayer"/>
+            </Viewbox>
 
+            <!--Player Pieces-->
+            <Viewbox  Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">
+                <Image x:Name="imgDogPiece"  Source="Images/dogPiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="dogPiece" Visibility="Hidden"/>
+            </Viewbox>
+            <Viewbox  Grid.Row="1" Grid.Column="1" Margin="0,5,0,0">
+                <Image x:Name="imgCarPiece" Source="Images/carPiece.png"  StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="carPiece" Visibility="Hidden"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="2" Margin="0,5,0,0">
+                <Image x:Name="imgBoatPiece" Source="Images/boatPiece.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="boatPiece" Visibility="Hidden"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="3" Margin="0,5,0,0">
+                <Image x:Name="imgHatPiece" Source="Images/hatPiece.png" MouseDown="PieceImgMouseDown" Tag="hatPiece" Visibility="Hidden"/>
+            </Viewbox>
+            <Viewbox Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">
+                <Image x:Name="imgThimblePiece" Source="Images/thimblePiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="thimblePiece" Visibility="Hidden"/>
+            </Viewbox>
+            <Viewbox Grid.Row="2" Grid.Column="1" Margin="0,5,0,0">
+                <Image x:Name="imgIronPiece" Source="Images/ironPiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="ironPiece" Visibility="Hidden"/>
+            </Viewbox>
+            <Viewbox Grid.Row="2" Grid.Column="2" Margin="0,5,0,0">
+                <Image x:Name="imgwheelbarrowPiece" Source="Images/wheelbarrowPiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="wheelbarrowPiece" Visibility="Hidden"/>
+            </Viewbox>
+            <Viewbox Grid.Row="2" Grid.Column="3" Margin="0,5,0,0">
+                <Image x:Name="imgBootPiece" Source="Images/bootPiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="bootPiece" Visibility="Hidden"/>
+            </Viewbox>
+
+            <Button x:Name="btnConfirmPlayerPiece" Content="Confirm Piece" Click="BtnConfirmPlayerPiece_Click" Visibility="Hidden" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
+
+            <!--Controls-->
+            <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
+                <Image x:Name="imgDice" Source="Images/diceImage.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="DiceImgMouseDown" Visibility="Hidden" Tag="Dice"/>
+            </Viewbox>
+            
+            
+            <!--Dice results-->
+            <Viewbox Grid.Column="1" Grid.Row="5">
+                <Label x:Name="label2" Content="Die one:"  FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            <Viewbox Grid.Column="1" Grid.Row="6">
+                <Label x:Name="lblDie1" Content="Label" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+
+            <Viewbox Grid.Column="2" Grid.Row="5">
+                <Label x:Name="label3" Content="Die Two:" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            <Viewbox Grid.Column="2" Grid.Row="6">
+                <Label x:Name="lblDie2" Content="Label" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            <Viewbox Grid.Column="6" Grid.Row="5">
+                <Label x:Name="lblTotal" Content="Total" FontWeight="Bold" BorderThickness="0" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
+            </Viewbox>
+            
+            
+
+            
+            
+            
         </Grid>
+
     </Grid>
 </Window>

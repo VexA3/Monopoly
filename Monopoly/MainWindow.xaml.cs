@@ -24,22 +24,122 @@ namespace Monopoly
         {
             InitializeComponent();
         }
-
+        //Make a list of players to add the current players to.
+        public List<Player> currentPlayers = new List<Player>();
         public int numPlayers = 0;
 
+        // currentChoice is used for looping through the piece allocation
+        public int currentChoice = 1;
+
+        //Dice result is an array with 2 values. Those 2 values are your 2 dice rolls.
+        public int[] diceResult = new int[2];
+
+        // This holds the name of a piece to assign it to a player temporarily
+        public string playersPiece = null;
+
+        //
+        int moveTotal;
+        int diceTotal;
+        int doublesCount;
+        //
+        // array that holds all the Player pieces.
+        string[] arrPlayerPieces = new string[8] { "hatPiece","boatPiece", "carPiece", "dogPiece",
+                                                    "bootPiece","wheelbarrowPiece", "ironPiece", "thimblePiece" };
+        
+
+        
+
+        private void ChoosePieces()
+        {
+            btnConfirmPlayerPiece.Visibility = Visibility.Visible;
+            switch (currentChoice)
+            {
+                case 1:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+                case 2:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+                case 3:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+                case 4:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+                case 5:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+                case 6:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+                case 7:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+                case 8:
+                    {
+                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
+                        break;
+                    }
+            }
+        }
         private void StartGame(Button button)
         {
             //change text to restart
             button.Content = "Restart";
 
             //hide radio buttons
-            foreach (RadioButton b in GridControls.Children.OfType<RadioButton>())
+            foreach (RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
             {
                 b.Visibility = Visibility.Hidden;
             }
+            //set the Icon select buttons to visible
+            VisibleOrHide(true);
+            // Run choose pieces method which will make player classes with chosen pieces.
+            ChoosePieces();
+        }
+        private void StartGame()
+        {
+            // hide pieces to be chosen.
+            VisibleOrHide(false);
 
-            //Create player classes here depending on number of players
+            // hide confirm piece button.
+            btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
 
+            // Set Control buttons to visible. Dice, Trade, etc...
+            lblDisplayTurnOrChoice.Content = "Roll Your Dice";
+            lblCurrentPlayer.Visibility = Visibility.Visible;
+            lblDisplayTurnOrChoice.Visibility = Visibility.Visible;
+            imgCurrentPlayer.Visibility = Visibility.Visible;
+            imgDice.Visibility = Visibility.Visible;
+
+            // Display first player's turn.
+            ChangeCurrentImage(currentPlayers[0].Piece);
+            
+            //Make dice labels visible
+            foreach(Viewbox vb in GridControls.Children.OfType<Viewbox>())
+            {
+                if (vb.Child is Label)
+                {
+                    Label l = vb.Child as Label;
+                    if (l.Tag != null && l.Tag.ToString() == "DiceLabel")
+                        l.Visibility = Visibility.Visible;
+                }
+            }
+            
         }
         private void RestartGame(Button button)
         {
@@ -47,13 +147,33 @@ namespace Monopoly
             button.Content = "Start";
 
             //Set number of players radiobuttons to unchecked and visibile again
-            numPlayers = 0;
-            foreach(RadioButton b in GridControls.Children.OfType<RadioButton>())
+            
+            foreach(RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
             {
                 b.IsChecked = false;
                 b.Visibility = Visibility.Visible;
             }
+
+
+
+
             //Reset any variables to starting amounts.
+            playersPiece = "null";
+            diceResult[0] = 0;
+            diceResult[1] = 0;
+            VisibleOrHide(false);
+            ChangeCurrentImage("default");
+            imgCurrentPlayer.Visibility = Visibility.Hidden;
+            Opacity1();
+            numPlayers = 0;
+            currentChoice = 1;
+
+            ChangeImage("default", imgCurrentPlayer);
+
+            currentPlayers.Clear();
+
+
+
         }
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
@@ -73,7 +193,7 @@ namespace Monopoly
             }
             else
             {
-                MessageBox.Show("Please choose number of players!");
+                MessageBox.Show("Please choose number of players");
             }
         }
 
@@ -97,5 +217,255 @@ namespace Monopoly
             RadioButton button = sender as RadioButton;
             numPlayers = Convert.ToInt32(button.Tag.ToString());            
         }
+
+        private void BtnConfirmPlayerPiece_Click(object sender, RoutedEventArgs e)
+        {
+            // Checks if the user picked a piece.
+            if (playersPiece != null)
+            {
+                //Make a new player class with the number of that player and their chosen piece. Add them to the list of players.
+                currentPlayers.Add(new Player(currentChoice, playersPiece));
+
+
+                // Changes imgCurrentPiece to the selected piece. TODO We will have next player turn button or a next player function that will either call this function or cycle image itself.
+                //CheckImage(imgCurrentPlayer);
+
+                // Put player 1 on the board. //TODO Move this to STARTGAME() and create the img of it dynamically instead of always having an imgPlayer1
+                //CheckImage(imgPlayer1);
+
+
+
+
+
+
+
+                // make chosen piece hidden.                
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if (vb.Child is Image)
+                    {
+                        Image i = vb.Child as Image;
+                        if (i.Tag != null && i.Tag.ToString() == playersPiece)
+                            i.Visibility = Visibility.Hidden;
+                    }
+
+                }
+
+                // Start the game if all players have chosen a piece.
+                if (currentChoice == numPlayers)
+                {
+                    StartGame();
+                }
+                // If more players have pieces to choose increment the current players turn for choosing a piece.
+                else
+                {
+                    currentChoice++;
+                    ChoosePieces();
+                    playersPiece = null;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please pick a piece.");
+            }
+            
+        }
+
+        public void ChangeCurrentImage(string p)
+        {
+            // Change the current Player image.
+            imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/"+ p + ".png", UriKind.Relative));
+        }
+
+        private void PieceImgMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Use the last Image as sender.
+            Image img = sender as Image;
+
+            // Show the user what image they clicked
+            if (img.Opacity == 1)
+            {
+                //set all other images opacity back to 1
+                Opacity1();
+                img.Opacity = 0.5;
+
+                // Uses the selected image's tag for the playerPiece variable.
+                playersPiece = img.Tag.ToString();
+
+                
+            }
+            else if (img.Opacity == 0.5)
+            {
+                // show that the piece was deselected
+                playersPiece = null;
+                img.Opacity = 1;
+            }
+        }
+        private void DiceImgMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DiceRoll();
+            
+
+            int die1 = diceResult[0];
+            int die2 = diceResult[1];
+
+
+            if (playersPiece != null /*&& numPlayer != 0*/)
+            {
+                // Get random numbers for the user.
+                
+
+                // Set the DiceTotal
+                diceTotal = die1 + die2;
+
+                // Set labels to let the user know what they rolled.
+                lblDie1.Content = die1.ToString();
+                lblDie2.Content = die2.ToString();
+                lblTotal.Content = diceTotal.ToString();
+
+                // Check if the user rolled doubles 3 times in a row.
+                if (doublesCount != 3)
+                {
+                    if (die1 == die2)
+                    {
+                        MessageBox.Show("You Rolled Doubles, Roll Again.");
+                        doublesCount++;
+                    }
+                    else
+                    {
+                        doublesCount = 0;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Go to jail.");
+                }
+
+                MovePiece();
+            }
+            else
+            {
+                MessageBox.Show("Please pick a Piece.");
+            }
+        }
+        
+        public void VisibleOrHide(bool v)
+        {
+            // used to either make every piece image hidden or visible.
+            if(v == true)
+            {
+                // Foreach loop that makes every image Visible.
+
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if(vb.Child is Image)
+                    {
+                        Image i = vb.Child as Image;
+                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer" && i.Tag.ToString() !="Dice")
+                            i.Visibility = Visibility.Visible;
+                    }
+                    
+                }
+            }
+            else
+            {
+                // Foreach loop that makes every image hidden.
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if (vb.Child is Image)
+                    {
+                        Image i = vb.Child as Image;
+                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer")
+                            i.Visibility = Visibility.Hidden;
+                    }
+
+                }
+
+            }
+            // Also set labels visible/hidden
+            if (v == true)
+            {
+                // Foreach loop that makes every Label Visible.
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if(vb.Child is Label)
+                    {
+                        Label l = vb.Child as Label;
+                        if (l.Tag != null)
+                        {
+                            if (l.Tag.ToString() != "CurrentPlayer" && l.Tag.ToString() != "DiceLabel")
+                                l.Visibility = Visibility.Visible;
+                        }
+                            
+                    }
+                }
+            }
+            else
+            {
+                // Foreach loop that makes every Label hidden.
+                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                {
+                    if (vb.Child is Label)
+                    {
+                        Label l = vb.Child as Label;
+                        if(l.Tag == null)
+                            l.Visibility = Visibility.Hidden;
+                        if(l.Tag != null)
+                        {
+                            if (l.Tag.ToString() != "display")
+                                l.Visibility = Visibility.Hidden;
+                            if (l.Tag.ToString() == "display")
+                                l.Content = "Choose number of Players then press Start.";
+
+                        }
+                        
+                    }
+                }
+            }
+
+        }
+
+        public void Opacity1()
+        {
+            // Foreach loop that makes every image's opacity 1.
+            foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+            {
+                if (vb.Child is Image)
+                {
+                    Image i = vb.Child as Image;
+                    i.Opacity = 1;
+                }
+
+            }
+        }
+        private void DiceRoll()
+        {
+            // Make a new random seed
+            Random roll = new Random();           
+
+            // Add two rolls to diceResult array
+            diceResult[0] = roll.Next(1, 7);
+            diceResult[1] = roll.Next(1, 7);
+        }
+
+        public void ChangeImage(string p, Image img)
+        {
+            // Change the current Player image.
+            img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".jpg", UriKind.Relative));
+        }
+        
+        
+        public void MovePiece()
+        {
+            // TODO: find the correct ratio.
+            //int moveAmount = diceTotal * 10;
+
+            //moveTotal += moveAmount;
+            
+            //imgPlayer1.Margin = new Thickness(640, moveTotal, 0,0);
+
+            // TODO: find the max movement downward then start moving left.
+        }
+
     }
 }
