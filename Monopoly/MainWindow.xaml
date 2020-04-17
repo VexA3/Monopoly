@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Monopoly"
         mc:Ignorable="d"
         Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1021.334">
-    <Grid Background="Gray" ShowGridLines="True">
+    <Grid Background="Gray">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="1*"/>
@@ -15,7 +15,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Viewbox x:Name="BoardViewBox"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1">
-            <Grid x:Name="GridBoard" ShowGridLines="True" Height="1000" Width="1000" >
+            <Grid x:Name="GridBoard" Height="1000" Width="1000" >
                 <Grid.Background>
                     <ImageBrush Stretch="Uniform" ImageSource="Images/board.jpg"/>
                 </Grid.Background>
@@ -172,7 +172,7 @@
             <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                 <Image x:Name="imgDice" Source="Images/diceImage.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="DiceImgMouseDown" Visibility="Hidden" Tag="Dice"/>
             </Viewbox>            
-            <Button x:Name="btnEndTurn" Content="EndTurn" Click="BtnRules_EndTurn"  Grid.Row="7" Grid.Column="3" Visibility="Hidden" Tag="End"/>
+            <Button x:Name="btnEndTurn" Content="EndTurn" Click="BtnRules_EndTurn"  Grid.Row="9" Grid.Column="0" Visibility="Hidden" Tag="End"/>
 
 
             <!--Dice results-->
