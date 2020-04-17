@@ -6,7 +6,14 @@
         xmlns:local="clr-namespace:Monopoly"
         mc:Ignorable="d"
         Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1021.334">
-    <Grid Background="Gray" ShowGridLines="True">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="CSSforxaml.xaml" />
+            </ResourceDictionary.MergedDictionaries>            
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Background="Gray">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="1*"/>
@@ -15,7 +22,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Viewbox x:Name="BoardViewBox"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1">
-            <Grid x:Name="GridBoard" ShowGridLines="True" Height="1000" Width="1000" >
+            <Grid x:Name="GridBoard" Height="1000" Width="1000" >
                 <Grid.Background>
                     <ImageBrush Stretch="Uniform" ImageSource="Images/board.jpg"/>
                 </Grid.Background>
@@ -45,8 +52,8 @@
                     <RowDefinition/>
                     <RowDefinition Height="1.65*"/>
                 </Grid.RowDefinitions>
-                
-                <!--WrapPanels for player locations-->
+
+                <!--#region Wrap panel for movement-->
                 <WrapPanel x:Name="WrapPanel1" Tag = "10,10" Grid.Column = "10" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
                 <WrapPanel x:Name="WrapPanel2" Tag = "9,10" Grid.Column = "9" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
                 <WrapPanel x:Name="WrapPanel3" Tag = "8,10" Grid.Column = "8" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
@@ -88,6 +95,7 @@
                 <WrapPanel x:Name="WrapPanel39" Tag = "10,8" Grid.Column = "10" Grid.Row = "8" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
                 <WrapPanel x:Name="WrapPanel40" Tag = "10,9" Grid.Column = "10" Grid.Row = "9" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
                 <WrapPanel x:Name="WrapPanelJail11" Tag = "Jail" Grid.Column = "0" Grid.Row = "10" Width = "95" Height="95" ItemWidth = "20" ItemHeight = "20" HorizontalAlignment="Right" VerticalAlignment="Top" />
+                <!--#endregion-->
             </Grid>
         </Viewbox>
         <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
@@ -111,12 +119,28 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <!--Main control buttons-->
-            <Button x:Name="btnStart" Content="Start" Click="BtnStart_Click" Grid.Row="11" Grid.Column="0"/>
-            <Button x:Name="btnQuit" Content="Quit Game" Click="BtnQuit_Click" Grid.Row="11" Grid.Column="1"/>
-            <Button x:Name="btnInfo" Content="Info" Click="BtnInfo_Click"  Grid.Row="11" Grid.Column="2"/>
-            <Button x:Name="btnRules" Content="Rules" Click="BtnRules_Click"  Grid.Row="11" Grid.Column="3"/>            
-            <Viewbox Grid.Row="9" Grid.RowSpan="2" Grid.Column="0">
+            <!--#region Main control buttons-->
+            <Button x:Name="btnStart" Click="BtnStart_Click" Grid.Row="10" Grid.Column="0">
+                <Viewbox>
+                    <TextBlock x:Name="TextBlockStartRestart">Start</TextBlock>
+                </Viewbox>
+            </Button>
+            <Button x:Name="btnQuit" Click="BtnQuit_Click" Grid.Row="10" Grid.Column="1">
+                <Viewbox>
+                    <TextBlock>Quit</TextBlock>
+                </Viewbox>
+            </Button>
+            <Button x:Name="btnInfo" Click="BtnInfo_Click"  Grid.Row="10" Grid.Column="2">
+                <Viewbox>
+                    <TextBlock>Info</TextBlock>
+                </Viewbox>
+            </Button>
+            <Button x:Name="btnRules" Click="BtnRules_Click"  Grid.Row="10" Grid.Column="3">
+                <Viewbox>
+                    <TextBlock>Rules</TextBlock>
+                </Viewbox>
+            </Button>
+            <Viewbox Grid.Row="5" Grid.RowSpan="5" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
                 <StackPanel x:Name="StkRadioButtons">
                     <RadioButton x:Name="btn2Player" Content="2 Players" Checked="RadioBtnPlayer_Checked" Tag="2" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
                     <RadioButton x:Name="btn3Player" Content="3 Players" Checked="RadioBtnPlayer_Checked" Tag="3" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
@@ -127,20 +151,21 @@
                     <RadioButton x:Name="btn8Player" Content="8 Players" Checked="RadioBtnPlayer_Checked" Tag="8" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
                 </StackPanel>
             </Viewbox>
-            
+            <!--#endregion-->
+            <!--#region Labels for display-->
             <Viewbox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
                 <Label x:Name="lblDisplayTurnOrChoice" Content="Choose number of Players and then select Start" FontWeight="Bold" Visibility="Visible" Tag="display"/>
             </Viewbox>
             <Viewbox Grid.Row="7" Grid.Column="4">
                 <Label x:Name="lblCurrentPlayer" Content="Current Player" FontSize="14" FontWeight="Bold" Visibility="Hidden" Tag="CurrentPlayer"/>
             </Viewbox>
-
+            <!--#endregion-->
             <!--Default Image, Holds the image of the current player-->
             <Viewbox Grid.Row="8" Grid.Column="4">
                 <Image x:Name="imgCurrentPlayer" Source="Images/default.jpg" StretchDirection="DownOnly" Visibility="Hidden" Tag="CurrentPlayer"/>
             </Viewbox>
 
-            <!--Player Pieces-->
+            <!--#region Player Pieces-->
             <Viewbox  Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">
                 <Image x:Name="imgDogPiece"  Source="Images/dogPiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="dogPiece" Visibility="Hidden"/>
             </Viewbox>
@@ -165,17 +190,25 @@
             <Viewbox Grid.Row="2" Grid.Column="3" Margin="0,5,0,0">
                 <Image x:Name="imgBootPiece" Source="Images/bootPiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="bootPiece" Visibility="Hidden"/>
             </Viewbox>
+            <!--#endregion-->
 
-            <Button x:Name="btnConfirmPlayerPiece" Content="Confirm Piece" Click="BtnConfirmPlayerPiece_Click" Visibility="Hidden" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
-
-            <!--Controls during a player's turn-->
+            <Button x:Name="btnConfirmPlayerPiece" Click="BtnConfirmPlayerPiece_Click" Visibility="Hidden" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
+                <Viewbox>
+                    <TextBlock>Confirm Piece</TextBlock>
+                </Viewbox>
+            </Button>
+            <!--#region Controls during a player's turn-->
             <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                 <Image x:Name="imgDice" Source="Images/diceImage.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="DiceImgMouseDown" Visibility="Hidden" Tag="Dice"/>
-            </Viewbox>            
-            <Button x:Name="btnEndTurn" Content="EndTurn" Click="BtnRules_EndTurn"  Grid.Row="7" Grid.Column="3" Visibility="Hidden" Tag="End"/>
+            </Viewbox>
+            <Button x:Name="btnEndTurn" Click="BtnRules_EndTurn"  Grid.Row="9" Grid.Column="0" Visibility="Hidden" Tag="End">
+                <Viewbox>
+                    <TextBlock>End Turn</TextBlock>
+                </Viewbox>
+            </Button>
+            <!--#endregion-->
 
-
-            <!--Dice results-->
+            <!--#region Dice results-->
             <Viewbox Grid.Column="1" Grid.Row="5">
                 <Label x:Name="label2" Content="Die one:"  FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
             </Viewbox>
@@ -192,7 +225,7 @@
             <Viewbox Grid.Column="6" Grid.Row="5">
                 <Label x:Name="lblTotal" Content="Total" FontWeight="Bold" BorderThickness="0" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
             </Viewbox>
-
+            <!--#endregion-->
 
 
 

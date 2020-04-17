@@ -58,7 +58,7 @@ namespace Monopoly
         private void StartGame(Button button)
         {
             //change text to restart
-            button.Content = "Restart";
+            TextBlockStartRestart.Text = "Restart";
 
             //hide radio buttons
             foreach (RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
@@ -103,7 +103,6 @@ namespace Monopoly
             lblDisplayTurnOrChoice.Visibility = Visibility.Visible;
             imgCurrentPlayer.Visibility = Visibility.Visible;
             imgDice.Visibility = Visibility.Visible;
-            btnEndTurn.Visibility = Visibility.Visible;
 
             // Display first player's turn.
             ChangeCurrentImage(currentPlayersEnum.Current.Piece);
@@ -122,10 +121,9 @@ namespace Monopoly
         private void RestartGame(Button button)
         {
             //Change text to Start
-            button.Content = "Start";
+            TextBlockStartRestart.Text = "Start";
 
-            //Set number of players radiobuttons to unchecked and visibile again
-            
+            //Set number of players radiobuttons to unchecked and visibile again            
             foreach(RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
             {
                 b.IsChecked = false;
@@ -135,6 +133,13 @@ namespace Monopoly
             // Hide labels and buttons that are not needed when at menu.
             imgCurrentPlayer.Visibility = Visibility.Hidden;
             btnEndTurn.Visibility = Visibility.Hidden;
+            btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
+
+            // Delete all player image pieces on the board.
+            foreach (Player p in currentPlayers)
+            {
+                RemovePiece(p);
+            }
 
             //Reset any variables to starting amounts.
             playersPiece = "null";
@@ -147,6 +152,9 @@ namespace Monopoly
             currentChoice = 1;
             currentPlayers.Clear();
             UpdateEnum();
+
+            
+
         }
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
@@ -155,7 +163,7 @@ namespace Monopoly
             if(numPlayers != 0)
             {            
                 //Check if Starting or restarting the game
-                if (button.Content.ToString() == "Start")
+                if (TextBlockStartRestart.Text == "Start")
                 {
                     StartGame(button);                
                 }
@@ -325,15 +333,22 @@ namespace Monopoly
                 }
                 else
                 {
+                    // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
                     imgDice.Visibility = Visibility.Hidden;
+                    btnEndTurn.Visibility = Visibility.Visible;
                 }
             }
             else
             {
+                //If they hit 3 doubles in a row send them to jail.
                 MessageBox.Show("Go to jail.");
                 MovePiece(true);
                 goneToJail = true;
+                // You can't continue moving from jail so hide dice, and show end turn button.
+                imgDice.Visibility = Visibility.Hidden;
+                btnEndTurn.Visibility = Visibility.Visible;
             }
+            // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
             if(!goneToJail)
                 MovePiece(false);
         }
@@ -531,8 +546,7 @@ namespace Monopoly
         }
 
         private void BtnRules_EndTurn(object sender, RoutedEventArgs e)
-        {
-            
+        {            
             //increment enum of current players, if false or end of enum then reupdate enum.
             if (currentPlayersEnum.MoveNext())
             {
@@ -546,6 +560,35 @@ namespace Monopoly
 
             //reset doubles count
             doublesCount = 0;
+            // Hide end turn button
+            btnEndTurn.Visibility = Visibility.Hidden;
+        }
+        private void RemovePiece(Player p)
+        {            
+            //Find the image for the current player.
+            // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                bool imageFound = false;
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == p.Piece + "Img")
+                    {
+                        // once we find an image with a playerpiece name, remove it.
+                        imageFound = true;
+                    }
+                    if (imageFound)
+                    {
+
+                        //remove image from current location
+                        wp.Children.Remove(i);
+                        break;
+                    }
+                }
+                if (imageFound)
+                    break;
+            }
+        
         }
     }
 }
