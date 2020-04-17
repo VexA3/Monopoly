@@ -112,11 +112,27 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <!--Main control buttons-->
-            <Button x:Name="btnStart" Content="Start" Click="BtnStart_Click" Grid.Row="11" Grid.Column="0"/>
-            <Button x:Name="btnQuit" Content="Quit Game" Click="BtnQuit_Click" Grid.Row="11" Grid.Column="1"/>
-            <Button x:Name="btnInfo" Content="Info" Click="BtnInfo_Click"  Grid.Row="11" Grid.Column="2"/>
-            <Button x:Name="btnRules" Content="Rules" Click="BtnRules_Click"  Grid.Row="11" Grid.Column="3"/>            
-            <Viewbox Grid.Row="9" Grid.RowSpan="2" Grid.Column="0">
+            <Button x:Name="btnStart" Click="BtnStart_Click" Grid.Row="11" Grid.Column="0">
+                <Viewbox>
+                    <TextBlock x:Name="TextBlockStartRestart">Start</TextBlock>
+                </Viewbox>
+            </Button>
+            <Button x:Name="btnQuit" Click="BtnQuit_Click" Grid.Row="11" Grid.Column="1">
+                <Viewbox>
+                    <TextBlock>Quit</TextBlock>
+                </Viewbox>
+            </Button>
+            <Button x:Name="btnInfo" Click="BtnInfo_Click"  Grid.Row="11" Grid.Column="2">
+                <Viewbox>
+                    <TextBlock>Info</TextBlock>
+                </Viewbox>
+            </Button>
+            <Button x:Name="btnRules" Click="BtnRules_Click"  Grid.Row="11" Grid.Column="3">
+                <Viewbox>
+                    <TextBlock>Rules</TextBlock>
+                </Viewbox>
+            </Button>            
+            <Viewbox Grid.Row="6" Grid.RowSpan="5" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left">
                 <StackPanel x:Name="StkRadioButtons">
                     <RadioButton x:Name="btn2Player" Content="2 Players" Checked="RadioBtnPlayer_Checked" Tag="2" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
                     <RadioButton x:Name="btn3Player" Content="3 Players" Checked="RadioBtnPlayer_Checked" Tag="3" Grid.Row="7" Grid.RowSpan="4" Grid.Column="0"/>
@@ -166,13 +182,20 @@
                 <Image x:Name="imgBootPiece" Source="Images/bootPiece.png" StretchDirection="DownOnly" MouseDown="PieceImgMouseDown" Tag="bootPiece" Visibility="Hidden"/>
             </Viewbox>
 
-            <Button x:Name="btnConfirmPlayerPiece" Content="Confirm Piece" Click="BtnConfirmPlayerPiece_Click" Visibility="Hidden" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
-
+            <Button x:Name="btnConfirmPlayerPiece" Click="BtnConfirmPlayerPiece_Click" Visibility="Hidden" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
+                <Viewbox>
+                    <TextBlock>Confirm Piece</TextBlock>
+                </Viewbox>
+            </Button>
             <!--Controls during a player's turn-->
             <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                 <Image x:Name="imgDice" Source="Images/diceImage.png" Stretch="Uniform" StretchDirection="DownOnly" MouseDown="DiceImgMouseDown" Visibility="Hidden" Tag="Dice"/>
-            </Viewbox>            
-            <Button x:Name="btnEndTurn" Content="EndTurn" Click="BtnRules_EndTurn"  Grid.Row="9" Grid.Column="0" Visibility="Hidden" Tag="End"/>
+            </Viewbox>
+            <Button x:Name="btnEndTurn" Click="BtnRules_EndTurn"  Grid.Row="9" Grid.Column="0" Visibility="Hidden" Tag="End">
+                <Viewbox>
+                    <TextBlock>End Turn</TextBlock>
+                </Viewbox>
+            </Button>
 
 
             <!--Dice results-->

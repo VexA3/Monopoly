@@ -58,7 +58,7 @@ namespace Monopoly
         private void StartGame(Button button)
         {
             //change text to restart
-            button.Content = "Restart";
+            TextBlockStartRestart.Text = "Restart";
 
             //hide radio buttons
             foreach (RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
@@ -121,7 +121,7 @@ namespace Monopoly
         private void RestartGame(Button button)
         {
             //Change text to Start
-            button.Content = "Start";
+            TextBlockStartRestart.Text = "Start";
 
             //Set number of players radiobuttons to unchecked and visibile again            
             foreach(RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
@@ -163,7 +163,7 @@ namespace Monopoly
             if(numPlayers != 0)
             {            
                 //Check if Starting or restarting the game
-                if (button.Content.ToString() == "Start")
+                if (TextBlockStartRestart.Text == "Start")
                 {
                     StartGame(button);                
                 }
