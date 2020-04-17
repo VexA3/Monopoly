@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,8 +25,12 @@ namespace Monopoly
         {
             InitializeComponent();
         }
+
         //Make a list of players to add the current players to.
-        public List<Player> currentPlayers = new List<Player>();
+        public static List<Player> currentPlayers = new List<Player>();
+        // create enum for player turn order
+        public List<Player>.Enumerator currentPlayersEnum = currentPlayers.GetEnumerator();
+
         public int numPlayers = 0;
 
         // currentChoice is used for looping through the piece allocation
@@ -44,50 +49,11 @@ namespace Monopoly
 
         private void ChoosePieces()
         {
+            // Make confirm button visible
             btnConfirmPlayerPiece.Visibility = Visibility.Visible;
-            switch (currentChoice)
-            {
-                case 1:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-                case 2:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-                case 3:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-                case 4:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-                case 5:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-                case 6:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-                case 7:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-                case 8:
-                    {
-                        lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
-                        break;
-                    }
-            }
+
+            // Change display of label to indicate to player who's turn it is to choose a piece.
+            lblDisplayTurnOrChoice.Content = "Player " + currentChoice.ToString() + " please choose a piece.";
         }
         private void StartGame(Button button)
         {
@@ -106,24 +72,44 @@ namespace Monopoly
         }
         private void StartGame()
         {
+            // Update enum for player order
+            UpdateEnum();
+
             // hide pieces to be chosen.
             VisibleOrHide(false);
 
             // hide confirm piece button.
             btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
 
+
+            ShowPlayerControls();
+
+
+            //Place player images on the board on go / 10,10
+            foreach (Player p in currentPlayers)
+            {
+                Image img = new Image();
+                img.Source = new BitmapImage(new Uri(@"/Images/" + p.Piece + ".png", UriKind.Relative));
+                GetWrapPanel(10, 10).Children.Add(img);
+                img.Name = p.Piece + "Img";
+            }
+
+        }
+        private void ShowPlayerControls()
+        {
             // Set Control buttons to visible. Dice, Trade, etc...
             lblDisplayTurnOrChoice.Content = "Roll Your Dice";
             lblCurrentPlayer.Visibility = Visibility.Visible;
             lblDisplayTurnOrChoice.Visibility = Visibility.Visible;
             imgCurrentPlayer.Visibility = Visibility.Visible;
             imgDice.Visibility = Visibility.Visible;
+            btnEndTurn.Visibility = Visibility.Visible;
 
             // Display first player's turn.
-            ChangeCurrentImage(currentPlayers[0].Piece);
-            
+            ChangeCurrentImage(currentPlayersEnum.Current.Piece);
+
             //Make dice labels visible
-            foreach(Viewbox vb in GridControls.Children.OfType<Viewbox>())
+            foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
             {
                 if (vb.Child is Label)
                 {
@@ -132,7 +118,6 @@ namespace Monopoly
                         l.Visibility = Visibility.Visible;
                 }
             }
-            
         }
         private void RestartGame(Button button)
         {
@@ -147,8 +132,9 @@ namespace Monopoly
                 b.Visibility = Visibility.Visible;
             }
 
-
-
+            // Hide labels and buttons that are not needed when at menu.
+            imgCurrentPlayer.Visibility = Visibility.Hidden;
+            btnEndTurn.Visibility = Visibility.Hidden;
 
             //Reset any variables to starting amounts.
             playersPiece = "null";
@@ -156,17 +142,11 @@ namespace Monopoly
             diceResult[1] = 0;
             VisibleOrHide(false);
             ChangeCurrentImage("default");
-            imgCurrentPlayer.Visibility = Visibility.Hidden;
             Opacity1();
             numPlayers = 0;
             currentChoice = 1;
-
-            ChangeImage("default", imgCurrentPlayer);
-
             currentPlayers.Clear();
-
-
-
+            UpdateEnum();
         }
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
@@ -208,7 +188,7 @@ namespace Monopoly
         private void RadioBtnPlayer_Checked(object sender, RoutedEventArgs e)
         {
             RadioButton button = sender as RadioButton;
-            numPlayers = Convert.ToInt32(button.Tag.ToString());            
+            numPlayers = Convert.ToInt32(button.Tag.ToString());
         }
 
         private void BtnConfirmPlayerPiece_Click(object sender, RoutedEventArgs e)
@@ -225,11 +205,6 @@ namespace Monopoly
 
                 // Put player 1 on the board. //TODO Move this to STARTGAME() and create the img of it dynamically instead of always having an imgPlayer1
                 //CheckImage(imgPlayer1);
-
-
-
-
-
 
 
                 // make chosen piece hidden.                
@@ -264,10 +239,43 @@ namespace Monopoly
             
         }
 
+        // returns the wrappanel at a given coord from the gridboard.
+        private WrapPanel GetWrapPanel(int x, int y)
+        {
+            foreach(WrapPanel w in GridBoard.Children)
+            {
+                if(w.Tag.ToString() == x+","+y)
+                {
+                    return w;
+                }
+            }
+            return null;
+        }
+
+        // return wp with given name
+        private WrapPanel GetWrapPanel(string wrapPanel)
+        {
+            foreach (WrapPanel w in GridBoard.Children)
+            {
+                if (w.Name == wrapPanel)
+                {
+                    return w;
+                }
+            }
+            return null;
+        }
+
         public void ChangeCurrentImage(string p)
         {
             // Change the current Player image.
             imgCurrentPlayer.Source = new BitmapImage(new Uri(@"/Images/"+ p + ".png", UriKind.Relative));
+        }
+
+        public void UpdateEnum()
+        {
+            // Update enum so it can be used after players were added to list.
+            currentPlayersEnum = currentPlayers.GetEnumerator();
+            currentPlayersEnum.MoveNext();
         }
 
         private void PieceImgMouseDown(object sender, MouseButtonEventArgs e)
@@ -295,51 +303,39 @@ namespace Monopoly
             }
         }
         private void DiceImgMouseDown(object sender, MouseButtonEventArgs e)
-        {
+        {       
+            // use DiceRoll to generate 2 die rolls.
             DiceRoll();
-            
+            bool goneToJail = false;
+            // Set the DiceTotal
+            diceTotal = diceResult[0] + diceResult[1];
 
-            int die1 = diceResult[0];
-            int die2 = diceResult[1];
+            // Set labels to let the user know what they rolled.
+            lblDie1.Content = diceResult[0].ToString();
+            lblDie2.Content = diceResult[1].ToString();
+            lblTotal.Content = diceTotal.ToString();
 
-
-            if (playersPiece != null /*&& numPlayer != 0*/)
+            // Check if the user rolled doubles 3 times in a row.
+            if (doublesCount != 2)
             {
-                // Get random numbers for the user.
-                
-
-                // Set the DiceTotal
-                diceTotal = die1 + die2;
-
-                // Set labels to let the user know what they rolled.
-                lblDie1.Content = die1.ToString();
-                lblDie2.Content = die2.ToString();
-                lblTotal.Content = diceTotal.ToString();
-
-                // Check if the user rolled doubles 3 times in a row.
-                if (doublesCount != 3)
+                if (diceResult[0] == diceResult[1])
                 {
-                    if (die1 == die2)
-                    {
-                        MessageBox.Show("You Rolled Doubles, Roll Again.");
-                        doublesCount++;
-                    }
-                    else
-                    {
-                        doublesCount = 0;
-                    }
+                    MessageBox.Show("You Rolled Doubles, Roll Again.");
+                    doublesCount++;
                 }
                 else
                 {
-                    MessageBox.Show("Go to jail.");
+                    imgDice.Visibility = Visibility.Hidden;
                 }
-
-                MovePiece();
             }
             else
             {
-                MessageBox.Show("Please pick a Piece.");
+                MessageBox.Show("Go to jail.");
+                MovePiece(true);
+                goneToJail = true;
             }
+            if(!goneToJail)
+                MovePiece(false);
         }
         
         public void VisibleOrHide(bool v)
@@ -447,18 +443,109 @@ namespace Monopoly
             img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".jpg", UriKind.Relative));
         }
         
-        
-        public void MovePiece()
+        public Player GetCurrentPlayer()
         {
-            // TODO: find the correct ratio.
-            //int moveAmount = diceTotal * 10;
-
-            //moveTotal += moveAmount;
-            
-            //imgPlayer1.Margin = new Thickness(640, moveTotal, 0,0);
-
-            // TODO: find the max movement downward then start moving left.
+            return currentPlayersEnum.Current;
         }
 
+        private void PassGo()
+        {
+            //Add 200 to current player's money value
+            currentPlayersEnum.Current.Money = 200;            
+        }
+        //Move Piece to jail on false, else move to new location on true.
+        public void MovePiece(bool goToJail)
+        {
+            int nextLocation = -1;
+            bool imageFound = false;
+            if (goToJail)
+            {
+                //Find the image for the current player.
+                // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+                foreach (WrapPanel wp in GridBoard.Children)
+                {
+                    foreach (Image i in wp.Children)
+                    {
+                        if (i.Name == currentPlayersEnum.Current.Piece + "Img")
+                        {
+                            // once we find the image for the players piece move it to jail.                            
+                            imageFound = true;
+                        }
+                        if (imageFound)
+                        {
+
+                            //remove image from current location
+                            wp.Children.Remove(i);
+
+                            //Add to new location
+                            GetWrapPanel("WrapPanelJail11").Children.Add(i);
+                            break;
+                        }
+                    }
+                    if (imageFound)
+                        break;
+                }
+            }
+            else
+            {
+                //Find the image for the current player.
+                // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+                foreach (WrapPanel wp in GridBoard.Children)
+                {
+                    foreach (Image i in wp.Children)
+                    {
+                        if (i.Name == currentPlayersEnum.Current.Piece + "Img")
+                        {
+                            // once we find the image for the players piece move it the dice result.
+                            //Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
+                            int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", ""));
+
+                            // Add dicetotal to currentLocation
+                            nextLocation = currentLocation + diceTotal;
+
+                            //Check if passing go.
+                            if (nextLocation > 40)
+                            {
+                                nextLocation = nextLocation - 40;
+                                PassGo();
+                            }
+                            imageFound = true;
+
+                        }
+                        if (imageFound)
+                        {
+
+                            //remove image from current location
+                            wp.Children.Remove(i);
+
+                            //Add to new location
+                            GetWrapPanel("WrapPanel" + nextLocation).Children.Add(i);
+                            break;
+                        }
+                    }
+                    if (imageFound)
+                        break;
+                }
+            }
+
+        }
+
+        private void BtnRules_EndTurn(object sender, RoutedEventArgs e)
+        {
+            
+            //increment enum of current players, if false or end of enum then reupdate enum.
+            if (currentPlayersEnum.MoveNext())
+            {
+                Console.WriteLine(currentPlayersEnum.Current.Piece);
+            }
+            else
+            {
+                UpdateEnum();
+            }
+            ShowPlayerControls();
+
+            //reset doubles count
+            doublesCount = 0;
+        }
     }
 }
