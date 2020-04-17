@@ -316,7 +316,7 @@ namespace Monopoly
             lblTotal.Content = diceTotal.ToString();
 
             // Check if the user rolled doubles 3 times in a row.
-            if (doublesCount != 3)
+            if (doublesCount != 2)
             {
                 if (diceResult[0] == diceResult[1])
                 {
@@ -543,6 +543,9 @@ namespace Monopoly
                 UpdateEnum();
             }
             ShowPlayerControls();
+
+            //reset doubles count
+            doublesCount = 0;
         }
     }
 }

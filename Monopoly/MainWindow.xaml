@@ -88,27 +88,6 @@
                 <WrapPanel x:Name="WrapPanel39" Tag = "10,8" Grid.Column = "10" Grid.Row = "8" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
                 <WrapPanel x:Name="WrapPanel40" Tag = "10,9" Grid.Column = "10" Grid.Row = "9" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
                 <WrapPanel x:Name="WrapPanelJail11" Tag = "Jail" Grid.Column = "0" Grid.Row = "10" Width = "95" Height="95" ItemWidth = "20" ItemHeight = "20" HorizontalAlignment="Right" VerticalAlignment="Top" />
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </Grid>
         </Viewbox>
         <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
