@@ -32,6 +32,11 @@ namespace Monopoly
         {
             get { return properties; }
         }
+        public int Money
+        {
+            get { return money; }
+            set { money += value; }
+        }
 
         //Add property to list of owned properties
         private void buyProperty(Property prop)
