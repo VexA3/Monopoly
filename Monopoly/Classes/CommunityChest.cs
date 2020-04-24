@@ -11,6 +11,9 @@ namespace Monopoly
     using System.Text;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// A class to hold community chest data
+    /// </summary>
     public class CommunityChest
     {
     }

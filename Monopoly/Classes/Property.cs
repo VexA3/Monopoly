@@ -11,6 +11,9 @@ namespace Monopoly
     using System.Text;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// A class to hold property data
+    /// </summary>
     public class Property
     {
     }

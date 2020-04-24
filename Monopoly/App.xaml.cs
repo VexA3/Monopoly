@@ -1,4 +1,9 @@
-﻿namespace Monopoly
+﻿//-----------------------------------------------------------------------
+// <copyright file="App.xaml.cs" company="CompanyName">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Monopoly
 {
     using System;
     using System.Collections.Generic;
