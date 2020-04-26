@@ -32,6 +32,16 @@ namespace Monopoly
         private static List<Player> currentPlayers = new List<Player>();
 
         /// <summary>
+        /// List of the chance cards in the game
+        /// </summary>
+        private static List<ChanceCard> chanceDeck = new List<ChanceCard>();
+
+        /// <summary>
+        /// List of the current players in the game
+        /// </summary>
+        private static List<CommunityChest> commmunityChestDeck = new List<CommunityChest>();
+
+        /// <summary>
         /// Enum for the list of current players
         /// </summary>
         private List<Player>.Enumerator currentPlayersEnum = currentPlayers.GetEnumerator();
@@ -81,91 +91,143 @@ namespace Monopoly
         {
             get => currentPlayers;
             set => currentPlayers = value;
+        }        
+
+        private void goToJail()
+        {
+            bool imageFound = false;
+            // Find the image for the current player.
+            // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it to jail.                            
+                        imageFound = true;
+                    }
+
+                    if (imageFound)
+                    {
+                        // remove image from current location
+                        wp.Children.Remove(i);
+
+                        // Add to new location
+                        this.GetWrapPanel("WrapPanelJail11").Children.Add(i);
+                        break;
+                    }
+                }
+
+                if (imageFound)
+                {
+                    break;
+                }
+            }
         }
 
         /// <summary>
-        /// Move the current players piece to jail or the location that is diceTotal away
+        /// Do the action specified by a chance or community card.
         /// </summary>
-        /// <param name="sendToJail"> Whether or not the piece is being sent to jail </param>
-        private void MovePiece(bool sendToJail)
+        /// <param name="action"> Determines type of action to invoke </param>
+        private void action(string action)
+        {            
+            switch (action)
+            {
+            /// Community chest and Chance card methods. Chance and community chest cards will hold these methods 
+            /// Each card will be constructed with CommunityChest("Card text here", "actionString") where action string is which case below to run.
+            /// When drawing a card we call action(Carddrawn.action) which goes to this function action("") and the string parameter decides which case to run.
+
+                case "jail":
+                    goToJail();
+                    break;
+                //TODO 
+
+                case "nextRailRoad":
+                    // move piece to next railroad on the board if pass go PassGo()
+                    break;
+
+                case "advanceToGo":
+                    // move piece to go and PassGo()
+                    break;
+                case "advanceToMayfair":
+                // move piece to mayfair
+                    break;
+
+                case "advanceToKingsCrossStation":
+                    // move piece to kings cross, if pass go then PassGo()
+                    break;
+
+                case "advanceToTrafalgarSquare":
+                    // if passgo passgo()
+                    break;
+
+                case "nextUtility":
+                    // move to next utility if pass go passgo()
+                    break;
+
+                case "advanceToPallMall":
+                    //if pass go passgo()
+                    break;
+
+
+                case "backThreeSpaces":
+                    //move back three spaces
+                    break;
+                /// add more cases as needed to do each chance card and community chest. There are 16 of each with a single duplice so we should have 31 cases here in total.
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Move the current players piece to a location that is diceTotal away
+        /// </summary>
+        private void MovePiece()
         {
             int nextLocation = -1;
             bool imageFound = false;
-            if (sendToJail)
+            // Find the image for the current player.
+            // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+            foreach (WrapPanel wp in GridBoard.Children)
             {
-                // Find the image for the current player.
-                // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
-                foreach (WrapPanel wp in GridBoard.Children)
+                foreach (Image i in wp.Children)
                 {
-                    foreach (Image i in wp.Children)
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
                     {
-                        if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                        // once we find the image for the players piece move it the dice result.
+                        // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
+                        int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // Add dicetotal to currentLocation
+                        nextLocation = currentLocation + this.diceTotal;
+
+                        // Check if passing go.
+                        if (nextLocation > 40)
                         {
-                            // once we find the image for the players piece move it to jail.                            
-                            imageFound = true;
+                            nextLocation = nextLocation - 40;
+                            this.PassGo();
                         }
 
-                        if (imageFound)
-                        {
-                            // remove image from current location
-                            wp.Children.Remove(i);
-
-                            // Add to new location
-                            this.GetWrapPanel("WrapPanelJail11").Children.Add(i);
-                            break;
-                        }
+                        imageFound = true;
                     }
 
                     if (imageFound)
                     {
+                        // remove image from current location
+                        wp.Children.Remove(i);
+
+                        // Add to new location
+                        this.GetWrapPanel("WrapPanel" + nextLocation).Children.Add(i);
                         break;
                     }
                 }
-            }
-            else
-            {
-                // Find the image for the current player.
-                // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
-                foreach (WrapPanel wp in GridBoard.Children)
+
+                if (imageFound)
                 {
-                    foreach (Image i in wp.Children)
-                    {
-                        if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                        {
-                            // once we find the image for the players piece move it the dice result.
-                            // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
-                            int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
-
-                            // Add dicetotal to currentLocation
-                            nextLocation = currentLocation + this.diceTotal;
-
-                            // Check if passing go.
-                            if (nextLocation > 40)
-                            {
-                                nextLocation = nextLocation - 40;
-                                this.PassGo();
-                            }
-
-                            imageFound = true;
-                        }
-
-                        if (imageFound)
-                        {
-                            // remove image from current location
-                            wp.Children.Remove(i);
-
-                            // Add to new location
-                            this.GetWrapPanel("WrapPanel" + nextLocation).Children.Add(i);
-                            break;
-                        }
-                    }
-
-                    if (imageFound)
-                    {
-                        break;
-                    }                        
+                    break;
                 }
-            }
+            }            
         }
 
         /// <summary>
@@ -242,7 +304,7 @@ namespace Monopoly
 
             // Display first player's turn by changing imgCurrentPlayer
             this.ChangeImage(this.currentPlayersEnum.Current.Piece, this.imgCurrentPlayer);
-
+            
             // Make dice labels visible
             foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
             {
@@ -524,7 +586,7 @@ namespace Monopoly
             {
                 // If they hit 3 doubles in a row send them to jail.
                 MessageBox.Show("Go to jail.");
-                this.MovePiece(true);
+                this.goToJail();
                 goneToJail = true;
 
                 // You can't continue moving from jail so hide dice, and show end turn button.
@@ -535,7 +597,7 @@ namespace Monopoly
             // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
             if (!goneToJail)
             {
-                this.MovePiece(false);
+                this.MovePiece();
             }
         }
 
@@ -678,10 +740,19 @@ namespace Monopoly
         /// <summary>
         /// Gives the current player 200 dollars for passing go
         /// </summary>
-        private void PassGo()
+        public void PassGo()
         {
             // Add 200 to current player's money value
             this.currentPlayersEnum.Current.Money = 200;            
+        }
+
+        /// <summary>
+        /// Gives the current player 200 dollars for passing go
+        /// </summary>
+        public void PassGo(Player p)
+        {
+            // Add 200 to current player's money value
+            p.Money = 200;
         }
 
         /// <summary>
@@ -738,6 +809,6 @@ namespace Monopoly
                     break;
                 }
             }        
-        }
+        }  
     }
 }

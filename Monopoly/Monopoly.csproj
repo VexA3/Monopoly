@@ -69,7 +69,7 @@
       <SubType>Code</SubType>
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Classes\ChanceCards.cs" />
+    <Compile Include="Classes\ChanceCard.cs" />
     <Compile Include="Classes\CommunityChest.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
