@@ -155,6 +155,9 @@ namespace Monopoly
                     this.GoToJail();
                     break;
 
+                case "getOutOfJail":
+                    break;
+
                 // TODO 
                 case "nextRailRoad":
                     // move piece to next railroad on the board if pass go PassGo()
@@ -186,6 +189,41 @@ namespace Monopoly
                 case "backThreeSpaces":
                     // move back three spaces
                     break;
+                // + money
+                case "gain10":
+                    break;
+                case "gain20":
+                    break;
+                case "gain25":
+                    break;
+                case "gain45":
+                    break;
+                case "gain50":
+                    break;                    
+                case "gain100":
+                    break;
+                case "gain150":
+                    break;                    
+                case "gain200":
+                    break;
+                case "gain50PerPlayer":
+                    break;
+
+                // - money
+                case "lose15":
+                    break;
+                case "lose50":
+                    break;
+                case "lose100":
+                    break;
+                case "lose50PerPlayer":
+                    break;
+                case "lose40PerHouse115PerHotel":
+                    break;
+                case "lose25PerHouse100PerHotel":
+                    break;
+
+
 
                 // add more cases as needed to do each chance card and community chest. There are 16 of each with a single duplice so we should have 31 cases here in total.
                 default:
