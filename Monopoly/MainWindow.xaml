@@ -5,23 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Monopoly"
         mc:Ignorable="d"
-        Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1021.334">
+        Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1347.631">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="CSSforxaml.xaml" />
-            </ResourceDictionary.MergedDictionaries>            
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="Gray">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Viewbox x:Name="BoardViewBox"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1">
+        <Viewbox x:Name="BoardViewBox"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="4">
             <Grid x:Name="GridBoard" Height="1000" Width="1000" >
                 <Grid.Background>
                     <ImageBrush Stretch="Uniform" ImageSource="Images/board.jpg"/>
@@ -54,51 +59,51 @@
                 </Grid.RowDefinitions>
 
                 <!--#region Wrap panel for movement-->
-                <WrapPanel x:Name="WrapPanel1" Tag = "10,10" Grid.Column = "10" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel2" Tag = "9,10" Grid.Column = "9" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel3" Tag = "8,10" Grid.Column = "8" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel4" Tag = "7,10" Grid.Column = "7" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel5" Tag = "6,10" Grid.Column = "6" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel6" Tag = "5,10" Grid.Column = "5" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel7" Tag = "4,10" Grid.Column = "4" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel8" Tag = "3,10" Grid.Column = "3" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel9" Tag = "2,10" Grid.Column = "2" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel10" Tag = "1,10" Grid.Column = "1" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel11" Tag = "0,10" Grid.Column = "0" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel12" Tag = "0,9" Grid.Column = "0" Grid.Row = "9" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel13" Tag = "0,8" Grid.Column = "0" Grid.Row = "8" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel14" Tag = "0,7" Grid.Column = "0" Grid.Row = "7" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel15" Tag = "0,6" Grid.Column = "0" Grid.Row = "6" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel16" Tag = "0,5" Grid.Column = "0" Grid.Row = "5" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel17" Tag = "0,4" Grid.Column = "0" Grid.Row = "4" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel18" Tag = "0,3" Grid.Column = "0" Grid.Row = "3" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel19" Tag = "0,2" Grid.Column = "0" Grid.Row = "2" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel20" Tag = "0,1" Grid.Column = "0" Grid.Row = "1" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel21" Tag = "0,0" Grid.Column = "0" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel22" Tag = "1,0" Grid.Column = "1" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel23" Tag = "2,0" Grid.Column = "2" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel24" Tag = "3,0" Grid.Column = "3" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel25" Tag = "4,0" Grid.Column = "4" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel26" Tag = "5,0" Grid.Column = "5" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel27" Tag = "6,0" Grid.Column = "6" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel28" Tag = "7,0" Grid.Column = "7" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel29" Tag = "8,0" Grid.Column = "8" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel30" Tag = "9,0" Grid.Column = "9" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel31" Tag = "10,0" Grid.Column = "10" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel32" Tag = "10,1" Grid.Column = "10" Grid.Row = "1" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel33" Tag = "10,2" Grid.Column = "10" Grid.Row = "2" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel34" Tag = "10,3" Grid.Column = "10" Grid.Row = "3" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel35" Tag = "10,4" Grid.Column = "10" Grid.Row = "4" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel36" Tag = "10,5" Grid.Column = "10" Grid.Row = "5" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel37" Tag = "10,6" Grid.Column = "10" Grid.Row = "6" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel38" Tag = "10,7" Grid.Column = "10" Grid.Row = "7" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel39" Tag = "10,8" Grid.Column = "10" Grid.Row = "8" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
-                <WrapPanel x:Name="WrapPanel40" Tag = "10,9" Grid.Column = "10" Grid.Row = "9" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelGo1" Tag = "10,10" Grid.Column = "10" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelMediterranean_Avenue2" Tag = "9,10" Grid.Column = "9" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelCommunity_Chest3" Tag = "8,10" Grid.Column = "8" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelBaltic_Avenue4" Tag = "7,10" Grid.Column = "7" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelIncome_Tax5" Tag = "6,10" Grid.Column = "6" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelReading_Railroad6" Tag = "5,10" Grid.Column = "5" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelOriental_Avenue7" Tag = "4,10" Grid.Column = "4" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelChance8" Tag = "3,10" Grid.Column = "3" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelVermont_Avenue9" Tag = "2,10" Grid.Column = "2" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelConneticut_Avenue10" Tag = "1,10" Grid.Column = "1" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelJust_Visiting11" Tag = "0,10" Grid.Column = "0" Grid.Row = "10" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelSt_Charles_Place12" Tag = "0,9" Grid.Column = "0" Grid.Row = "9" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelElectric_Company_Utility13" Tag = "0,8" Grid.Column = "0" Grid.Row = "8" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelStates_Avenue14" Tag = "0,7" Grid.Column = "0" Grid.Row = "7" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelVirginia_Avenue15" Tag = "0,6" Grid.Column = "0" Grid.Row = "6" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelPennsylvania_Railroad16" Tag = "0,5" Grid.Column = "0" Grid.Row = "5" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelSt_James_Place17" Tag = "0,4" Grid.Column = "0" Grid.Row = "4" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelCommunity_Chest18" Tag = "0,3" Grid.Column = "0" Grid.Row = "3" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelTennessee_Avenue19" Tag = "0,2" Grid.Column = "0" Grid.Row = "2" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelNew_York_Avenue20" Tag = "0,1" Grid.Column = "0" Grid.Row = "1" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelFree_Parking21" Tag = "0,0" Grid.Column = "0" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelKentucky_Avenue22" Tag = "1,0" Grid.Column = "1" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelChance23" Tag = "2,0" Grid.Column = "2" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelIndiana_Avenue24" Tag = "3,0" Grid.Column = "3" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelIllinois_Avenue25" Tag = "4,0" Grid.Column = "4" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelB_And_O_Railroad26" Tag = "5,0" Grid.Column = "5" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelAtlantic_Avenue27" Tag = "6,0" Grid.Column = "6" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelVentnor_Avenue28" Tag = "7,0" Grid.Column = "7" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelWater_Works_Utility29" Tag = "8,0" Grid.Column = "8" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelMarvin_Gardens30" Tag = "9,0" Grid.Column = "9" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col1}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelGo_To_Jail31" Tag = "10,0" Grid.Column = "10" Grid.Row = "0" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelPacific_Avenue32" Tag = "10,1" Grid.Column = "10" Grid.Row = "1" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelNorth_Carolina_Avenue33" Tag = "10,2" Grid.Column = "10" Grid.Row = "2" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelCommunity_Chest34" Tag = "10,3" Grid.Column = "10" Grid.Row = "3" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelPennsylvania_Avenue35" Tag = "10,4" Grid.Column = "10" Grid.Row = "4" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelShort_Line_Railroad36" Tag = "10,5" Grid.Column = "10" Grid.Row = "5" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelChance37" Tag = "10,6" Grid.Column = "10" Grid.Row = "6" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelPark_Place38" Tag = "10,7" Grid.Column = "10" Grid.Row = "7" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelLuxury_Tax39" Tag = "10,8" Grid.Column = "10" Grid.Row = "8" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
+                <WrapPanel x:Name="WrapPanelBoardwalk40" Tag = "10,9" Grid.Column = "10" Grid.Row = "9" MaxWidth = "{Binding Path=Width, ElementName=Col0}" ItemWidth = "40" ItemHeight = "32" />
                 <WrapPanel x:Name="WrapPanelJail11" Tag = "Jail" Grid.Column = "0" Grid.Row = "10" Width = "95" Height="95" ItemWidth = "20" ItemHeight = "20" HorizontalAlignment="Right" VerticalAlignment="Top" />
                 <!--#endregion-->
             </Grid>
         </Viewbox>
-        <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
+        <Grid x:Name="GridControls" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" Background="#FFCDE3C7">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -226,13 +231,41 @@
                 <Label x:Name="lblTotal" Content="Total" FontWeight="Bold" BorderThickness="0" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
             </Viewbox>
             <!--#endregion-->
-
-
-
-
-
         </Grid>
 
+        <!--Properties-->
+        <Grid x:Name="GridPlayerData" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Background="#FFCDE3C7">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="label" Content="Properties" Grid.Column="1" HorizontalAlignment="Left"  VerticalAlignment="Top" FontWeight="Bold" FontSize="28" Grid.ColumnSpan="3" Height="55" Width="146"/>
+            <Label x:Name="lblP1Owned" Content="Player 1" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold" FontSize="28" Height="57" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Width="118"/>
+            <Label x:Name="lblP2Owned" Content="Player 2" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="32.286,0.143,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="28" Grid.RowSpan="2" Height="57" Grid.Row="2" Grid.Column="3"/>
 
+            <Viewbox Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="3" Grid.RowSpan="3">
+                <StackPanel x:Name="stpListBox" Width="1049">
+                    <ListBox x:Name="ltbP1Owned" Tag="1" Height="200"  VerticalAlignment="Top" FontSize="30"/>
+                    <ListBox x:Name="ltbP2Owned" Tag="2" Height="200"  VerticalAlignment="Top" />
+                </StackPanel>
+            </Viewbox>
+        </Grid>
     </Grid>
 </Window>

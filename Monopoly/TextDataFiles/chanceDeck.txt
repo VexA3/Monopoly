@@ -1,0 +1,16 @@
+Advance token to the nearest railroad and pay the owner twice the rental. If railroad is un-owned you may buy it from the bank./nextRailRoad
+Advance token to the nearest railroad and pay the owner twice the rental. If railroad is un-owned you may buy it from the bank./nextRailRoad
+Advance token to nearest utility.  If un-owned you may buy it from the bank. If owned, throw dice, pay owner ten times amount./nextUtility
+Pay poor tax of $15./lose15
+Advance to Go, Collect $200./advanceToGo
+You have been elected chairman of the board.  Pay each player $50./lose50PerPlayer
+Go directly to jail.  Do not pass Go.  Do not collect $200./jail
+This card may be kept until needed or sold.  Get out of jail free./getOutOfJail
+Take a ride on the Reading Railroad.  If you pass Go, collect $200./advanceToReadingRailroad
+Advance to Illinois Avenue. If you pass Go, collect $200./advanceToIllinoisAvenue
+Bank pays you dividend of $50./gain50
+Your building and loan matures.  Collect $150./gain150
+Go back 3 spaces./backThreeSpaces
+Take a walk on the Board walk.  Advance token to Board Walk./advanceToBoardwalk
+Make general repairs on all your property.  For each house, pay $25.  For each hotel, pay $100./lose25PerHouse100PerHotel
+Advance to Saint Charles Place , If you pass GO , collect $200./advanceToStCharlesPlace

@@ -7,6 +7,7 @@ namespace Monopoly
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -30,6 +31,21 @@ namespace Monopoly
         /// List of the current players in the game
         /// </summary>
         private static List<Player> currentPlayers = new List<Player>();
+
+        /// <summary>
+        /// List of the chance cards in the game
+        /// </summary>
+        private static List<ChanceCard> chanceDeck = new List<ChanceCard>();
+
+        /// <summary>
+        /// List of the community chest cards in the game
+        /// </summary>
+        private static List<CommunityChest> communityChestDeck = new List<CommunityChest>();
+
+        /// <summary>
+        /// List of the properties in the game
+        /// </summary>
+        private static List<Property> allProperties = new List<Property>();
 
         /// <summary>
         /// Enum for the list of current players
@@ -72,6 +88,10 @@ namespace Monopoly
         public MainWindow()
         {
             this.InitializeComponent();
+            // populate starting data for decks and properties
+            this.PopulatePropertiesData();
+            this.PopulateChanceDeck();
+            this.PopulateCommunityChestDeck();
         }
 
         /// <summary>
@@ -84,88 +104,331 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// Move the current players piece to jail or the location that is diceTotal away
+        /// Send the current player to jail
         /// </summary>
-        /// <param name="sendToJail"> Whether or not the piece is being sent to jail </param>
-        private void MovePiece(bool sendToJail)
+        private void GoToJail()
+        {
+            bool imageFound = false;
+
+            //// Find the image for the current player.
+            //// We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it to jail.                            
+                        imageFound = true;
+                    }
+
+                    if (imageFound)
+                    {
+                        // remove image from current location
+                        wp.Children.Remove(i);
+
+                        // Add to new location
+                        this.GetWrapPanel("WrapPanelJail11").Children.Add(i);
+                        break;
+                    }
+                }
+
+                if (imageFound)
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Do the action specified by a chance or community card.
+        /// </summary>
+        /// <param name="action"> Determines type of action to invoke </param>
+        private void Action(string action)
+        {
+            switch (action)
+            {
+                //// Community chest and Chance card methods. Chance and community chest cards will hold these methods 
+                //// Each card will be constructed with CommunityChest("Card text here", "actionString") where action string is which case below to run.
+                //// When drawing a card we call action(Carddrawn.action) which goes to this function action("") and the string parameter decides which case to run.
+
+                case "jail":
+                    this.GoToJail();
+                    break;
+
+                case "getOutOfJail":
+                    break;
+
+                // TODO 
+                case "nextRailRoad":
+                    // move piece to next railroad on the board if pass go PassGo()
+                    break;
+
+                case "advanceToGo":
+                    // move piece to go and PassGo()
+                    break;
+                case "advanceToBoardwalk":
+                    // move piece to Boardwalk
+                    break;
+
+                case "advanceToReadingRailroad":
+                    // move piece to kings cross, if pass go then PassGo()
+                    break;
+
+                case "advanceToStCharlesPlace":
+                    // if passgo passgo()
+                    break;
+
+                case "nextUtility":
+                    // move to next utility if pass go passgo()
+                    break;
+
+                case "advanceToIllinoisAvenue":
+                    // if pass go passgo()
+                    break;
+
+                case "backThreeSpaces":
+                    // move back three spaces
+                    break;
+
+                // + money
+                case "gain10":
+                    break;
+                case "gain20":
+                    break;
+                case "gain25":
+                    break;
+                case "gain45":
+                    break;
+                case "gain50":
+                    break;                    
+                case "gain100":
+                    break;
+                case "gain150":
+                    break;                    
+                case "gain200":
+                    break;
+                case "gain50PerPlayer":
+                    break;
+
+                // - money
+                case "lose15":
+                    break;
+                case "lose50":
+                    break;
+                case "lose100":
+                    break;
+                case "lose50PerPlayer":
+                    break;
+                case "lose40PerHouse115PerHotel":
+                    break;
+                case "lose25PerHouse100PerHotel":
+                    break;
+
+                // add more cases as needed to do each chance card and community chest. There are 16 of each with a single duplice so we should have 31 cases here in total.
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Move the current players piece to a location that is diceTotal away
+        /// </summary>
+        private void MovePiece()
         {
             int nextLocation = -1;
             bool imageFound = false;
-            if (sendToJail)
+
+            //// Find the image for the current player.
+            //// We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+            foreach (WrapPanel wp in GridBoard.Children)
             {
-                // Find the image for the current player.
-                // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
-                foreach (WrapPanel wp in GridBoard.Children)
+                if (imageFound)
                 {
-                    foreach (Image i in wp.Children)
-                    {
-                        if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                        {
-                            // once we find the image for the players piece move it to jail.                            
-                            imageFound = true;
-                        }
+                    break;
+                }
 
-                        if (imageFound)
-                        {
-                            // remove image from current location
-                            wp.Children.Remove(i);
-
-                            // Add to new location
-                            this.GetWrapPanel("WrapPanelJail11").Children.Add(i);
-                            break;
-                        }
-                    }
-
+                foreach (Image i in wp.Children)
+                {
                     if (imageFound)
                     {
                         break;
                     }
+
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it the dice result.
+                        // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
+                        int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // Add dicetotal to currentLocation
+                        nextLocation = currentLocation + this.diceTotal;
+
+                        // Check if passing go. Change next location by -40 to put them back relative to go(0).
+                        if (nextLocation >= 41)
+                        {
+                            nextLocation = nextLocation - 40;
+                            this.PassGo();
+                        }
+
+                        imageFound = true;
+                    }
+
+                    if (imageFound)
+                    {
+                        // remove image from current location
+                        wp.Children.Remove(i);
+
+                        // Add to new location
+                        this.GetWrapPanel(nextLocation).Children.Add(i);
+
+                        // Call the method related with the location we landed on.
+                        this.LandOnSpace(this.GetWrapPanel(nextLocation));
+                        break;
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Move the current players piece to a location that is diceTotal away
+        /// </summary>
+        /// <param name ="whereTo"> location to move to. </param>
+        private void MovePiece(string whereTo)
+        {
+            bool imageFound = false;
+
+            //// Find the image for the current player.
+            //// We must first look for each wrap panel in gridboard, and then each of those iamges in the wrappanels.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (imageFound)
+                    {
+                        break;
+                    }
+
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it the dice result.
+                        // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
+                        // int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // Add dicetotal to currentLocation
+                        // nextLocation = currentLocation + this.diceTotal;
+
+                        // Get location value of new location and current location
+                        int nextLocationInt = Convert.ToInt32(Regex.Replace(this.GetWrapPanel(whereTo).Name, "[^0-9]", string.Empty));
+                        int currentLocationInt = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // if the current location value is bigger than the next location then you are going to pass go.
+                        if (currentLocationInt > nextLocationInt)
+                        {
+                            this.PassGo();
+                        }
+
+                        // remove image from current location
+                        wp.Children.Remove(i);
+
+                        // Add to new location
+                        this.GetWrapPanel(whereTo).Children.Add(i);
+
+                        // Call the method related with the location we landed on.
+                        this.LandOnSpace(this.GetWrapPanel(whereTo));
+
+                        imageFound = true;
+                        break;                        
+                    }     
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determines what to do after landing on a location.
+        /// </summary>
+        /// <param name="locationLandedOn">What location on the board was landed on</param>
+        private void LandOnSpace(WrapPanel locationLandedOn)
+        {
+            string location = this.FormatString(locationLandedOn.Name);
+            switch (location)
+            {
+                // Cards
+                case "Community Chest":
+                    this.DrawCard("Community Chest");
+                    break;
+                case "Chance":
+                    this.DrawCard("Chance");
+                    break;
+
+                // Jail
+                case "Go To Jail":
+                    this.GoToJail();
+                    break;
+
+                // Taxes
+                case "Income Tax":
+                    this.Tax(200);
+                    break;
+
+                case "Luxury Tax":
+                    this.Tax(100);
+                    break;
+
+                // "Do Nothings"
+                case "Just Visiting":
+                    break;
+                case "Free Parking":
+                    break;
+
+                // we already check if you land or pass go when moving the piece. 
+                case "Go":
+                    break;
+
+                // If you landed on a space other than the previous ones then you must be landing on a property. So LandOnProperty deals with buying that property or paying the player who owns it their correct amount.
+                default:
+                    this.LandOnProperty(location);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Formats string to have no numbers and change underscore to spaces. cull wrap panel from Beginning of string as well.
+        /// </summary>
+        /// <param name="text">Text to be formatted</param>\
+        /// <returns>A string that is formatted</returns>
+        private string FormatString(string text)
+        {
+            string formattedText = Regex.Replace(text.Remove(0, 9), @"[\d]", string.Empty);
+            formattedText = Regex.Replace(formattedText, @"[_]", " ");
+            return formattedText;
+        }
+
+        /// <summary>
+        /// Draws the specified card by displaying the card text and calling Action(card.Action)
+        /// </summary>
+        /// <param name="cardType">Which card type to draw</param>
+        private void DrawCard(string cardType)
+        {
+            if (cardType == "Chance")
+            {
+                MessageBox.Show(chanceDeck.First().CardText);
+                this.Action(chanceDeck.First().Action);
             }
             else
             {
-                // Find the image for the current player.
-                // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
-                foreach (WrapPanel wp in GridBoard.Children)
-                {
-                    foreach (Image i in wp.Children)
-                    {
-                        if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                        {
-                            // once we find the image for the players piece move it the dice result.
-                            // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
-                            int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
-
-                            // Add dicetotal to currentLocation
-                            nextLocation = currentLocation + this.diceTotal;
-
-                            // Check if passing go.
-                            if (nextLocation > 40)
-                            {
-                                nextLocation = nextLocation - 40;
-                                this.PassGo();
-                            }
-
-                            imageFound = true;
-                        }
-
-                        if (imageFound)
-                        {
-                            // remove image from current location
-                            wp.Children.Remove(i);
-
-                            // Add to new location
-                            this.GetWrapPanel("WrapPanel" + nextLocation).Children.Add(i);
-                            break;
-                        }
-                    }
-
-                    if (imageFound)
-                    {
-                        break;
-                    }                        
-                }
+                MessageBox.Show(communityChestDeck.First().CardText);
+                this.Action(communityChestDeck.First().Action);
             }
+        }
+
+        /// <summary>
+        /// Subtract the amount of tax from current players money
+        /// </summary>
+        /// <param name="taxAmount">Amount of money to subtract</param>
+        private void Tax(int taxAmount)
+        {
+            this.currentPlayersEnum.Current.Money -= taxAmount;
         }
 
         /// <summary>
@@ -203,10 +466,10 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// After player pieces are chosen, initialize the enum and put player pieces on the board. Start first players turn.
+        /// After player pieces are chosen, initialize the enum and put player pieces on the board. Start first players turn. Add cards to their respect decks and create default list of property.
         /// </summary>
         private void StartGame()
-        {
+        {           
             // Update enum for player order
             this.UpdateEnum();
 
@@ -225,7 +488,7 @@ namespace Monopoly
                 img.Source = new BitmapImage(new Uri(@"/Images/" + p.Piece + ".png", UriKind.Relative));
                 this.GetWrapPanel(10, 10).Children.Add(img);
                 img.Name = p.Piece + "Img";
-            }
+            }      
         }
 
         /// <summary>
@@ -284,6 +547,12 @@ namespace Monopoly
                 this.RemovePiece(p);
             }
 
+            // Removes the Property listboxes.
+            foreach (ListBox l in stpListBox.Children.OfType<ListBox>())
+            {
+                l.Items.Clear();
+            }
+
             // Reset any variables to starting amounts.
             this.playerPieces = "null";
             this.diceResult[0] = 0;
@@ -308,11 +577,11 @@ namespace Monopoly
 
             // Check if numplayers has been set
             if (this.numPlayers != 0)
-            {            
+            {
                 // Check if Starting or restarting the game
                 if (TextBlockStartRestart.Text == "Start")
                 {
-                    this.StartGame(button);                
+                    this.StartGame(button);
                 }
                 else
                 {
@@ -397,7 +666,7 @@ namespace Monopoly
                 if (this.currentChoice == this.numPlayers)
                 {
                     this.StartGame();
-                }                
+                }
                 else
                 {
                     this.currentChoice++;
@@ -408,7 +677,7 @@ namespace Monopoly
             else
             {
                 MessageBox.Show("Please pick a piece.");
-            }            
+            }
         }
 
         /// <summary>
@@ -419,11 +688,11 @@ namespace Monopoly
         /// <returns> The requested wrap panel object</returns>
         private WrapPanel GetWrapPanel(int x, int y)
         {
-            foreach (WrapPanel w in GridBoard.Children)
+            foreach (WrapPanel wp in GridBoard.Children)
             {
-                if (w.Tag.ToString() == x + "," + y)
+                if (wp.Tag.ToString() == x + "," + y)
                 {
-                    return w;
+                    return wp;
                 }
             }
 
@@ -437,12 +706,51 @@ namespace Monopoly
         /// <returns> The requested wrap panel object</returns>
         private WrapPanel GetWrapPanel(string wrapPanel)
         {
-            foreach (WrapPanel w in GridBoard.Children)
+            foreach (WrapPanel wp in GridBoard.Children)
             {
-                if (w.Name == wrapPanel)
+                string wrapPanelTrimmedName = this.FormatString(wp.Name);
+                if (wrapPanel == wrapPanelTrimmedName)
                 {
-                    return w;
+                    return wp;
                 }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the wrap panel at a board distance on the gridBoard
+        /// </summary>
+        /// <param name="distanceFromGo">The WrapPanel location on the board.</param>
+        /// <returns> The requested wrap panel object</returns>
+        private WrapPanel GetWrapPanel(int distanceFromGo)
+        {
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                // We use a temporary variable to check if wp is the right distance from go/ the wrap panel we are looking for.
+                int potentialDistanceFromGo = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+                if (potentialDistanceFromGo == distanceFromGo && wp.Name != "WrapPanelJail11")
+                {
+                    return wp;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the Property Object with the given name
+        /// </summary>
+        /// <param name="propertyName">The name of the Property to find</param>
+        /// <returns> The requested wrap panel object</returns>
+        private Property GetProperty(string propertyName)
+        {
+            foreach (Property property in allProperties)
+            {
+                if (property.Name == propertyName)
+                {
+                    return property;                    
+                }               
             }
 
             return null;
@@ -476,7 +784,7 @@ namespace Monopoly
                 img.Opacity = 0.5;
 
                 // Uses the selected image's tag for the playerPiece variable.
-                this.playerPieces = img.Tag.ToString();                
+                this.playerPieces = img.Tag.ToString();
             }
             else if (img.Opacity == 0.5)
             {
@@ -505,8 +813,8 @@ namespace Monopoly
             lblDie2.Content = this.diceResult[1].ToString();
             lblTotal.Content = this.diceTotal.ToString();
 
-            // Check if the user rolled doubles 3 times in a row.
-            if (this.doublesCount != 2)
+            // Check if the user rolled doubles and if so if it is 3 times in a row.
+            if (this.doublesCount != 3)
             {
                 if (this.diceResult[0] == this.diceResult[1])
                 {
@@ -524,7 +832,7 @@ namespace Monopoly
             {
                 // If they hit 3 doubles in a row send them to jail.
                 MessageBox.Show("Go to jail.");
-                this.MovePiece(true);
+                this.GoToJail();
                 goneToJail = true;
 
                 // You can't continue moving from jail so hide dice, and show end turn button.
@@ -535,7 +843,64 @@ namespace Monopoly
             // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
             if (!goneToJail)
             {
-                this.MovePiece(false);
+                this.MovePiece();                
+            }
+        }
+
+        /// <summary>
+        /// Handles what happens when landing on a property. Either buy, auction, pay rent
+        /// </summary>
+        /// <param name="nameOfProperty"> The name of the property landed on</param>
+        private void LandOnProperty(string nameOfProperty)
+        {
+            // Configure the message box to be displayed
+            Property property = this.GetProperty(nameOfProperty);
+            string messageBoxText = "Do you want to buy " + nameOfProperty + " for the price of $" + property.Price.ToString() + "?\nIf you do not buy this property, it will be put up for auction.";
+            string caption = "Buy Phase";
+            MessageBoxButton button = MessageBoxButton.YesNo;
+
+            // Display message box
+            MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button);
+
+            // Process message box results
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    this.PurchaseProperty(property);
+                    break;
+
+                case MessageBoxResult.No:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// If Yes was Pressed, Run this method that adds the property to there List box.
+        /// </summary>
+        /// <param name="property">The property to be purchased</param>
+        private void PurchaseProperty(Property property)
+        {
+            bool imageFound = false;
+            int currentLocation;
+
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        imageFound = true;
+                        currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // Temp Place holder until we name the locations.
+                        ltbP1Owned.Items.Add(property.Name);
+                    }
+                }
+
+                if (imageFound)
+                {
+                    break;
+                }                    
             }
         }
 
@@ -663,7 +1028,7 @@ namespace Monopoly
         private void ChangeImage(string p, Image img)
         {
             // Change the current Player image.
-            img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".jpg", UriKind.Relative));
+            img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".png", UriKind.Relative));
         }
 
         /// <summary>
@@ -738,6 +1103,53 @@ namespace Monopoly
                     break;
                 }
             }        
+        }
+
+        /// <summary>
+        /// Populates the allProperties list with all the properties. This list is never modified afterwards except whether properties are owned. 
+        /// </summary>
+        private void PopulatePropertiesData()
+        {
+            string[] propertiesData = File.ReadAllLines(@"TextDataFiles\Properties.txt");
+            foreach (string s in propertiesData)
+            {                
+                if (s.Contains('/'))
+                {
+                    string[] splitS = s.Split('/');
+                    allProperties.Add(new Property(splitS[0], splitS[1]));
+                }
+                else
+                {
+                    string[] splitS = s.Split('_');
+                    allProperties.Add(new Property(splitS[0], Convert.ToInt32(splitS[1]), Convert.ToInt32(splitS[2]), Convert.ToInt32(splitS[3]), Convert.ToInt32(splitS[4]), Convert.ToInt32(splitS[5]), Convert.ToInt32(splitS[6]), Convert.ToInt32(splitS[7]), Convert.ToInt32(splitS[8]), splitS[10]));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populates the Chance deck with all the cards.
+        /// </summary>
+        private void PopulateChanceDeck()
+        {
+            string[] card = File.ReadAllLines(@"TextDataFiles\chanceDeck.txt");
+            foreach (string s in card)
+            {
+                string[] splitS = s.Split('/');
+                chanceDeck.Add(new ChanceCard(splitS[0], splitS[1]));
+            }
+        }
+
+        /// <summary>
+        /// Populates the Community chest deck list with all the cards.
+        /// </summary>
+        private void PopulateCommunityChestDeck()
+        {
+            string[] card = File.ReadAllLines(@"TextDataFiles\communityChestDeck.txt");
+            foreach (string s in card)
+            {
+                string[] splitS = s.Split('/');
+                communityChestDeck.Add(new CommunityChest(splitS[0], splitS[1]));
+            }
         }
     }
 }

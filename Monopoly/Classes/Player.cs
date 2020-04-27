@@ -82,7 +82,7 @@ namespace Monopoly
         /// Add property to list of owned properties
         /// </summary>
         /// <param name="prop"> The property to add to the players owned properties </param>
-        private void BuyProperty(Property prop)
+        public void BuyProperty(Property prop)
         {
             this.properties.Add(prop);
         }
