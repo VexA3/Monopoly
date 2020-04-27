@@ -7,6 +7,7 @@ namespace Monopoly
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -37,9 +38,14 @@ namespace Monopoly
         private static List<ChanceCard> chanceDeck = new List<ChanceCard>();
 
         /// <summary>
-        /// List of the current players in the game
+        /// List of the community chest cards in the game
         /// </summary>
-        private static List<CommunityChest> commmunityChestDeck = new List<CommunityChest>();
+        private static List<CommunityChest> communityChestDeck = new List<CommunityChest>();
+
+        /// <summary>
+        /// List of the properties in the game
+        /// </summary>
+        private static List<Property> allProperties = new List<Property>();
 
         /// <summary>
         /// Enum for the list of current players
@@ -82,6 +88,9 @@ namespace Monopoly
         public MainWindow()
         {
             this.InitializeComponent();
+            PopulatePropertiesData();
+            PopulateChanceDeck();
+            PopulateCommunityChestDeck();
         }
 
         /// <summary>
@@ -135,12 +144,12 @@ namespace Monopoly
         /// </summary>
         /// <param name="action"> Determines type of action to invoke </param>
         private void Action(string action)
-        {            
+        {
             switch (action)
             {
-            //// Community chest and Chance card methods. Chance and community chest cards will hold these methods 
-            //// Each card will be constructed with CommunityChest("Card text here", "actionString") where action string is which case below to run.
-            //// When drawing a card we call action(Carddrawn.action) which goes to this function action("") and the string parameter decides which case to run.
+                //// Community chest and Chance card methods. Chance and community chest cards will hold these methods 
+                //// Each card will be constructed with CommunityChest("Card text here", "actionString") where action string is which case below to run.
+                //// When drawing a card we call action(Carddrawn.action) which goes to this function action("") and the string parameter decides which case to run.
 
                 case "jail":
                     this.GoToJail();
@@ -154,15 +163,15 @@ namespace Monopoly
                 case "advanceToGo":
                     // move piece to go and PassGo()
                     break;
-                case "advanceToMayfair":
-                // move piece to mayfair
+                case "advanceToBoardwalk":
+                    // move piece to Boardwalk
                     break;
 
-                case "advanceToKingsCrossStation":
+                case "advanceToReadingRailroad":
                     // move piece to kings cross, if pass go then PassGo()
                     break;
 
-                case "advanceToTrafalgarSquare":
+                case "advanceToStCharlesPlace":
                     // if passgo passgo()
                     break;
 
@@ -170,7 +179,7 @@ namespace Monopoly
                     // move to next utility if pass go passgo()
                     break;
 
-                case "advanceToPallMall":
+                case "advanceToIllinoisAvenue":
                     // if pass go passgo()
                     break;
 
@@ -217,8 +226,8 @@ namespace Monopoly
                         // Add dicetotal to currentLocation
                         nextLocation = currentLocation + this.diceTotal;
 
-                        // Check if passing or landing on go. Change next location by -40 to put them back relative to go(0).
-                        if (nextLocation >= 40)
+                        // Check if passing go. Change next location by -40 to put them back relative to go(0).
+                        if (nextLocation >= 41)
                         {
                             nextLocation = nextLocation - 40;
                             this.PassGo();
@@ -236,20 +245,84 @@ namespace Monopoly
                         this.GetWrapPanel(nextLocation).Children.Add(i);
 
                         // Call the method related with the location we landed on.
-                        this.LandOnSpace(nextLocation);
+                        this.LandOnSpace(this.GetWrapPanel(nextLocation));
                         break;
                     }
-                }                
-            }            
+                }
+            }
+        }
+        /// <summary>
+        /// Determines what to do after landing on a location.
+        /// </summary>
+        /// <param name="locationLandedOn">What location on the board was landed on</param>
+        private void LandOnSpace(WrapPanel locationLandedOn)
+        {
+            string location = Regex.Replace(locationLandedOn.Name.Remove(0, 9), @"[\d]", string.Empty);
+            location = Regex.Replace(location, @"[_]", " ");
+            switch (location)
+            {
+                // Cards
+                case "Community Chest":
+                    DrawCard("Community Chest");
+                    break;
+                case "Chance":
+                    DrawCard("Chance");
+                    break;
+
+                // Jail
+                case "Go To Jail":
+                    GoToJail();
+                    break;
+
+                // Taxes
+                case "Income Tax":
+                    Tax(200);
+                    break;
+
+                case "Luxury Tax":
+                    Tax(100);
+                    break;
+                // "Do Nothings"
+                case "Just Visiting":
+                    break;
+                case "Free Parking":
+                    break;
+                // we already check if you land or pass go when moving the piece. 
+                case "Go":
+                    break;
+
+                // If you landed on a space other than the previous ones then you must be landing on a property. So LandOnProperty deals with buying that property or paying the player who owns it their correct amount.
+                default:
+                    LandOnProperty(location);
+                    break;
+            }
         }
 
         /// <summary>
-        /// Choose actions to do on space landing.
+        /// Draws the specified card by displaying the card text and calling Action(card.Action)
         /// </summary>
-        /// <param name="nextLocation"> The button that was pressed </param>
-        private void LandOnSpace(int nextLocation)
+        /// <param name="cardType">Which card type to draw</param>
+        private void DrawCard(string cardType)
         {
-            //TODO
+            if(cardType == "Chance")
+            {
+                MessageBox.Show(chanceDeck.First().CardText);
+                Action(chanceDeck.First().Action);
+            }
+            else
+            {
+                MessageBox.Show(communityChestDeck.First().CardText);
+                Action(communityChestDeck.First().Action);
+            }
+        }
+
+        /// <summary>
+        /// Subtract the amount of tax from current players money
+        /// </summary>
+        /// <param name="taxAmount">Amount of money to subtract</param>
+        private void Tax(int taxAmount)
+        {
+            currentPlayersEnum.Current.Money -= taxAmount;
         }
 
         /// <summary>
@@ -287,7 +360,7 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// After player pieces are chosen, initialize the enum and put player pieces on the board. Start first players turn.
+        /// After player pieces are chosen, initialize the enum and put player pieces on the board. Start first players turn. Add cards to their respect decks and create default list of property.
         /// </summary>
         private void StartGame()
         {
@@ -309,7 +382,7 @@ namespace Monopoly
                 img.Source = new BitmapImage(new Uri(@"/Images/" + p.Piece + ".png", UriKind.Relative));
                 this.GetWrapPanel(10, 10).Children.Add(img);
                 img.Name = p.Piece + "Img";
-            }
+            }      
         }
 
         /// <summary>
@@ -326,7 +399,7 @@ namespace Monopoly
 
             // Display first player's turn by changing imgCurrentPlayer
             this.ChangeImage(this.currentPlayersEnum.Current.Piece, this.imgCurrentPlayer);
-            
+
             // Make dice labels visible
             foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
             {
@@ -398,11 +471,11 @@ namespace Monopoly
 
             // Check if numplayers has been set
             if (this.numPlayers != 0)
-            {            
+            {
                 // Check if Starting or restarting the game
                 if (TextBlockStartRestart.Text == "Start")
                 {
-                    this.StartGame(button);                
+                    this.StartGame(button);
                 }
                 else
                 {
@@ -487,7 +560,7 @@ namespace Monopoly
                 if (this.currentChoice == this.numPlayers)
                 {
                     this.StartGame();
-                }                
+                }
                 else
                 {
                     this.currentChoice++;
@@ -498,7 +571,7 @@ namespace Monopoly
             else
             {
                 MessageBox.Show("Please pick a piece.");
-            }            
+            }
         }
 
         /// <summary>
@@ -559,6 +632,23 @@ namespace Monopoly
         }
 
         /// <summary>
+        /// Finds the Property Object with the given name
+        /// </summary>
+        /// <param name="propertyName">The name of the Property to find</param>
+        /// <returns> The requested wrap panel object</returns>
+        private Property GetProperty(string propertyName)
+        {
+            foreach(Property property in allProperties)
+            {
+                if(property.Name == propertyName)
+                {
+                    return property;                    
+                }               
+            }
+            return null;
+        }
+
+        /// <summary>
         /// initialize the currentPlayersEnum for use.
         /// </summary>
         private void UpdateEnum()
@@ -586,7 +676,7 @@ namespace Monopoly
                 img.Opacity = 0.5;
 
                 // Uses the selected image's tag for the playerPiece variable.
-                this.playerPieces = img.Tag.ToString();                
+                this.playerPieces = img.Tag.ToString();
             }
             else if (img.Opacity == 0.5)
             {
@@ -616,7 +706,7 @@ namespace Monopoly
             lblTotal.Content = this.diceTotal.ToString();
 
             // Check if the user rolled doubles and if so if it is 3 times in a row.
-            if (this.doublesCount != 2)
+            if (this.doublesCount != 3)
             {
                 if (this.diceResult[0] == this.diceResult[1])
                 {
@@ -645,20 +735,18 @@ namespace Monopoly
             // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
             if (!goneToJail)
             {
-                this.MovePiece(false);
-
-                // Display the option that lets the user Buy the property they landed on.
-                displayBuy();
+                this.MovePiece();                
             }
-        }
+        }                     
 
         /// <summary>
         /// Display a message box prompting if they want to buy the property
         /// </summary>
-        private void displayBuy()
+        private void LandOnProperty(string nameOfProperty)
         {
             // Configure the message box to be displayed
-            string messageBoxText = "Do you want to buy *Property*";
+            Property property = GetProperty(nameOfProperty);            
+            string messageBoxText = ("Do you want to buy " + nameOfProperty + " for the price of $" + property.Price.ToString() + "?\nIf you do not buy this property, it will be put up for auction.");
             string caption = "Buy Phase";
             MessageBoxButton button = MessageBoxButton.YesNo;
 
@@ -669,11 +757,10 @@ namespace Monopoly
             switch (result)
             {
                 case MessageBoxResult.Yes:
-                    DisplayPropertyBought();
-
+                    purchaseProperty(property);
                     break;
-                case MessageBoxResult.No:
 
+                case MessageBoxResult.No:
                     break;
             }
         }
@@ -681,7 +768,7 @@ namespace Monopoly
         /// <summary>
         /// If Yes was Pressed, Run this method that adds the property to there Listbox.
         /// </summary>
-        public void DisplayPropertyBought()
+        public void purchaseProperty(Property property)
         {
             bool imageFound = false;
             int currentLocation;
@@ -696,7 +783,7 @@ namespace Monopoly
                         currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
 
                         // Temp Place holder until we name the locations.
-                        ltbP1Owned.Items.Add(("WrapPanel" + currentLocation));
+                        ltbP1Owned.Items.Add(property.Name);
                     }
                 }
                 if (imageFound)
@@ -828,7 +915,7 @@ namespace Monopoly
         private void ChangeImage(string p, Image img)
         {
             // Change the current Player image.
-            img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".jpg", UriKind.Relative));
+            img.Source = new BitmapImage(new Uri(@"/Images/" + p + ".png", UriKind.Relative));
         }
 
         /// <summary>
@@ -903,6 +990,51 @@ namespace Monopoly
                     break;
                 }
             }        
-        }  
+        }
+
+        /// <summary>
+        /// Populates the allProperties list with all the properties. This list is never modified afterwards except whether properties are owned. 
+        /// </summary>
+        private void PopulatePropertiesData()
+        {
+            string[] propertiesData = File.ReadAllLines(@"TextDataFiles\Properties.txt");
+            foreach(string s in propertiesData)
+            {                
+                if (s.Contains('/'))
+                {
+                    string[] splitS = s.Split('/');
+                    allProperties.Add(new Property(splitS[0], splitS[1]));
+                }
+                else
+                {
+                    string[] splitS = s.Split('_');
+                    allProperties.Add(new Property(splitS[0], Convert.ToInt32(splitS[1]), Convert.ToInt32(splitS[2]), Convert.ToInt32(splitS[3]), Convert.ToInt32(splitS[4]), Convert.ToInt32(splitS[5]), Convert.ToInt32(splitS[6]), Convert.ToInt32(splitS[7]), Convert.ToInt32(splitS[8]), splitS[10]));
+                }
+            }
+        }
+        /// <summary>
+        /// Populates the Chance deck with all the cards.
+        /// </summary>
+        private void PopulateChanceDeck()
+        {
+            string[] card = File.ReadAllLines(@"TextDataFiles\chanceDeck.txt");
+            foreach (string s in card)
+            {
+                string[] splitS = s.Split('/');
+                chanceDeck.Add(new ChanceCard(splitS[0], splitS[1]));
+            }
+        }
+        /// <summary>
+        /// Populates the Community chest deck list with all the cards.
+        /// </summary>
+        private void PopulateCommunityChestDeck()
+        {
+            string[] card = File.ReadAllLines(@"TextDataFiles\communityChestDeck.txt");
+            foreach (string s in card)
+            {
+                string[] splitS = s.Split('/');
+                communityChestDeck.Add(new CommunityChest(splitS[0], splitS[1]));
+            }
+        }
     }
 }
