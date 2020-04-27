@@ -128,7 +128,7 @@ namespace Monopoly
                         wp.Children.Remove(i);
 
                         // Add to new location
-                        this.GetWrapPanel("WrapPanelJail11").Children.Add(i);
+                        this.GetWrapPanel("Jail").Children.Add(i);
                         break;
                     }
                 }
@@ -814,28 +814,29 @@ namespace Monopoly
             lblTotal.Content = this.diceTotal.ToString();
 
             // Check if the user rolled doubles and if so if it is 3 times in a row.
-            if (this.doublesCount != 3)
+            if (this.diceResult[0] == this.diceResult[1])
             {
-                if (this.diceResult[0] == this.diceResult[1])
+                if (this.doublesCount == 3)
+                {
+                    // If they hit 3 doubles in a row send them to jail.
+                    MessageBox.Show("Go to jail.");
+                    this.GoToJail();
+                    goneToJail = true;
+
+                    // You can't continue moving from jail so hide dice, and show end turn button.
+                    imgDice.Visibility = Visibility.Hidden;
+                    btnEndTurn.Visibility = Visibility.Visible;
+                }
+                else
                 {
                     MessageBox.Show("You Rolled Doubles, Roll Again.");
                     this.doublesCount++;
                 }
-                else
-                {
-                    // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
-                    imgDice.Visibility = Visibility.Hidden;
-                    btnEndTurn.Visibility = Visibility.Visible;
-                }
+
             }
             else
             {
-                // If they hit 3 doubles in a row send them to jail.
-                MessageBox.Show("Go to jail.");
-                this.GoToJail();
-                goneToJail = true;
-
-                // You can't continue moving from jail so hide dice, and show end turn button.
+                // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
                 imgDice.Visibility = Visibility.Hidden;
                 btnEndTurn.Visibility = Visibility.Visible;
             }
