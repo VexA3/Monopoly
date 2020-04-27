@@ -17,6 +17,16 @@ namespace Monopoly
     public class Property
     {
         /// <summary>
+        /// Price of railroads
+        /// </summary>
+        private readonly int railroadPrice = 200;
+
+        /// <summary>
+        /// Price of utilities
+        /// </summary>
+        private readonly int utilityPrice = 150;
+
+        /// <summary>
         /// Price of the property.
         /// </summary>
         private int price;
@@ -82,68 +92,56 @@ namespace Monopoly
         private int houses;
 
         /// <summary>
-        /// Price of railroads
-        /// </summary>
-        private readonly int railroadPrice = 200;
-
-        /// <summary>
-        /// Price of utiliies
-        /// </summary>
-        private readonly int utilityPrice = 150;
-
-        /// <summary>
         /// Initializes a new instance of the Property class
         /// </summary>
-        /// <param name="Name">The name of the property</param>
-        /// <param name="Price">The price of the property</param>
-        /// <param name="HousePrice">The price of buying a house</param>
-        /// <param name="BaseRent">The rent price of the property</param>
-        /// <param name="OneHouseRent">The rent price of the property with one house</param>
-        /// <param name="TwoHouseRent">The rent price of the property with two houses</param>
-        /// <param name="ThreeHouseRent">The rent price of the property with three houses</param>
-        /// <param name="FourHouseRent">The rent price of the property with four houses</param>
-        /// <param name="HotelRent">The rent price of the property with a hotel</param>
-        /// <param name="Group">The group the property belongs to</param>
-        public Property(string Name, int Price, int HousePrice, int BaseRent, int OneHouseRent, int TwoHouseRent, int ThreeHouseRent, int FourHouseRent, int HotelRent, string Group)
+        /// <param name="name">The name of the property</param>
+        /// <param name="price">The price of the property</param>
+        /// <param name="housePrice">The price of buying a house</param>
+        /// <param name="baseRent">The rent price of the property</param>
+        /// <param name="oneHouseRent">The rent price of the property with one house</param>
+        /// <param name="twoHouseRent">The rent price of the property with two houses</param>
+        /// <param name="threeHouseRent">The rent price of the property with three houses</param>
+        /// <param name="fourHouseRent">The rent price of the property with four houses</param>
+        /// <param name="hotelRent">The rent price of the property with a hotel</param>
+        /// <param name="group">The group the property belongs to</param>
+        public Property(string name, int price, int housePrice, int baseRent, int oneHouseRent, int twoHouseRent, int threeHouseRent, int fourHouseRent, int hotelRent, string group)
         {
-            this.name = Name;
-            this.price = Price;
-            this.housePrice = HousePrice;
-            this.baseRent = BaseRent;
-            this.oneHouseRent = OneHouseRent;
-            this.twoHouseRent = TwoHouseRent;
-            this.threeHouseRent = ThreeHouseRent;
-            this.fourHouseRent = FourHouseRent;
-            this.hotelRent = HotelRent;
-            this.group = Group;
+            this.name = name;
+            this.price = price;
+            this.housePrice = housePrice;
+            this.baseRent = baseRent;
+            this.oneHouseRent = oneHouseRent;
+            this.twoHouseRent = twoHouseRent;
+            this.threeHouseRent = threeHouseRent;
+            this.fourHouseRent = fourHouseRent;
+            this.hotelRent = hotelRent;
+            this.group = group;
             this.owned = false;
-            this.mortgage = Price / 2;
+            this.mortgage = price / 2;
         }
 
         /// <summary>
         /// Initializes a new instance of the Property class for railroads or utilities
         /// </summary>
-        /// <param name="Name">The name of the property</param>
-        /// <param name="Price">The price of the property</param>
-        public Property(string Name, string type)
+        /// <param name="name">The name of the property</param>
+        /// <param name="type">The type of the property</param>
+        public Property(string name, string type)
         {
-            if(type == "railroad")
+            if (type == "railroad")
             {
-                this.name = Name;
-                this.price = railroadPrice;
+                this.name = name;
+                this.price = this.railroadPrice;
                 this.owned = false;
-                this.mortgage = railroadPrice / 2;
+                this.mortgage = this.railroadPrice / 2;
             }
             else
             {
-                this.name = Name;
-                this.price = utilityPrice;
+                this.name = name;
+                this.price = this.utilityPrice;
                 this.owned = false;
-                this.mortgage = utilityPrice / 2;
-            }
-            
+                this.mortgage = this.utilityPrice / 2;
+            }            
         }
-
 
         /// <summary>
         /// Gets the price of the property.
@@ -162,7 +160,7 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// Gets or sets
+        /// Gets or sets a value indicating whether the property is owned.
         /// </summary>
         public bool Owned
         {

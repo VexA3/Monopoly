@@ -87,10 +87,7 @@ namespace Monopoly
         /// </summary>
         public MainWindow()
         {
-            this.InitializeComponent();
-            PopulatePropertiesData();
-            PopulateChanceDeck();
-            PopulateCommunityChestDeck();
+            this.InitializeComponent();            
         }
 
         /// <summary>
@@ -189,6 +186,7 @@ namespace Monopoly
                 case "backThreeSpaces":
                     // move back three spaces
                     break;
+
                 // + money
                 case "gain10":
                     break;
@@ -222,8 +220,6 @@ namespace Monopoly
                     break;
                 case "lose25PerHouse100PerHotel":
                     break;
-
-
 
                 // add more cases as needed to do each chance card and community chest. There are 16 of each with a single duplice so we should have 31 cases here in total.
                 default:
@@ -289,51 +285,119 @@ namespace Monopoly
                 }
             }
         }
+
+        /// <summary>
+        /// Move the current players piece to a location that is diceTotal away
+        /// </summary>
+        /// <param name ="whereTo"> location to move to. </param>
+        private void MovePiece(string whereTo)
+        {
+            bool imageFound = false;
+
+            //// Find the image for the current player.
+            //// We must first look for each wrap panel in gridboard, and then each of those iamges in the wrappanels.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (imageFound)
+                    {
+                        break;
+                    }
+
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it the dice result.
+                        // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
+                        // int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // Add dicetotal to currentLocation
+                        // nextLocation = currentLocation + this.diceTotal;
+
+                        // Get location value of new location and current location
+                        int nextLocationInt = Convert.ToInt32(Regex.Replace(this.GetWrapPanel(whereTo).Name, "[^0-9]", string.Empty));
+                        int currentLocationInt = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // if the current location value is bigger than the next location then you are going to pass go.
+                        if (currentLocationInt > nextLocationInt)
+                        {
+                            this.PassGo();
+                        }
+
+                        // remove image from current location
+                        wp.Children.Remove(i);
+
+                        // Add to new location
+                        this.GetWrapPanel(whereTo).Children.Add(i);
+
+                        // Call the method related with the location we landed on.
+                        this.LandOnSpace(this.GetWrapPanel(whereTo));
+
+                        imageFound = true;
+                        break;                        
+                    }     
+                }
+            }
+        }
+
         /// <summary>
         /// Determines what to do after landing on a location.
         /// </summary>
         /// <param name="locationLandedOn">What location on the board was landed on</param>
         private void LandOnSpace(WrapPanel locationLandedOn)
         {
-            string location = Regex.Replace(locationLandedOn.Name.Remove(0, 9), @"[\d]", string.Empty);
-            location = Regex.Replace(location, @"[_]", " ");
+            string location = this.FormatString(locationLandedOn.Name);
             switch (location)
             {
                 // Cards
                 case "Community Chest":
-                    DrawCard("Community Chest");
+                    this.DrawCard("Community Chest");
                     break;
                 case "Chance":
-                    DrawCard("Chance");
+                    this.DrawCard("Chance");
                     break;
 
                 // Jail
                 case "Go To Jail":
-                    GoToJail();
+                    this.GoToJail();
                     break;
 
                 // Taxes
                 case "Income Tax":
-                    Tax(200);
+                    this.Tax(200);
                     break;
 
                 case "Luxury Tax":
-                    Tax(100);
+                    this.Tax(100);
                     break;
+
                 // "Do Nothings"
                 case "Just Visiting":
                     break;
                 case "Free Parking":
                     break;
+
                 // we already check if you land or pass go when moving the piece. 
                 case "Go":
                     break;
 
                 // If you landed on a space other than the previous ones then you must be landing on a property. So LandOnProperty deals with buying that property or paying the player who owns it their correct amount.
                 default:
-                    LandOnProperty(location);
+                    this.LandOnProperty(location);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Formats string to have no numbers and change underscore to spaces.
+        /// </summary>
+        /// <param name="text">Text to be formatted</param>\
+        /// <returns>A string that is formatted</returns>
+        private string FormatString(string text)
+        {
+            string formattedText = Regex.Replace(text.Remove(0, 9), @"[\d]", string.Empty);
+            formattedText = Regex.Replace(text, @"[_]", " ");
+            return formattedText;
         }
 
         /// <summary>
@@ -342,15 +406,15 @@ namespace Monopoly
         /// <param name="cardType">Which card type to draw</param>
         private void DrawCard(string cardType)
         {
-            if(cardType == "Chance")
+            if (cardType == "Chance")
             {
                 MessageBox.Show(chanceDeck.First().CardText);
-                Action(chanceDeck.First().Action);
+                this.Action(chanceDeck.First().Action);
             }
             else
             {
                 MessageBox.Show(communityChestDeck.First().CardText);
-                Action(communityChestDeck.First().Action);
+                this.Action(communityChestDeck.First().Action);
             }
         }
 
@@ -360,7 +424,7 @@ namespace Monopoly
         /// <param name="taxAmount">Amount of money to subtract</param>
         private void Tax(int taxAmount)
         {
-            currentPlayersEnum.Current.Money -= taxAmount;
+            this.currentPlayersEnum.Current.Money -= taxAmount;
         }
 
         /// <summary>
@@ -402,6 +466,11 @@ namespace Monopoly
         /// </summary>
         private void StartGame()
         {
+            // populate starting data for decks and properties
+            this.PopulatePropertiesData();
+            this.PopulateChanceDeck();
+            this.PopulateCommunityChestDeck();
+
             // Update enum for player order
             this.UpdateEnum();
 
@@ -640,7 +709,8 @@ namespace Monopoly
         {
             foreach (WrapPanel wp in GridBoard.Children)
             {
-                if (wp.Name == wrapPanel)
+                string wrapPanelTrimmedName = this.FormatString(wp.Name);
+                if (wrapPanel == wrapPanelTrimmedName)
                 {
                     return wp;
                 }
@@ -676,13 +746,14 @@ namespace Monopoly
         /// <returns> The requested wrap panel object</returns>
         private Property GetProperty(string propertyName)
         {
-            foreach(Property property in allProperties)
+            foreach (Property property in allProperties)
             {
-                if(property.Name == propertyName)
+                if (property.Name == propertyName)
                 {
                     return property;                    
                 }               
             }
+
             return null;
         }
 
@@ -775,16 +846,17 @@ namespace Monopoly
             {
                 this.MovePiece();                
             }
-        }                     
+        }
 
         /// <summary>
-        /// Display a message box prompting if they want to buy the property
+        /// Handles what happens when landing on a property. Either buy, auction, pay rent
         /// </summary>
+        /// <param name="nameOfProperty"> The name of the property landed on</param>
         private void LandOnProperty(string nameOfProperty)
         {
             // Configure the message box to be displayed
-            Property property = GetProperty(nameOfProperty);            
-            string messageBoxText = ("Do you want to buy " + nameOfProperty + " for the price of $" + property.Price.ToString() + "?\nIf you do not buy this property, it will be put up for auction.");
+            Property property = this.GetProperty(nameOfProperty);
+            string messageBoxText = "Do you want to buy " + nameOfProperty + " for the price of $" + property.Price.ToString() + "?\nIf you do not buy this property, it will be put up for auction.";
             string caption = "Buy Phase";
             MessageBoxButton button = MessageBoxButton.YesNo;
 
@@ -795,7 +867,7 @@ namespace Monopoly
             switch (result)
             {
                 case MessageBoxResult.Yes:
-                    purchaseProperty(property);
+                    this.PurchaseProperty(property);
                     break;
 
                 case MessageBoxResult.No:
@@ -804,9 +876,10 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// If Yes was Pressed, Run this method that adds the property to there Listbox.
+        /// If Yes was Pressed, Run this method that adds the property to there List box.
         /// </summary>
-        public void purchaseProperty(Property property)
+        /// <param name="property">The property to be purchased</param>
+        private void PurchaseProperty(Property property)
         {
             bool imageFound = false;
             int currentLocation;
@@ -824,8 +897,11 @@ namespace Monopoly
                         ltbP1Owned.Items.Add(property.Name);
                     }
                 }
+
                 if (imageFound)
+                {
                     break;
+                }                    
             }
         }
 
@@ -1036,7 +1112,7 @@ namespace Monopoly
         private void PopulatePropertiesData()
         {
             string[] propertiesData = File.ReadAllLines(@"TextDataFiles\Properties.txt");
-            foreach(string s in propertiesData)
+            foreach (string s in propertiesData)
             {                
                 if (s.Contains('/'))
                 {
@@ -1050,6 +1126,7 @@ namespace Monopoly
                 }
             }
         }
+
         /// <summary>
         /// Populates the Chance deck with all the cards.
         /// </summary>
@@ -1062,6 +1139,7 @@ namespace Monopoly
                 chanceDeck.Add(new ChanceCard(splitS[0], splitS[1]));
             }
         }
+
         /// <summary>
         /// Populates the Community chest deck list with all the cards.
         /// </summary>
