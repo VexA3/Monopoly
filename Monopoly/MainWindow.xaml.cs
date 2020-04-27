@@ -91,13 +91,17 @@ namespace Monopoly
         {
             get => currentPlayers;
             set => currentPlayers = value;
-        }        
+        }
 
-        private void goToJail()
+        /// <summary>
+        /// Send the current player to jail
+        /// </summary>
+        private void GoToJail()
         {
             bool imageFound = false;
-            // Find the image for the current player.
-            // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+
+            //// Find the image for the current player.
+            //// We must first look for each wrap panel in gridboard, and then each of those wrap panels.
             foreach (WrapPanel wp in GridBoard.Children)
             {
                 foreach (Image i in wp.Children)
@@ -130,19 +134,19 @@ namespace Monopoly
         /// Do the action specified by a chance or community card.
         /// </summary>
         /// <param name="action"> Determines type of action to invoke </param>
-        private void action(string action)
+        private void Action(string action)
         {            
             switch (action)
             {
-            /// Community chest and Chance card methods. Chance and community chest cards will hold these methods 
-            /// Each card will be constructed with CommunityChest("Card text here", "actionString") where action string is which case below to run.
-            /// When drawing a card we call action(Carddrawn.action) which goes to this function action("") and the string parameter decides which case to run.
+            //// Community chest and Chance card methods. Chance and community chest cards will hold these methods 
+            //// Each card will be constructed with CommunityChest("Card text here", "actionString") where action string is which case below to run.
+            //// When drawing a card we call action(Carddrawn.action) which goes to this function action("") and the string parameter decides which case to run.
 
                 case "jail":
-                    goToJail();
+                    this.GoToJail();
                     break;
-                //TODO 
 
+                // TODO 
                 case "nextRailRoad":
                     // move piece to next railroad on the board if pass go PassGo()
                     break;
@@ -167,14 +171,14 @@ namespace Monopoly
                     break;
 
                 case "advanceToPallMall":
-                    //if pass go passgo()
+                    // if pass go passgo()
                     break;
-
 
                 case "backThreeSpaces":
-                    //move back three spaces
+                    // move back three spaces
                     break;
-                /// add more cases as needed to do each chance card and community chest. There are 16 of each with a single duplice so we should have 31 cases here in total.
+
+                // add more cases as needed to do each chance card and community chest. There are 16 of each with a single duplice so we should have 31 cases here in total.
                 default:
                     break;
             }
@@ -187,12 +191,23 @@ namespace Monopoly
         {
             int nextLocation = -1;
             bool imageFound = false;
-            // Find the image for the current player.
-            // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
+
+            //// Find the image for the current player.
+            //// We must first look for each wrap panel in gridboard, and then each of those wrap panels.
             foreach (WrapPanel wp in GridBoard.Children)
             {
+                if (imageFound)
+                {
+                    break;
+                }
+
                 foreach (Image i in wp.Children)
                 {
+                    if (imageFound)
+                    {
+                        break;
+                    }
+
                     if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
                     {
                         // once we find the image for the players piece move it the dice result.
@@ -202,8 +217,8 @@ namespace Monopoly
                         // Add dicetotal to currentLocation
                         nextLocation = currentLocation + this.diceTotal;
 
-                        // Check if passing go.
-                        if (nextLocation > 40)
+                        // Check if passing or landing on go. Change next location by -40 to put them back relative to go(0).
+                        if (nextLocation >= 40)
                         {
                             nextLocation = nextLocation - 40;
                             this.PassGo();
@@ -218,22 +233,29 @@ namespace Monopoly
                         wp.Children.Remove(i);
 
                         // Add to new location
-                        this.GetWrapPanel("WrapPanel" + nextLocation).Children.Add(i);
+                        this.GetWrapPanel(nextLocation).Children.Add(i);
+
+                        // Call the method related with the location we landed on.
+                        this.LandOnSpace(nextLocation);
                         break;
                     }
-                }
-
-                if (imageFound)
-                {
-                    break;
-                }
+                }                
             }            
+        }
+
+        /// <summary>
+        /// Choose actions to do on space landing.
+        /// </summary>
+        /// <param name="nextLocation"> The button that was pressed </param>
+        private void LandOnSpace(int nextLocation)
+        {
+            //TODO
         }
 
         /// <summary>
         /// Indicate the current player to choose a piece
         /// </summary>
-        private void ChoosePieces()
+        private void ChoosePIeces()
         {
             // Make confirm button visible
             btnConfirmPlayerPiece.Visibility = Visibility.Visible;
@@ -261,7 +283,7 @@ namespace Monopoly
             this.VisibleOrHide(true);
 
             // Run choose pieces method which will make player classes with chosen pieces.
-            this.ChoosePieces();
+            this.ChoosePIeces();
         }
 
         /// <summary>
@@ -463,7 +485,7 @@ namespace Monopoly
                 else
                 {
                     this.currentChoice++;
-                    this.ChoosePieces();
+                    this.ChoosePIeces();
                     this.playerPieces = null;
                 }
             }
@@ -481,11 +503,11 @@ namespace Monopoly
         /// <returns> The requested wrap panel object</returns>
         private WrapPanel GetWrapPanel(int x, int y)
         {
-            foreach (WrapPanel w in GridBoard.Children)
+            foreach (WrapPanel wp in GridBoard.Children)
             {
-                if (w.Tag.ToString() == x + "," + y)
+                if (wp.Tag.ToString() == x + "," + y)
                 {
-                    return w;
+                    return wp;
                 }
             }
 
@@ -499,11 +521,31 @@ namespace Monopoly
         /// <returns> The requested wrap panel object</returns>
         private WrapPanel GetWrapPanel(string wrapPanel)
         {
-            foreach (WrapPanel w in GridBoard.Children)
+            foreach (WrapPanel wp in GridBoard.Children)
             {
-                if (w.Name == wrapPanel)
+                if (wp.Name == wrapPanel)
                 {
-                    return w;
+                    return wp;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the wrap panel at a board distance on the gridBoard
+        /// </summary>
+        /// <param name="distanceFromGo">The WrapPanel location on the board.</param>
+        /// <returns> The requested wrap panel object</returns>
+        private WrapPanel GetWrapPanel(int distanceFromGo)
+        {
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                // We use a temporary variable to check if wp is the right distance from go/ the wrap panel we are looking for.
+                int potentialDistanceFromGo = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+                if (potentialDistanceFromGo == distanceFromGo && wp.Name != "WrapPanelJail11")
+                {
+                    return wp;
                 }
             }
 
@@ -567,7 +609,7 @@ namespace Monopoly
             lblDie2.Content = this.diceResult[1].ToString();
             lblTotal.Content = this.diceTotal.ToString();
 
-            // Check if the user rolled doubles 3 times in a row.
+            // Check if the user rolled doubles and if so if it is 3 times in a row.
             if (this.doublesCount != 2)
             {
                 if (this.diceResult[0] == this.diceResult[1])
@@ -586,7 +628,7 @@ namespace Monopoly
             {
                 // If they hit 3 doubles in a row send them to jail.
                 MessageBox.Show("Go to jail.");
-                this.goToJail();
+                this.GoToJail();
                 goneToJail = true;
 
                 // You can't continue moving from jail so hide dice, and show end turn button.
@@ -740,19 +782,10 @@ namespace Monopoly
         /// <summary>
         /// Gives the current player 200 dollars for passing go
         /// </summary>
-        public void PassGo()
+        private void PassGo()
         {
             // Add 200 to current player's money value
             this.currentPlayersEnum.Current.Money = 200;            
-        }
-
-        /// <summary>
-        /// Gives the current player 200 dollars for passing go
-        /// </summary>
-        public void PassGo(Player p)
-        {
-            // Add 200 to current player's money value
-            p.Money = 200;
         }
 
         /// <summary>
