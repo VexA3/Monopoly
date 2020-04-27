@@ -87,7 +87,11 @@ namespace Monopoly
         /// </summary>
         public MainWindow()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
+            // populate starting data for decks and properties
+            this.PopulatePropertiesData();
+            this.PopulateChanceDeck();
+            this.PopulateCommunityChestDeck();
         }
 
         /// <summary>
@@ -389,14 +393,14 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// Formats string to have no numbers and change underscore to spaces.
+        /// Formats string to have no numbers and change underscore to spaces. cull wrap panel from Beginning of string as well.
         /// </summary>
         /// <param name="text">Text to be formatted</param>\
         /// <returns>A string that is formatted</returns>
         private string FormatString(string text)
         {
             string formattedText = Regex.Replace(text.Remove(0, 9), @"[\d]", string.Empty);
-            formattedText = Regex.Replace(text, @"[_]", " ");
+            formattedText = Regex.Replace(formattedText, @"[_]", " ");
             return formattedText;
         }
 
@@ -465,12 +469,7 @@ namespace Monopoly
         /// After player pieces are chosen, initialize the enum and put player pieces on the board. Start first players turn. Add cards to their respect decks and create default list of property.
         /// </summary>
         private void StartGame()
-        {
-            // populate starting data for decks and properties
-            this.PopulatePropertiesData();
-            this.PopulateChanceDeck();
-            this.PopulateCommunityChestDeck();
-
+        {           
             // Update enum for player order
             this.UpdateEnum();
 
