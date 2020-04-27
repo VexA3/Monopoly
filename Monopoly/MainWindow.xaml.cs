@@ -255,7 +255,7 @@ namespace Monopoly
         /// <summary>
         /// Indicate the current player to choose a piece
         /// </summary>
-        private void ChoosePIeces()
+        private void ChoosePieces()
         {
             // Make confirm button visible
             btnConfirmPlayerPiece.Visibility = Visibility.Visible;
@@ -283,7 +283,7 @@ namespace Monopoly
             this.VisibleOrHide(true);
 
             // Run choose pieces method which will make player classes with chosen pieces.
-            this.ChoosePIeces();
+            this.ChoosePieces();
         }
 
         /// <summary>
@@ -366,6 +366,12 @@ namespace Monopoly
             foreach (Player p in currentPlayers)
             {
                 this.RemovePiece(p);
+            }
+
+            // Removes the Property listboxes.
+            foreach (ListBox l in stpListBox.Children.OfType<ListBox>())
+            {
+                l.Items.Clear();
             }
 
             // Reset any variables to starting amounts.
@@ -485,7 +491,7 @@ namespace Monopoly
                 else
                 {
                     this.currentChoice++;
-                    this.ChoosePIeces();
+                    this.ChoosePieces();
                     this.playerPieces = null;
                 }
             }
@@ -639,7 +645,62 @@ namespace Monopoly
             // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
             if (!goneToJail)
             {
-                this.MovePiece();
+                this.MovePiece(false);
+
+                // Display the option that lets the user Buy the property they landed on.
+                displayBuy();
+            }
+        }
+
+        /// <summary>
+        /// Display a message box prompting if they want to buy the property
+        /// </summary>
+        private void displayBuy()
+        {
+            // Configure the message box to be displayed
+            string messageBoxText = "Do you want to buy *Property*";
+            string caption = "Buy Phase";
+            MessageBoxButton button = MessageBoxButton.YesNo;
+
+            // Display message box
+            MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button);
+
+            // Process message box results
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    DisplayPropertyBought();
+
+                    break;
+                case MessageBoxResult.No:
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// If Yes was Pressed, Run this method that adds the property to there Listbox.
+        /// </summary>
+        public void DisplayPropertyBought()
+        {
+            bool imageFound = false;
+            int currentLocation;
+
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        imageFound = true;
+                        currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // Temp Place holder until we name the locations.
+                        ltbP1Owned.Items.Add(("WrapPanel" + currentLocation));
+                    }
+                }
+                if (imageFound)
+                    break;
             }
         }
 
