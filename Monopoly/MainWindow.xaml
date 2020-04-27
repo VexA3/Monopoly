@@ -5,18 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Monopoly"
         mc:Ignorable="d"
-        Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1021.334">
+        Title="MainWindow" Background="Gray" VerticalAlignment="Top" HorizontalAlignment="Left" Height="693.934" Width="1347.631">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="CSSforxaml.xaml" />
-            </ResourceDictionary.MergedDictionaries>            
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="Gray">
+    <Grid Background="Gray" Margin="0,0,3.714,0.143">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -98,7 +99,7 @@
                 <!--#endregion-->
             </Grid>
         </Viewbox>
-        <Grid x:Name="GridControls" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7">
+        <Grid x:Name="GridControls" Grid.Row="0" Background="#FFCDE3C7" Grid.ColumnSpan="3" Margin="669,0,436.286,0.143">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -226,13 +227,41 @@
                 <Label x:Name="lblTotal" Content="Total" FontWeight="Bold" BorderThickness="0" FontSize="18" Visibility="Hidden" Tag="DiceLabel"/>
             </Viewbox>
             <!--#endregion-->
-
-
-
-
-
         </Grid>
 
+        <!--Properties-->
+        <Grid x:Name="GridProperties" Grid.Column="2" Grid.Row="0" Background="#FFCDE3C7" Margin="10,0,0.286,0.143">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="label" Content="Properties" Grid.Column="1" HorizontalAlignment="Left" Margin="61.571,0,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="28" Grid.ColumnSpan="3" Height="55" Width="146"/>
+            <Label x:Name="lblP1Owned" Content="Player 1" HorizontalAlignment="Left" Margin="23,53.571,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="28" Height="57" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Width="118"/>
+            <Label x:Name="lblP2Owned" Content="Player 2" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="32.286,0.143,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="28" Grid.RowSpan="2" Height="57" Grid.Row="2" Grid.Column="3"/>
 
+            <Viewbox Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="3" Grid.RowSpan="3">
+                <StackPanel x:Name="stpListBox" Width="1049">
+                    <ListBox x:Name="ltbP1Owned" Tag="1" Height="200"  VerticalAlignment="Top" Margin="10,0,674.143,0" FontSize="30"/>
+                    <ListBox x:Name="ltbP2Owned" Tag="2" Height="200"  VerticalAlignment="Top" Margin="656,0,0.143,0"/>
+                </StackPanel>
+            </Viewbox>
+        </Grid>
     </Grid>
 </Window>
