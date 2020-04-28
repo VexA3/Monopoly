@@ -128,7 +128,7 @@ namespace Monopoly
                         wp.Children.Remove(i);
 
                         // Add to new location
-                        this.GetWrapPanel("WrapPanelJail11").Children.Add(i);
+                        this.GetWrapPanel("Jail").Children.Add(i);
                         break;
                     }
                 }
@@ -237,57 +237,29 @@ namespace Monopoly
         private void MovePiece()
         {
             int nextLocation = -1;
-            bool imageFound = false;
+            Image currentPlayerImage = this.FindCurrentPlayerImage();
+            // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
+            int currentLocation = Convert.ToInt32(Regex.Replace(FindCurrentPlayerWrapPanel().Name, "[^0-9]", string.Empty));
 
-            //// Find the image for the current player.
-            //// We must first look for each wrap panel in gridboard, and then each of those wrap panels.
-            foreach (WrapPanel wp in GridBoard.Children)
+            // Add dicetotal to currentLocation
+            nextLocation = currentLocation + this.diceTotal;
+
+            // Check if passing go. Change next location by -40 to put them back relative to go(0).
+            if (nextLocation >= 41)
             {
-                if (imageFound)
-                {
-                    break;
-                }
-
-                foreach (Image i in wp.Children)
-                {
-                    if (imageFound)
-                    {
-                        break;
-                    }
-
-                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                    {
-                        // once we find the image for the players piece move it the dice result.
-                        // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
-                        int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
-
-                        // Add dicetotal to currentLocation
-                        nextLocation = currentLocation + this.diceTotal;
-
-                        // Check if passing go. Change next location by -40 to put them back relative to go(0).
-                        if (nextLocation >= 41)
-                        {
-                            nextLocation = nextLocation - 40;
-                            this.PassGo();
-                        }
-
-                        imageFound = true;
-                    }
-
-                    if (imageFound)
-                    {
-                        // remove image from current location
-                        wp.Children.Remove(i);
-
-                        // Add to new location
-                        this.GetWrapPanel(nextLocation).Children.Add(i);
-
-                        // Call the method related with the location we landed on.
-                        this.LandOnSpace(this.GetWrapPanel(nextLocation));
-                        break;
-                    }
-                }
+                nextLocation = nextLocation - 40;
+                this.PassGo();
             }
+
+
+            // remove image from current location
+            FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImage);
+
+            // Add to new location
+            this.GetWrapPanel(nextLocation).Children.Add(currentPlayerImage);
+
+            // Call the method related with the location we landed on.
+            this.LandOnSpace(this.GetWrapPanel(nextLocation));
         }
 
         /// <summary>
@@ -296,52 +268,68 @@ namespace Monopoly
         /// <param name ="whereTo"> location to move to. </param>
         private void MovePiece(string whereTo)
         {
-            bool imageFound = false;
+            Image currentPlayerImage = this.FindCurrentPlayerImage();
 
+            // Get location value of new location and current location
+            int nextLocationInt = Convert.ToInt32(Regex.Replace(this.GetWrapPanel(whereTo).Name, "[^0-9]", string.Empty));
+            int currentLocationInt = Convert.ToInt32(Regex.Replace(FindCurrentPlayerWrapPanel().Name, "[^0-9]", string.Empty));
+
+            // if the current location value is bigger than the next location then you are going to pass go.
+            if (currentLocationInt > nextLocationInt)
+            {
+                this.PassGo();
+            }
+
+            // remove image from current location
+            FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImage);
+
+            // Add to new location
+            this.GetWrapPanel(whereTo).Children.Add(currentPlayerImage);
+
+            // Call the method related with the location we landed on.
+            this.LandOnSpace(this.GetWrapPanel(whereTo));            
+        }
+
+        /// <summary>
+        /// Finds the wrap panel object of the current players piece
+        /// </summary>
+        /// <returns>The wrap panel object containing the current player's piece</returns>
+        private WrapPanel FindCurrentPlayerWrapPanel()
+        {
             //// Find the image for the current player.
             //// We must first look for each wrap panel in gridboard, and then each of those iamges in the wrappanels.
             foreach (WrapPanel wp in GridBoard.Children)
             {
                 foreach (Image i in wp.Children)
                 {
-                    if (imageFound)
-                    {
-                        break;
-                    }
-
                     if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
                     {
-                        // once we find the image for the players piece move it the dice result.
-                        // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
-                        // int currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
-
-                        // Add dicetotal to currentLocation
-                        // nextLocation = currentLocation + this.diceTotal;
-
-                        // Get location value of new location and current location
-                        int nextLocationInt = Convert.ToInt32(Regex.Replace(this.GetWrapPanel(whereTo).Name, "[^0-9]", string.Empty));
-                        int currentLocationInt = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
-
-                        // if the current location value is bigger than the next location then you are going to pass go.
-                        if (currentLocationInt > nextLocationInt)
-                        {
-                            this.PassGo();
-                        }
-
-                        // remove image from current location
-                        wp.Children.Remove(i);
-
-                        // Add to new location
-                        this.GetWrapPanel(whereTo).Children.Add(i);
-
-                        // Call the method related with the location we landed on.
-                        this.LandOnSpace(this.GetWrapPanel(whereTo));
-
-                        imageFound = true;
-                        break;                        
-                    }     
+                        return wp;
+                    }
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the image object of the current players piece
+        /// </summary>
+        /// <returns>The image object containing of current player's piece</returns>
+        private Image FindCurrentPlayerImage()
+        {
+            //// Find the image for the current player.
+            //// We must first look for each wrap panel in gridboard, and then each of those iamges in the wrappanels.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        return i;
+                    }
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -379,6 +367,8 @@ namespace Monopoly
                 case "Just Visiting":
                     break;
                 case "Free Parking":
+                    break;
+                case "Jail":
                     break;
 
                 // we already check if you land or pass go when moving the piece. 
@@ -814,28 +804,29 @@ namespace Monopoly
             lblTotal.Content = this.diceTotal.ToString();
 
             // Check if the user rolled doubles and if so if it is 3 times in a row.
-            if (this.doublesCount != 3)
+            if (this.diceResult[0] == this.diceResult[1])
             {
-                if (this.diceResult[0] == this.diceResult[1])
+                if (this.doublesCount == 3)
+                {
+                    // If they hit 3 doubles in a row send them to jail.
+                    MessageBox.Show("Go to jail.");
+                    this.GoToJail();
+                    goneToJail = true;
+
+                    // You can't continue moving from jail so hide dice, and show end turn button.
+                    imgDice.Visibility = Visibility.Hidden;
+                    btnEndTurn.Visibility = Visibility.Visible;
+                }
+                else
                 {
                     MessageBox.Show("You Rolled Doubles, Roll Again.");
                     this.doublesCount++;
                 }
-                else
-                {
-                    // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
-                    imgDice.Visibility = Visibility.Hidden;
-                    btnEndTurn.Visibility = Visibility.Visible;
-                }
+
             }
             else
             {
-                // If they hit 3 doubles in a row send them to jail.
-                MessageBox.Show("Go to jail.");
-                this.GoToJail();
-                goneToJail = true;
-
-                // You can't continue moving from jail so hide dice, and show end turn button.
+                // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
                 imgDice.Visibility = Visibility.Hidden;
                 btnEndTurn.Visibility = Visibility.Visible;
             }
