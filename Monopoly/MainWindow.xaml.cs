@@ -1301,6 +1301,7 @@ namespace Monopoly
 
                         // Pplace the player piece on the boardwalk.
                         this.GetWrapPanel("WrapPanelGo1").Children.Add(i);
+                        this.PassGo();
                     }
                 }
 
