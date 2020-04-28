@@ -130,6 +130,11 @@
                     <TextBlock x:Name="TextBlockStartRestart">Start</TextBlock>
                 </Viewbox>
             </Button>
+            <Button x:Name="btnTest" Click="BtnTest_Click" Grid.Row="9" Grid.Column="4">
+                <Viewbox>
+                    <TextBlock>Test</TextBlock>
+                </Viewbox>
+            </Button>
             <Button x:Name="btnQuit" Click="BtnQuit_Click" Grid.Row="10" Grid.Column="1">
                 <Viewbox>
                     <TextBlock>Quit</TextBlock>

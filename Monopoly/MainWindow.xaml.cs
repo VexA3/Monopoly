@@ -163,32 +163,36 @@ namespace Monopoly
 
                 case "nextRailRoad":
                     // move piece to next railroad on the board if pass go PassGo()
-                    this.NextRailRoad();
+                    MovePiece(NextRailroad());
                     break;
 
                 case "advanceToGo":
                     // move piece to go and PassGo()
-                    this.MoveToGo();
+                    MovePiece("Go");
                     break;
 
                 case "advanceToBoardwalk":
                     // move piece to Boardwalk
-                    this.MoveToBoardwalk();
+                    MovePiece("Boardwalk");
                     break;
 
                 case "advanceToReadingRailroad":
                     // move piece to kings cross, if pass go then PassGo()
+                    MovePiece("Reading Railroad");
                     break;
 
                 case "advanceToStCharlesPlace":
+                    MovePiece("St Charles Place");
                     // if passgo passgo()
                     break;
 
                 case "nextUtility":
                     // move to next utility if pass go passgo()
+                    MovePiece(NextUtility());
                     break;
 
                 case "advanceToIllinoisAvenue":
+                    MovePiece("Illinois Avenue");
                     // if pass go passgo()
                     break;
 
@@ -244,7 +248,7 @@ namespace Monopoly
             int nextLocation = -1;
             Image currentPlayerImage = this.FindCurrentPlayerImage();
             // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
-            int currentLocation = Convert.ToInt32(Regex.Replace(FindCurrentPlayerWrapPanel().Name, "[^0-9]", string.Empty));
+            int currentLocation = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
 
             // Add dicetotal to currentLocation
             nextLocation = currentLocation + this.diceTotal;
@@ -276,8 +280,8 @@ namespace Monopoly
             Image currentPlayerImage = this.FindCurrentPlayerImage();
 
             // Get location value of new location and current location
-            int nextLocationInt = Convert.ToInt32(Regex.Replace(this.GetWrapPanel(whereTo).Name, "[^0-9]", string.Empty));
-            int currentLocationInt = Convert.ToInt32(Regex.Replace(FindCurrentPlayerWrapPanel().Name, "[^0-9]", string.Empty));
+            int nextLocationInt = NumbersFromString(GetWrapPanel(whereTo).Name);
+            int currentLocationInt = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
 
             // if the current location value is bigger than the next location then you are going to pass go.
             if (currentLocationInt > nextLocationInt)
@@ -394,10 +398,31 @@ namespace Monopoly
         /// <returns>A string that is formatted</returns>
         private string FormatString(string text)
         {
-            string formattedText = Regex.Replace(text.Remove(0, 9), @"[\d]", string.Empty);
+            string formattedText;
+            if (text.Contains("WrapPanel"))
+            {
+                formattedText = Regex.Replace(text.Remove(0, 9), @"[\d]", string.Empty);
+            }
+            else
+            {
+                formattedText = Regex.Replace(text, @"[\d]", string.Empty);
+            }
             formattedText = Regex.Replace(formattedText, @"[_]", " ");
             return formattedText;
         }
+
+        /// <summary>
+        /// Finds an int value in a string
+        /// </summary>
+        /// <param name="text">Text searched for an int</param>\
+        /// <returns>An int of the numbers located in the string</returns>
+        private int NumbersFromString(string text)
+        {
+            int foundNumber = Convert.ToInt32(Regex.Replace(text, "[^0-9]", string.Empty));
+            return foundNumber;
+        }
+
+        
 
         /// <summary>
         /// Draws the specified card by displaying the card text and calling Action(card.Action)
@@ -405,15 +430,32 @@ namespace Monopoly
         /// <param name="cardType">Which card type to draw</param>
         private void DrawCard(string cardType)
         {
+            // No need to shuffle decks if you choose the card at random.
+            Random shuffle = new Random();
+            int randomCard;
             if (cardType == "Chance")
             {
-                MessageBox.Show(chanceDeck.First().CardText);
-                this.Action(chanceDeck.First().Action);
+                // Make sure deck isn't empty first
+                if(chanceDeck.Count ==  0)
+                {
+                    PopulateChanceDeck();
+                }
+                randomCard = shuffle.Next(1, chanceDeck.Count);
+                MessageBox.Show(chanceDeck[randomCard].CardText);
+                this.Action(chanceDeck[randomCard].Action);
+                chanceDeck.RemoveAt(randomCard);
             }
             else
             {
-                MessageBox.Show(communityChestDeck.First().CardText);
-                this.Action(communityChestDeck.First().Action);
+                // Make sure deck isn't empty first
+                if (communityChestDeck.Count == 0)
+                {
+                    PopulateCommunityChestDeck();
+                }
+                randomCard = shuffle.Next(1, communityChestDeck.Count);
+                MessageBox.Show(communityChestDeck[randomCard].CardText);
+                this.Action(communityChestDeck[randomCard].Action);
+                communityChestDeck.RemoveAt(randomCard);
             }
         }
 
@@ -704,7 +746,7 @@ namespace Monopoly
             foreach (WrapPanel wp in GridBoard.Children)
             {
                 string wrapPanelTrimmedName = this.FormatString(wp.Name);
-                if (wrapPanel == wrapPanelTrimmedName)
+                if (this.FormatString(wrapPanel) == wrapPanelTrimmedName)
                 {
                     return wp;
                 }
@@ -723,7 +765,7 @@ namespace Monopoly
             foreach (WrapPanel wp in GridBoard.Children)
             {
                 // We use a temporary variable to check if wp is the right distance from go/ the wrap panel we are looking for.
-                int potentialDistanceFromGo = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+                int potentialDistanceFromGo = NumbersFromString(wp.Name);
                 if (potentialDistanceFromGo == distanceFromGo && wp.Name != "WrapPanelJail11")
                 {
                     return wp;
@@ -886,7 +928,7 @@ namespace Monopoly
                     if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
                     {
                         imageFound = true;
-                        currentLocation = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+                        currentLocation = NumbersFromString(wp.Name);
 
                         // Temp Place holder until we name the locations.
                         ltbP1Owned.Items.Add(property.Name);
@@ -1151,150 +1193,67 @@ namespace Monopoly
 
 
         /// <summary>
-        /// Get the next railroad in front of the player and puts them there
+        /// Get the next railroad in front of the player
         /// </summary>
-        private void NextRailRoad()
+        /// <returns> name of railroad to travel to.</returns>
+        private string NextRailroad()
         {
-            // Get current player piece
-            bool imageFound = false;
-
-            //// Find the image for the current player.
-            foreach (WrapPanel wp in GridBoard.Children)
+            int playerLocation = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
+            int closestRailroad = 100;
+            int possibleclosestRailroad;
+            foreach( WrapPanel wp in GridBoard.Children)
             {
-                foreach (Image i in wp.Children)
+                if ( wp.Name.Contains("Railroad"))
                 {
-                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    possibleclosestRailroad = NumbersFromString(wp.Name) - playerLocation;
+                    if (possibleclosestRailroad < closestRailroad && possibleclosestRailroad > 0)
                     {
-                        // once we find the image for the players piece move it to jail.
-                        imageFound = true;
+                        closestRailroad = possibleclosestRailroad;
                     }
 
-                    if (imageFound)
-                    {
-                        // Get position and start checking for next railroad
-                        int currentLocationInt = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
-
-                        // Check if the user is between Shortline Railroad and ReadingRailroad.
-                        if ((currentLocationInt >= 37 && currentLocationInt <= 40) ||
-                            (currentLocationInt >= 1 && currentLocationInt <= 5))
-                        {
-                            // If the user is before Go, give them PassGo() and put them at Reading Railroad
-                            if (currentLocationInt >= 37 && currentLocationInt <= 40)
-                            {
-                                wp.Children.Remove(i);
-                                this.PassGo();
-                                this.GetWrapPanel("WrapPanelReading_Railroad6").Children.Add(i);
-                            }
-                            // else if they are after go, put them in reading railroad.
-                            else if (currentLocationInt >= 2 && currentLocationInt <= 5)
-                            {
-                                wp.Children.Remove(i);
-                                this.GetWrapPanel("WrapPanelReading_Railroad6").Children.Add(i);
-                            }
-                        }
-
-                        // If the Player is between ReadingRailroad and PennsylvaniaRailroad
-                        if ((currentLocationInt >= 6 && currentLocationInt <= 16))
-                        {
-                            wp.Children.Remove(i);
-                            this.GetWrapPanel("WrapPanelPennsylvania_Railroad16").Children.Add(i);
-                        }
-
-                        // If the Player is between Pennsylvania Railroad and B&ORailroad
-                        if (currentLocationInt >= 16 && currentLocationInt <= 26)
-                        {
-                            wp.Children.Remove(i);
-                            this.GetWrapPanel("WrapPanelB_And_O_Railroad26").Children.Add(i);
-                        }
-
-                        // If the Player is between Between B&O Railroad and Shortline Railroad
-                        if (currentLocationInt >= 27 && currentLocationInt <= 36)
-                        {
-                            wp.Children.Remove(i);
-                            this.GetWrapPanel("WrapPanelShort_Line_Railroad36").Children.Add(i);
-                        }
-
-                    }
                 }
 
-                if (imageFound)
-                {
-                    break;
-                }
             }
+            if (closestRailroad != 100)
+            {
+                return GetWrapPanel(closestRailroad + 1).Name;
+            }
+            return "Reading Railroad";
         }
 
         /// <summary>
-        /// Finds the current player and puts them on the boardwalk.
+        /// Get the next utility in front of the player
         /// </summary>
-        private void MoveToBoardwalk()
+        /// <returns> name of utility to travel to.</returns>
+        private string NextUtility()
         {
-            // Get current player piece
-            bool imageFound = false;
-
-            //// Find the image for the current player.
+            int playerLocation = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
+            int closestUtility = 100;
+            int possibleclosestUtility;
             foreach (WrapPanel wp in GridBoard.Children)
             {
-                foreach (Image i in wp.Children)
+                if (wp.Name.Contains("Utility"))
                 {
-                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    possibleclosestUtility = NumbersFromString(wp.Name) - playerLocation;
+                    if (possibleclosestUtility < closestUtility && possibleclosestUtility > 0)
                     {
-                        // once we find the image for the players piece move it to jail.
-                        imageFound = true;
+                        closestUtility = possibleclosestUtility;
                     }
 
-                    if (imageFound)
-                    {
-                        // Remove current player piece.
-                        wp.Children.Remove(i);
-
-                        // Place the player piece on the boardwalk.
-                        this.GetWrapPanel("WrapPanelBoardwalk40").Children.Add(i);
-                    }
                 }
 
-                if (imageFound)
-                {
-                    break;
-                }
             }
+            if (closestUtility != 100)
+            {
+                return GetWrapPanel(closestUtility + 1).Name;
+            }
+            return "Water Works";
         }
 
-        /// <summary>
-        /// Finds the current player and puts them on the boardwalk.
-        /// </summary>
-        private void MoveToGo()
+        private void BtnTest_Click(object sender, RoutedEventArgs e)
         {
-            // Get current player piece
-            bool imageFound = false;
-
-            //// Find the image for the current player.
-            foreach (WrapPanel wp in GridBoard.Children)
-            {
-                foreach (Image i in wp.Children)
-                {
-                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                    {
-                        // once we find the image for the players piece move it to jail.
-                        imageFound = true;
-                    }
-
-                    if (imageFound)
-                    {
-                        // Remove current player piece.
-                        wp.Children.Remove(i);
-
-                        // Pplace the player piece on the boardwalk.
-                        this.GetWrapPanel("WrapPanelGo1").Children.Add(i);
-                        this.PassGo();
-                    }
-                }
-
-                if (imageFound)
-                {
-                    break;
-                }
-            }
+            // use this to test events.
+            DrawCard("Chance");
         }
     }
 }
