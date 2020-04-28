@@ -168,32 +168,36 @@ namespace Monopoly
 
                 case "advanceToGo":
                     // move piece to go and PassGo()
-                    this.MoveToGo();
+                    this.MoveToPanel("WrapPanelGo1");
                     break;
 
                 case "advanceToBoardwalk":
                     // move piece to Boardwalk
-                    this.MoveToBoardwalk();
+                    this.MoveToPanel("WrapPanelBoardwalk40");
                     break;
 
                 case "advanceToReadingRailroad":
                     // move piece to kings cross, if pass go then PassGo()
+                    this.MoveToPanel("WrapPanelReading_Railroad6");
                     break;
-
                 case "advanceToStCharlesPlace":
                     // if passgo passgo()
+                    this.MoveToPanel("WrapPanelSt_Charles_Place12");
                     break;
 
                 case "nextUtility":
                     // move to next utility if pass go passgo()
+                    this.MoveToPanel("nextUtil");
                     break;
 
                 case "advanceToIllinoisAvenue":
                     // if pass go passgo()
+                    this.MoveToPanel("WrapPanelIllinois_Avenue25");
                     break;
 
                 case "backThreeSpaces":
                     // move back three spaces
+                    this.MoveToPanel("3");
                     break;
 
                 // + money
@@ -1240,9 +1244,9 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// Finds the current player and puts them on the boardwalk.
+        /// Finds the current playe rand moves them to the directed panel.
         /// </summary>
-        private void MoveToBoardwalk()
+        private void MoveToPanel(string panel)
         {
             // Get current player piece
             bool imageFound = false;
@@ -1260,48 +1264,113 @@ namespace Monopoly
 
                     if (imageFound)
                     {
-                        // Remove current player piece.
-                        wp.Children.Remove(i);
+                        int currentLocationInt = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
 
-                        // Place the player piece on the boardwalk.
-                        this.GetWrapPanel("WrapPanelBoardwalk40").Children.Add(i);
-                    }
-                }
+                        // If the user is between Go and Reading Railroad
+                        if (((currentLocationInt >= 2 && currentLocationInt <= 5) && panel == "WrapPanelReading_Railroad6"))
+                        {
+                            // Remove current player piece.
+                            wp.Children.Remove(i);
 
-                if (imageFound)
-                {
-                    break;
-                }
-            }
-        }
+                            // No passgo
+                            // Place the player piece on the boardwalk.
+                            this.GetWrapPanel(panel).Children.Add(i);
+                        }
+                        else if (panel == "WrapPanelReading_Railroad6")
+                        {
+                            // The player is somewhere before Go and after Reading Railroad.
+                            wp.Children.Remove(i);
 
-        /// <summary>
-        /// Finds the current player and puts them on the boardwalk.
-        /// </summary>
-        private void MoveToGo()
-        {
-            // Get current player piece
-            bool imageFound = false;
+                            // Give them Passgo
+                            this.PassGo();
 
-            //// Find the image for the current player.
-            foreach (WrapPanel wp in GridBoard.Children)
-            {
-                foreach (Image i in wp.Children)
-                {
-                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                    {
-                        // once we find the image for the players piece move it to jail.
-                        imageFound = true;
-                    }
+                            // Set their position on Reading Railroad.
+                            this.GetWrapPanel(panel).Children.Add(i);
+                        }
 
-                    if (imageFound)
-                    {
-                        // Remove current player piece.
-                        wp.Children.Remove(i);
+                        if (panel == "WrapPanelGo1")
+                        {
+                            wp.Children.Remove(i);
+                            this.PassGo();
+                            this.GetWrapPanel(panel).Children.Add(i);
+                        }
 
-                        // Pplace the player piece on the boardwalk.
-                        this.GetWrapPanel("WrapPanelGo1").Children.Add(i);
-                        this.PassGo();
+                        if (panel == "WrapPanelBoardwalk40")
+                        {
+                            wp.Children.Remove(i);
+                            this.GetWrapPanel(panel).Children.Add(i);
+                        }
+
+                        if (((currentLocationInt >= 2 && currentLocationInt <= 11) &&
+                             panel == "WrapPanelSt_Charles_Place12"))
+                        {
+                            wp.Children.Remove(i);
+                            this.GetWrapPanel(panel).Children.Add(i);
+
+                        } else if (panel == "WrapPanelSt_Charles_Place12")
+                        {
+                            wp.Children.Remove(i);
+                            this.PassGo();
+                            this.GetWrapPanel(panel).Children.Add(i);
+                        }
+
+                        if(((currentLocationInt >= 2 && currentLocationInt <= 11) &&
+                           panel == "WrapPanelSt_Charles_Place12"))
+                        {
+                            wp.Children.Remove(i);
+                            this.GetWrapPanel(panel).Children.Add(i);
+
+                        } else if (panel == "WrapPanelSt_Charles_Place12")
+                        {
+                            wp.Children.Remove(i);
+                            this.PassGo();
+                            this.GetWrapPanel(panel).Children.Add(i);
+                        }
+
+                        // If the user is between water works and Electric company
+                        if(panel == "nextUtil")
+                        {
+                            // if the player is between water works and go or is on GO
+                            if(currentLocationInt >= 29 && (currentLocationInt <= 40 || currentLocationInt == 1))
+                            {
+                                // Remove them from the wrap panel they're in.
+                                wp.Children.Remove(i);
+
+                                // Give them PassGo()
+                                this.PassGo();
+
+                                // Place them in the panel designated
+                                this.GetWrapPanel("WrapPanelElectric_Company_Utility13").Children.Add(i);
+
+                            } else if (currentLocationInt >= 2 && currentLocationInt <= 12)
+                            {
+                                // The Player is between Go and Electric Company
+                                // Do not give them PassGO()
+                                // Remove them from their position
+                                wp.Children.Remove(i);
+
+                                // Place them in Electric Company WP
+                                this.GetWrapPanel("WrapPanelElectric_Company_Utility13").Children.Add(i);
+                            }
+
+                            // If the user is on/between Electric Company and Water Works
+                            if (currentLocationInt >= 13 && currentLocationInt <= 28)
+                            {
+                                // Remove them from their current position
+                                wp.Children.Remove(i);
+
+                                // Set them in Water Works.
+                                this.GetWrapPanel("WrapPanelWater_Works_Utility29").Children.Add(i);
+                            }
+
+                        }
+
+                        if (panel == "3")
+                        {
+                            // TODO: Find the current wrap panel num, subtract 3 then place player in the panel 3 spaces back.
+                            // TODO: If the user's spaces is less than 0 (2 - 3 = -1) then start from 41 and subtract the remaining from 41
+                        }
+
                     }
                 }
 
