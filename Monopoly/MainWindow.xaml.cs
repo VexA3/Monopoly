@@ -157,18 +157,23 @@ namespace Monopoly
                     break;
 
                 case "getOutOfJail":
+                    // TODO: After Player Turns: Get out of jail once turn is up
+                    // TODO: Get Out Of Jail Free Card
                     break;
 
-                // TODO 
                 case "nextRailRoad":
                     // move piece to next railroad on the board if pass go PassGo()
+                    this.NextRailRoad();
                     break;
 
                 case "advanceToGo":
                     // move piece to go and PassGo()
+                    this.MoveToGo();
                     break;
+
                 case "advanceToBoardwalk":
                     // move piece to Boardwalk
+                    this.MoveToBoardwalk();
                     break;
 
                 case "advanceToReadingRailroad":
@@ -201,11 +206,11 @@ namespace Monopoly
                 case "gain45":
                     break;
                 case "gain50":
-                    break;                    
+                    break;
                 case "gain100":
                     break;
                 case "gain150":
-                    break;                    
+                    break;
                 case "gain200":
                     break;
                 case "gain50PerPlayer":
@@ -459,7 +464,7 @@ namespace Monopoly
         /// After player pieces are chosen, initialize the enum and put player pieces on the board. Start first players turn. Add cards to their respect decks and create default list of property.
         /// </summary>
         private void StartGame()
-        {           
+        {
             // Update enum for player order
             this.UpdateEnum();
 
@@ -478,7 +483,7 @@ namespace Monopoly
                 img.Source = new BitmapImage(new Uri(@"/Images/" + p.Piece + ".png", UriKind.Relative));
                 this.GetWrapPanel(10, 10).Children.Add(img);
                 img.Name = p.Piece + "Img";
-            }      
+            }
         }
 
         /// <summary>
@@ -739,8 +744,8 @@ namespace Monopoly
             {
                 if (property.Name == propertyName)
                 {
-                    return property;                    
-                }               
+                    return property;
+                }
             }
 
             return null;
@@ -834,7 +839,7 @@ namespace Monopoly
             // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
             if (!goneToJail)
             {
-                this.MovePiece();                
+                this.MovePiece();
             }
         }
 
@@ -891,7 +896,7 @@ namespace Monopoly
                 if (imageFound)
                 {
                     break;
-                }                    
+                }
             }
         }
 
@@ -914,7 +919,7 @@ namespace Monopoly
                         {
                             i.Visibility = Visibility.Visible;
                         }
-                    }                    
+                    }
                 }
             }
             else
@@ -948,7 +953,7 @@ namespace Monopoly
                             {
                                 l.Visibility = Visibility.Visible;
                             }
-                        }                            
+                        }
                     }
                 }
             }
@@ -976,7 +981,7 @@ namespace Monopoly
                             {
                                 l.Content = "Choose number of Players then press Start.";
                             }
-                        }                        
+                        }
                     }
                 }
             }
@@ -1037,7 +1042,7 @@ namespace Monopoly
         private void PassGo()
         {
             // Add 200 to current player's money value
-            this.currentPlayersEnum.Current.Money = 200;            
+            this.currentPlayersEnum.Current.Money = 200;
         }
 
         /// <summary>
@@ -1046,7 +1051,7 @@ namespace Monopoly
         /// <param name="sender">The object that initiated the event.</param>
         /// <param name="e">The event arguments for the event.</param>
         private void BtnRules_EndTurn(object sender, RoutedEventArgs e)
-        {            
+        {
             // increment enum of current players, if false or end of enum then reupdate enum.
             if (!this.currentPlayersEnum.MoveNext())
             {
@@ -1067,7 +1072,7 @@ namespace Monopoly
         /// </summary>
         /// <param name="p">The current player</param>
         private void RemovePiece(Player p)
-        {            
+        {
             // Find the image for the current player.
             // We must first look for each wrap panel in gridboard, and then each of those wrap panels.
             foreach (WrapPanel wp in GridBoard.Children)
@@ -1093,7 +1098,7 @@ namespace Monopoly
                 {
                     break;
                 }
-            }        
+            }
         }
 
         /// <summary>
@@ -1103,7 +1108,7 @@ namespace Monopoly
         {
             string[] propertiesData = File.ReadAllLines(@"TextDataFiles\Properties.txt");
             foreach (string s in propertiesData)
-            {                
+            {
                 if (s.Contains('/'))
                 {
                     string[] splitS = s.Split('/');
@@ -1140,6 +1145,155 @@ namespace Monopoly
             {
                 string[] splitS = s.Split('/');
                 communityChestDeck.Add(new CommunityChest(splitS[0], splitS[1]));
+            }
+        }
+
+
+
+        /// <summary>
+        /// Get the next railroad in front of the player and puts them there
+        /// </summary>
+        private void NextRailRoad()
+        {
+            // Get current player piece
+            bool imageFound = false;
+
+            //// Find the image for the current player.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it to jail.
+                        imageFound = true;
+                    }
+
+                    if (imageFound)
+                    {
+                        // Get position and start checking for next railroad
+                        int currentLocationInt = Convert.ToInt32(Regex.Replace(wp.Name, "[^0-9]", string.Empty));
+
+                        // Check if the user is between Shortline Railroad and ReadingRailroad.
+                        if ((currentLocationInt >= 37 && currentLocationInt <= 40) ||
+                            (currentLocationInt >= 1 && currentLocationInt <= 5))
+                        {
+                            // If the user is before Go, give them PassGo() and put them at Reading Railroad
+                            if (currentLocationInt >= 37 && currentLocationInt <= 40)
+                            {
+                                wp.Children.Remove(i);
+                                this.PassGo();
+                                this.GetWrapPanel("WrapPanelReading_Railroad6").Children.Add(i);
+                            }
+                            // else if they are after go, put them in reading railroad.
+                            else if (currentLocationInt >= 2 && currentLocationInt <= 5)
+                            {
+                                wp.Children.Remove(i);
+                                this.GetWrapPanel("WrapPanelReading_Railroad6").Children.Add(i);
+                            }
+                        }
+
+                        // If the Player is between ReadingRailroad and PennsylvaniaRailroad
+                        if ((currentLocationInt >= 6 && currentLocationInt <= 16))
+                        {
+                            wp.Children.Remove(i);
+                            this.GetWrapPanel("WrapPanelPennsylvania_Railroad16").Children.Add(i);
+                        }
+
+                        // If the Player is between Pennsylvania Railroad and B&ORailroad
+                        if (currentLocationInt >= 16 && currentLocationInt <= 26)
+                        {
+                            wp.Children.Remove(i);
+                            this.GetWrapPanel("WrapPanelB_And_O_Railroad26").Children.Add(i);
+                        }
+
+                        // If the Player is between Between B&O Railroad and Shortline Railroad
+                        if (currentLocationInt >= 27 && currentLocationInt <= 36)
+                        {
+                            wp.Children.Remove(i);
+                            this.GetWrapPanel("WrapPanelShort_Line_Railroad36").Children.Add(i);
+                        }
+
+                    }
+                }
+
+                if (imageFound)
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds the current player and puts them on the boardwalk.
+        /// </summary>
+        private void MoveToBoardwalk()
+        {
+            // Get current player piece
+            bool imageFound = false;
+
+            //// Find the image for the current player.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it to jail.
+                        imageFound = true;
+                    }
+
+                    if (imageFound)
+                    {
+                        // Remove current player piece.
+                        wp.Children.Remove(i);
+
+                        // Place the player piece on the boardwalk.
+                        this.GetWrapPanel("WrapPanelBoardwalk40").Children.Add(i);
+                    }
+                }
+
+                if (imageFound)
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds the current player and puts them on the boardwalk.
+        /// </summary>
+        private void MoveToGo()
+        {
+            // Get current player piece
+            bool imageFound = false;
+
+            //// Find the image for the current player.
+            foreach (WrapPanel wp in GridBoard.Children)
+            {
+                foreach (Image i in wp.Children)
+                {
+                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
+                    {
+                        // once we find the image for the players piece move it to jail.
+                        imageFound = true;
+                    }
+
+                    if (imageFound)
+                    {
+                        // Remove current player piece.
+                        wp.Children.Remove(i);
+
+                        // Pplace the player piece on the boardwalk.
+                        this.GetWrapPanel("WrapPanelGo1").Children.Add(i);
+                        this.PassGo();
+                    }
+                }
+
+                if (imageFound)
+                {
+                    break;
+                }
             }
         }
     }
