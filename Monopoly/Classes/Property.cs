@@ -92,6 +92,11 @@ namespace Monopoly
         private int houses;
 
         /// <summary>
+        /// the player that owns this property
+        /// </summary> 
+        private Player owner;
+
+        /// <summary>
         /// Initializes a new instance of the Property class
         /// </summary>
         /// <param name="name">The name of the property</param>
@@ -245,6 +250,82 @@ namespace Monopoly
         {
             get { return this.houses; }
             set { this.houses += value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the owner of the property
+        /// </summary>
+        public Player Owner
+        {
+            get { return this.owner; }
+            set { this.owner = value; }
+        }
+
+        /// <summary>
+        /// Get the current rent of the property
+        /// </summary>
+        /// <param name="diceAmount"> The current dice total used for utility rent payments</param>
+        /// <returns>The amount of rent to be paid.</returns>
+        public int GetRentAmount(int diceAmount)
+        {
+            int rentAmount = 0;
+
+            // Check if utility or railroad
+            if (this.name.Contains("Railroad"))
+            {
+                int count = 0;
+                foreach (Property p in this.owner.Properties)
+                {
+                    if (p.name.Contains("Railroad"))
+                    {
+                        count++;
+                    }
+                }
+
+                rentAmount = count * 25;
+                if (count == 4)
+                {
+                    rentAmount = 200;
+                }
+            }
+            else if (this.name.Contains("Utility"))
+            {
+                int count = 0;
+                foreach (Property p in this.owner.Properties)
+                {
+                    if (p.name.Contains("Utility"))
+                    {
+                        count++;
+                    }
+                }
+                    
+                if (count == 1)
+                {
+                    rentAmount = diceAmount * 4;
+                }
+            else
+            {
+                rentAmount = diceAmount * 10;
+            }
+            }
+            else if (this.houses == 1)
+            {
+                rentAmount = this.oneHouseRent;
+            }
+            else if (this.houses == 2)
+            {
+                rentAmount = this.twoHouseRent;
+            }
+            else if (this.houses == 3)
+            {
+                rentAmount = this.threeHouseRent;
+            }
+            else if (this.houses == 4)
+            {
+                rentAmount = this.hotelRent;
+            }
+
+            return rentAmount;
         }
     }
 }
