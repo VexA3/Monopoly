@@ -1,5 +1,5 @@
-Advance token to the nearest railroad and pay the owner twice the rental. If railroad is un-owned you may buy it from the bank./nextRailRoad
-Advance token to the nearest railroad and pay the owner twice the rental. If railroad is un-owned you may buy it from the bank./nextRailRoad
+Advance token to the nearest railroad and pay the owner twice the rental. If railroad is un-owned you may buy it from the bank./nextRailroad
+Advance token to the nearest railroad and pay the owner twice the rental. If railroad is un-owned you may buy it from the bank./nextRailroad
 Advance token to nearest utility.  If un-owned you may buy it from the bank. If owned, throw dice, pay owner ten times amount./nextUtility
 Pay poor tax of $15./lose15
 Advance to Go, Collect $200./advanceToGo

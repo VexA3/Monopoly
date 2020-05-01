@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ChanceCard.cs" company="CompanyName">
+// <copyright file="Card.cs" company="CompanyName">
 //     Company copyright tag.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -12,9 +12,9 @@ namespace Monopoly
     using System.Threading.Tasks;
 
     /// <summary>
-    /// A class to hold Chance Card data
+    /// A class to hold card data.
     /// </summary>
-    public class ChanceCard
+    public class Card
     {
         /// <summary>
         /// What will be displayed on the card
@@ -32,11 +32,11 @@ namespace Monopoly
         private bool inPossession;
 
         /// <summary>
-        /// Initializes a new instance of the ChanceCard class
+        /// Initializes a new instance of the Card class
         /// </summary>
         /// <param name="crdTxt">The text on the card</param>
         /// <param name="act">The method to be performed for the card</param>
-        public ChanceCard(string crdTxt, string act)
+        public Card(string crdTxt, string act)
         {
             this.cardText = crdTxt;
             this.action = act;
