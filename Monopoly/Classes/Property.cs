@@ -10,6 +10,7 @@ namespace Monopoly
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Windows.Media;
 
     /// <summary>
     /// A class to hold property data
@@ -42,9 +43,9 @@ namespace Monopoly
         private bool owned;
 
         /// <summary>
-        /// group of property on the board.
+        /// color of the group of properties on the board.
         /// </summary>
-        private string group;
+        private SolidColorBrush group;
 
         /// <summary>
         /// Property name.
@@ -109,7 +110,7 @@ namespace Monopoly
         /// <param name="fourHouseRent">The rent price of the property with four houses</param>
         /// <param name="hotelRent">The rent price of the property with a hotel</param>
         /// <param name="group">The group the property belongs to</param>
-        public Property(string name, int price, int housePrice, int baseRent, int oneHouseRent, int twoHouseRent, int threeHouseRent, int fourHouseRent, int hotelRent, string group)
+        public Property(string name, int price, int housePrice, int baseRent, int oneHouseRent, int twoHouseRent, int threeHouseRent, int fourHouseRent, int hotelRent, SolidColorBrush group)
         {
             this.name = name;
             this.price = price;
@@ -138,6 +139,7 @@ namespace Monopoly
                 this.price = this.railroadPrice;
                 this.owned = false;
                 this.mortgage = this.railroadPrice / 2;
+                this.group = Brushes.Gray;
             }
             else
             {
@@ -145,6 +147,7 @@ namespace Monopoly
                 this.price = this.utilityPrice;
                 this.owned = false;
                 this.mortgage = this.utilityPrice / 2;
+                this.group = Brushes.LightGray;
             }            
         }
 
@@ -174,9 +177,9 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// Gets the group of the property
+        /// Gets the color of the group of the property
         /// </summary>
-        public string Group
+        public SolidColorBrush Group
         {
             get { return this.group; }
         }
@@ -253,6 +256,29 @@ namespace Monopoly
         }
 
         /// <summary>
+        /// Returns the string of Number of houses or a hotel depending on what is on the property for displaying to the listbox
+        /// </summary>
+        private string houseNumberOrHotel()
+        {
+            if(this.houses < 5)
+            {
+                return this.houses.ToString();
+            }
+            else
+            {
+                return "Hotel";
+            }
+        }
+
+        /// <summary>
+        /// Gets the string that should be displayed in the list box.
+        /// </summary>
+        public string ListBoxDisplay
+        {
+            get { return this.houseNumberOrHotel(); }
+        }
+
+        /// <summary>
         /// Gets or sets the owner of the property
         /// </summary>
         public Player Owner
@@ -323,6 +349,10 @@ namespace Monopoly
             else if (this.houses == 4)
             {
                 rentAmount = this.hotelRent;
+            }
+            else
+            {
+                rentAmount = this.baseRent;
             }
 
             return rentAmount;

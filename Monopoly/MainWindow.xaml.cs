@@ -7,6 +7,7 @@ namespace Monopoly
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -954,7 +955,7 @@ namespace Monopoly
                         lblDisplayTurnOrChoice.Content = "Roll your dice, You will automatically pay the $50 Jail Fee.";
                     }
 
-                    // ListBox of owned properties.
+                    
                     // trade with other player button.
                     // Hide end turn button
                     btnEndTurn.Visibility = Visibility.Hidden;
@@ -965,11 +966,19 @@ namespace Monopoly
                     // Fill in data
                     lblBalance.Visibility = Visibility.Visible;
                     lblMoney.Content = this.currentPlayersEnum.Current.Money.ToString();
+
+                    // ListBox of owned properties.
                     if (this.currentPlayersEnum.Current.Properties.Count != 0)
                     {
                         ListBoxPropertiesOwned.Visibility = Visibility.Visible;
                         ListBoxPropertiesOwned.ItemsSource = this.currentPlayersEnum.Current.Properties;
-                        lblPropertiesYouOwn.Visibility = Visibility.Visible;                        
+                        lblPropertiesYouOwn.Visibility = Visibility.Visible;
+
+                        // Loop through each item in the list box and color it based on it's group.
+                        for(int i = 0; i<ListBoxPropertiesOwned.Items.Count; i++)
+                        {
+                            //ListBoxPropertiesOwned.Items[i] = Brushes.Red;
+                        }
                     }
                     else
                     {
@@ -1335,7 +1344,7 @@ namespace Monopoly
                 else
                 {
                     string[] splitS = s.Split('_');
-                    allProperties.Add(new Property(splitS[0], Convert.ToInt32(splitS[1]), Convert.ToInt32(splitS[2]), Convert.ToInt32(splitS[3]), Convert.ToInt32(splitS[4]), Convert.ToInt32(splitS[5]), Convert.ToInt32(splitS[6]), Convert.ToInt32(splitS[7]), Convert.ToInt32(splitS[8]), splitS[10]));
+                    allProperties.Add(new Property(splitS[0], Convert.ToInt32(splitS[1]), Convert.ToInt32(splitS[2]), Convert.ToInt32(splitS[3]), Convert.ToInt32(splitS[4]), Convert.ToInt32(splitS[5]), Convert.ToInt32(splitS[6]), Convert.ToInt32(splitS[7]), Convert.ToInt32(splitS[8]), new SolidColorBrush((Color)ColorConverter.ConvertFromString(splitS[10]))));
                 }
             }
         }
@@ -1454,11 +1463,12 @@ namespace Monopoly
         /// <param name="e">The event arguments for the event.</param>
         private void BtnTest_Click(object sender, RoutedEventArgs e)
         {
+            DrawCard("Chance");
             /* TESTDEV
             // use this to test events.
 
             // GoToJail();
-            // DrawCard("Chance");
+            
             // DrawCard("CommunityChest");
             */
         }
