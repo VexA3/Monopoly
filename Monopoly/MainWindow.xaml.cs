@@ -891,6 +891,16 @@ namespace Monopoly
             {
                 this.Tax(property.GetRentAmount(this.diceTotal));
                 MessageBox.Show("You paid $" + property.GetRentAmount(this.diceTotal).ToString() + " in rent.");
+                foreach(Player p in currentPlayers)
+                {
+                    foreach(Property prop in p.Properties)
+                    {
+                        if(prop.Name == property.Name)
+                        {
+                            p.Money += property.GetRentAmount(this.diceTotal);
+                        }
+                    }
+                }
             }            
         }
 
