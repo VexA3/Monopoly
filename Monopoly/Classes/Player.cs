@@ -128,5 +128,7 @@ namespace Monopoly
         {
             this.getOutOfJailCards.Add(card);
         }
+
+
     }
 }
