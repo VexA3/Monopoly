@@ -296,7 +296,7 @@ namespace Monopoly
             this.GetWrapPanel(whereTo).Children.Add(currentPlayerImage);
 
             // Call the method related with the location we landed on.
-            this.LandOnSpace(this.GetWrapPanel(whereTo));            
+            this.LandOnSpace(this.GetWrapPanel(whereTo));
         }
 
         /// <summary>
@@ -910,6 +910,12 @@ namespace Monopoly
                 case MessageBoxResult.No:
                     break;
             }
+
+            if(property.Owned)
+            {
+                // Pay rent to the person who owns it
+                this.PayRent(property);
+            }
         }
 
         /// <summary>
@@ -1254,6 +1260,57 @@ namespace Monopoly
         {
             // use this to test events.
             DrawCard("Chance");
+        }
+
+        /// <summary>
+        /// Pays rent to the player who owns the property.
+        /// </summary>
+        /// <param name="prop">Property Owned</param>
+        private void PayRent(Property prop)
+        {
+            // Houses on owned property.
+            var houses = prop.Houses;
+            
+            // Player who landed on owned property.
+            var player = this.GetCurrentPlayer();
+
+            foreach(Player p in currentPlayers)
+            {
+                foreach(Property pro in p.Properties)
+                {
+                    // If the player who landed on the property isn't the one who owns it.
+                    if(p != player)
+                    {
+                        // If the current property name is found in a player's owned properties list
+                        // Then pay them player rent.
+                        if (pro.Name == prop.Name)
+                        {
+                            if (houses == 1)
+                            {
+                                player.Money -= pro.OneHouseRent;
+                                p.Money += pro.OneHouseRent;
+                            }
+
+                            if (houses == 1)
+                            {
+                                player.Money -= pro.TwoHouseRent;
+                                p.Money += pro.TwoHouseRent;
+                            }
+
+                            if (houses == 1)
+                            {
+                                player.Money -= pro.ThreeHouseRent;
+                                p.Money += pro.ThreeHouseRent;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // The player who landed on the property owns this property.
+                        break;
+                    }
+                }
+            }
         }
     }
 }
