@@ -32,6 +32,11 @@ namespace Monopoly
         private int playerNum;
 
         /// <summary>
+        /// Number of turns spent in jail. 
+        /// </summary>
+        private int jailTurnCount;
+
+        /// <summary>
         /// How much money the player has.
         /// </summary>
         private int money;
@@ -40,6 +45,11 @@ namespace Monopoly
         /// list of properties owned by the player
         /// </summary>
         private List<Property> properties;
+
+        /// <summary>
+        /// list of get out of jail free cards owned by the player
+        /// </summary>
+        private List<Card> getOutOfJailCards;
 
         /// <summary>
         /// Initializes a new instance of the Player class
@@ -51,7 +61,10 @@ namespace Monopoly
             this.playerNum = playNum;
             this.money = this.initialMoney;
             this.piece = chosenPiece;
-        }
+            this.jailTurnCount = 0;
+            this.getOutOfJailCards = new List<Card>();
+            this.properties = new List<Property>();
+    }
 
         /// <summary>
         /// Gets the piece for the player
@@ -70,6 +83,14 @@ namespace Monopoly
         }
 
         /// <summary>
+        /// Gets the get out of jail card objects
+        /// </summary>
+        public List<Card> GetOutOfJailCards
+        {
+            get { return this.getOutOfJailCards; }
+        }
+
+        /// <summary>
         /// Gets or sets the money value of the player
         /// </summary>
         public int Money
@@ -79,12 +100,33 @@ namespace Monopoly
         }
 
         /// <summary>
+        /// Gets or sets the value of number of turns in jail.
+        /// </summary>
+        public int JailTurnCount
+        {
+            get { return this.jailTurnCount; }
+            set { this.jailTurnCount = value; }
+        }
+
+        /// <summary>
         /// Add property to list of owned properties
         /// </summary>
         /// <param name="prop"> The property to add to the players owned properties </param>
-        public void BuyProperty(Property prop)
+        /// <param name="owner"> The player that is the new owner of the property</param>
+        public void BuyProperty(Property prop, Player owner)
         {
+            this.money = this.money - prop.Price;
+            prop.Owner = owner;
             this.properties.Add(prop);
+        }
+
+        /// <summary>
+        /// Add card to list of owned cards
+        /// </summary>
+        /// <param name="card"> The card to add to the players owned card </param>
+        public void DrawCard(Card card)
+        {
+            this.getOutOfJailCards.Add(card);
         }
     }
 }

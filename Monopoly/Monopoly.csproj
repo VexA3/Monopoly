@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Card.cs" />
     <Compile Include="Classes\Property.cs" />
     <Page Include="CSSforxaml.xaml">
       <SubType>Designer</SubType>
@@ -69,8 +70,6 @@
       <SubType>Code</SubType>
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Classes\ChanceCard.cs" />
-    <Compile Include="Classes\CommunityChest.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -118,6 +117,8 @@
     <Resource Include="Images\wheelbarrowPiece.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\CCGetOutOfJail.png" />
+    <Resource Include="Images\GetOutOfJail..png" />
     <Content Include="TextDataFiles\communityChestDeck.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

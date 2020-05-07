@@ -18,6 +18,7 @@ namespace Monopoly
     using System.Windows.Documents;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Media.Effects;
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
     using System.Windows.Shapes;
@@ -33,19 +34,19 @@ namespace Monopoly
         private static List<Player> currentPlayers = new List<Player>();
 
         /// <summary>
+        /// List of the properties in the game
+        /// </summary>
+        private static List<Property> allProperties = new List<Property>();
+
+        /// <summary>
         /// List of the chance cards in the game
         /// </summary>
-        private static List<ChanceCard> chanceDeck = new List<ChanceCard>();
+        private List<Card> chanceDeck = new List<Card>();
 
         /// <summary>
         /// List of the community chest cards in the game
         /// </summary>
-        private static List<CommunityChest> communityChestDeck = new List<CommunityChest>();
-
-        /// <summary>
-        /// List of the properties in the game
-        /// </summary>
-        private static List<Property> allProperties = new List<Property>();
+        private List<Card> communityChestDeck = new List<Card>();        
 
         /// <summary>
         /// Enum for the list of current players
@@ -88,10 +89,11 @@ namespace Monopoly
         public MainWindow()
         {
             this.InitializeComponent();
+
             // populate starting data for decks and properties
             this.PopulatePropertiesData();
-            this.PopulateChanceDeck();
-            this.PopulateCommunityChestDeck();
+            this.PopulateDeck("Chance");
+            this.PopulateDeck("CommunityChest");
         }
 
         /// <summary>
@@ -108,45 +110,27 @@ namespace Monopoly
         /// </summary>
         private void GoToJail()
         {
-            bool imageFound = false;
+            Image currentPlayerImageLocation = this.FindCurrentPlayerImage();
 
-            //// Find the image for the current player.
-            //// We must first look for each wrap panel in gridboard, and then each of those wrap panels.
-            foreach (WrapPanel wp in GridBoard.Children)
-            {
-                foreach (Image i in wp.Children)
-                {
-                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                    {
-                        // once we find the image for the players piece move it to jail.                            
-                        imageFound = true;
-                    }
+            // Set the value of jailTurnCount to 1 for the current player.
+            this.currentPlayersEnum.Current.JailTurnCount = 1;
 
-                    if (imageFound)
-                    {
-                        // remove image from current location
-                        wp.Children.Remove(i);
+            // remove image from current location
+            this.FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImageLocation);
 
-                        // Add to new location
-                        this.GetWrapPanel("Jail").Children.Add(i);
-                        break;
-                    }
-                }
-
-                if (imageFound)
-                {
-                    break;
-                }
-            }
+             // Add to new location
+            this.GetWrapPanel("Jail").Children.Add(currentPlayerImageLocation);
         }
 
         /// <summary>
         /// Do the action specified by a chance or community card.
         /// </summary>
-        /// <param name="action"> Determines type of action to invoke </param>
-        private void Action(string action)
+        /// <param name="cardDrawn">The card object drawn</param>
+        private void Action(Card cardDrawn)
         {
-            switch (action)
+            // - money
+            int totalAmount = 0;
+            switch (cardDrawn.Action)
             {
                 //// Community chest and Chance card methods. Chance and community chest cards will hold these methods 
                 //// Each card will be constructed with CommunityChest("Card text here", "actionString") where action string is which case below to run.
@@ -157,87 +141,148 @@ namespace Monopoly
                     break;
 
                 case "getOutOfJail":
-                    // TODO: After Player Turns: Get out of jail once turn is up
-                    // TODO: Get Out Of Jail Free Card
+                    this.currentPlayersEnum.Current.DrawCard(cardDrawn);
+                    this.UpdateGui("cardDrawn");
                     break;
 
-                case "nextRailRoad":
+                case "nextRailroad":
+
                     // move piece to next railroad on the board if pass go PassGo()
-                    MovePiece(NextRailroad());
+                    this.MovePiece(this.NextRailroad());
                     break;
 
+                // Move pieces to specified location.
                 case "advanceToGo":
-                    // move piece to go and PassGo()
-                    MovePiece("Go");
+                    this.MovePiece("Go");
                     break;
 
                 case "advanceToBoardwalk":
-                    // move piece to Boardwalk
-                    MovePiece("Boardwalk");
+                    this.MovePiece("Boardwalk");
                     break;
 
                 case "advanceToReadingRailroad":
-                    // move piece to kings cross, if pass go then PassGo()
-                    MovePiece("Reading Railroad");
+                    this.MovePiece("Reading Railroad");
                     break;
 
                 case "advanceToStCharlesPlace":
-                    MovePiece("St Charles Place");
-                    // if passgo passgo()
+                    this.MovePiece("St Charles Place");
                     break;
 
                 case "nextUtility":
                     // move to next utility if pass go passgo()
-                    MovePiece(NextUtility());
+                    this.MovePiece(this.NextUtility());
                     break;
 
                 case "advanceToIllinoisAvenue":
-                    MovePiece("Illinois Avenue");
-                    // if pass go passgo()
+                    this.MovePiece("Illinois Avenue");
                     break;
 
                 case "backThreeSpaces":
                     // move back three spaces
+                    this.MovePiece(this.GetWrapPanel(this.NumbersFromString(this.FindCurrentPlayerWrapPanel().Name) - 3).Name);                    
                     break;
 
                 // + money
                 case "gain10":
+                    this.Pay(10);
                     break;
                 case "gain20":
+                    this.Pay(20);
                     break;
                 case "gain25":
+                    this.Pay(25);
                     break;
                 case "gain45":
+                    this.Pay(45);
                     break;
                 case "gain50":
+                    this.Pay(50);
                     break;
                 case "gain100":
+                    this.Pay(100);
                     break;
                 case "gain150":
+                    this.Pay(150);
                     break;
                 case "gain200":
+                    this.Pay(200);
                     break;
                 case "gain50PerPlayer":
-                    break;
+                    foreach (Player p in currentPlayers)
+                    {
+                        if (p != this.currentPlayersEnum.Current)
+                        {
+                            p.Money -= 50;
+                            this.Pay(50);
+                        }
+                    }
 
-                // - money
+                    MessageBox.Show("You recieved $50 from each player");
+                    break;
+                
                 case "lose15":
+                    this.Tax(15);
                     break;
                 case "lose50":
+                    this.Tax(50);
                     break;
                 case "lose100":
+                    this.Tax(100);
                     break;
                 case "lose50PerPlayer":
+                    foreach (Player p in currentPlayers)
+                    {
+                        if (p != this.currentPlayersEnum.Current)
+                        {
+                            this.Tax(50);
+                            p.Money += 50;
+                        }
+                    }
+
+                    MessageBox.Show("You paid each player $50");
                     break;
                 case "lose40PerHouse115PerHotel":
+                    totalAmount = 0;
+                    foreach (Property p in this.currentPlayersEnum.Current.Properties)
+                    {
+                        if (p.Houses == 4)
+                        {
+                            totalAmount += 115;
+                        }
+                        else
+                        {
+                            totalAmount += p.Houses * 40;
+                        }
+                    }
+
+                    this.Tax(totalAmount);
+                    MessageBox.Show("You were taxed for $" + totalAmount.ToString());
                     break;
+
                 case "lose25PerHouse100PerHotel":
+                    totalAmount = 0;
+                    foreach (Property p in this.currentPlayersEnum.Current.Properties)
+                    {
+                        if (p.Houses == 4)
+                        {
+                            totalAmount += 100;
+                        }
+                        else
+                        {
+                            totalAmount += p.Houses * 25;
+                        }
+                    }
+
+                    this.Tax(totalAmount);
+                    MessageBox.Show("You were taxed for $" + totalAmount.ToString());
                     break;
 
                 // add more cases as needed to do each chance card and community chest. There are 16 of each with a single duplice so we should have 31 cases here in total.
                 default:
                     break;
             }
+
+            this.UpdateGui("spentOrReceivedMoney");
         }
 
         /// <summary>
@@ -247,8 +292,9 @@ namespace Monopoly
         {
             int nextLocation = -1;
             Image currentPlayerImage = this.FindCurrentPlayerImage();
+
             // Find current location of the image by the name of the wrappanel stripped of chars except numbers converted to int                      
-            int currentLocation = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
+            int currentLocation = this.NumbersFromString(this.FindCurrentPlayerWrapPanel().Name);
 
             // Add dicetotal to currentLocation
             nextLocation = currentLocation + this.diceTotal;
@@ -260,9 +306,8 @@ namespace Monopoly
                 this.PassGo();
             }
 
-
             // remove image from current location
-            FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImage);
+            this.FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImage);
 
             // Add to new location
             this.GetWrapPanel(nextLocation).Children.Add(currentPlayerImage);
@@ -280,8 +325,8 @@ namespace Monopoly
             Image currentPlayerImage = this.FindCurrentPlayerImage();
 
             // Get location value of new location and current location
-            int nextLocationInt = NumbersFromString(GetWrapPanel(whereTo).Name);
-            int currentLocationInt = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
+            int nextLocationInt = this.NumbersFromString(this.GetWrapPanel(whereTo).Name);
+            int currentLocationInt = this.NumbersFromString(this.FindCurrentPlayerWrapPanel().Name);
 
             // if the current location value is bigger than the next location then you are going to pass go.
             if (currentLocationInt > nextLocationInt)
@@ -290,13 +335,13 @@ namespace Monopoly
             }
 
             // remove image from current location
-            FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImage);
+            this.FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImage);
 
             // Add to new location
             this.GetWrapPanel(whereTo).Children.Add(currentPlayerImage);
 
             // Call the method related with the location we landed on.
-            this.LandOnSpace(this.GetWrapPanel(whereTo));
+            this.LandOnSpace(this.GetWrapPanel(whereTo));            
         }
 
         /// <summary>
@@ -317,6 +362,7 @@ namespace Monopoly
                     }
                 }
             }
+
             return null;
         }
 
@@ -338,6 +384,7 @@ namespace Monopoly
                     }
                 }
             }
+
             return null;
         }
 
@@ -407,22 +454,21 @@ namespace Monopoly
             {
                 formattedText = Regex.Replace(text, @"[\d]", string.Empty);
             }
+
             formattedText = Regex.Replace(formattedText, @"[_]", " ");
             return formattedText;
         }
 
         /// <summary>
-        /// Finds an int value in a string
+        /// Finds an integer value in a string
         /// </summary>
-        /// <param name="text">Text searched for an int</param>\
-        /// <returns>An int of the numbers located in the string</returns>
+        /// <param name="text">Text searched for an integer</param>\
+        /// <returns>An integer of the numbers located in the string</returns>
         private int NumbersFromString(string text)
         {
             int foundNumber = Convert.ToInt32(Regex.Replace(text, "[^0-9]", string.Empty));
             return foundNumber;
-        }
-
-        
+        }        
 
         /// <summary>
         /// Draws the specified card by displaying the card text and calling Action(card.Action)
@@ -436,26 +482,30 @@ namespace Monopoly
             if (cardType == "Chance")
             {
                 // Make sure deck isn't empty first
-                if(chanceDeck.Count ==  0)
+                if (this.chanceDeck.Count == 0)
                 {
-                    PopulateChanceDeck();
+                    this.PopulateDeck("Chance");
                 }
-                randomCard = shuffle.Next(1, chanceDeck.Count);
-                MessageBox.Show(chanceDeck[randomCard].CardText);
-                this.Action(chanceDeck[randomCard].Action);
-                chanceDeck.RemoveAt(randomCard);
+
+                // Choose card at random, call action passing through the card object. Display the text from the card.
+                randomCard = shuffle.Next(0, this.chanceDeck.Count - 1);
+                MessageBox.Show(this.chanceDeck[randomCard].CardText);
+                this.Action(this.chanceDeck[randomCard]);
+                this.chanceDeck.RemoveAt(randomCard);
             }
             else
             {
                 // Make sure deck isn't empty first
-                if (communityChestDeck.Count == 0)
+                if (this.communityChestDeck.Count == 0)
                 {
-                    PopulateCommunityChestDeck();
+                    this.PopulateDeck("CommunityChest");
                 }
-                randomCard = shuffle.Next(1, communityChestDeck.Count);
-                MessageBox.Show(communityChestDeck[randomCard].CardText);
-                this.Action(communityChestDeck[randomCard].Action);
-                communityChestDeck.RemoveAt(randomCard);
+
+                // Choose card at random, call action passing through the card object. Display the text from the card.
+                randomCard = shuffle.Next(0, this.communityChestDeck.Count - 1);
+                MessageBox.Show(this.communityChestDeck[randomCard].CardText);
+                this.Action(this.communityChestDeck[randomCard]);
+                this.communityChestDeck.RemoveAt(randomCard);
             }
         }
 
@@ -465,19 +515,18 @@ namespace Monopoly
         /// <param name="taxAmount">Amount of money to subtract</param>
         private void Tax(int taxAmount)
         {
-            this.currentPlayersEnum.Current.Money -= taxAmount;
+            this.currentPlayersEnum.Current.Money = -taxAmount;
+            this.UpdateGui("spentOrReceivedMoney");
         }
 
         /// <summary>
-        /// Indicate the current player to choose a piece
+        /// Adds the amount of pay to current players money
         /// </summary>
-        private void ChoosePieces()
+        /// <param name="payAmount">Amount of money to subtract</param>
+        private void Pay(int payAmount)
         {
-            // Make confirm button visible
-            btnConfirmPlayerPiece.Visibility = Visibility.Visible;
-
-            // Change display of label to indicate to player who's turn it is to choose a piece.
-            lblDisplayTurnOrChoice.Content = "Player " + this.currentChoice.ToString() + " please choose a piece.";
+            this.currentPlayersEnum.Current.Money = payAmount;
+            this.UpdateGui("spentOrReceivedMoney");
         }
 
         /// <summary>
@@ -486,20 +535,8 @@ namespace Monopoly
         /// <param name="button"> The button that was pressed </param>
         private void StartGame(Button button)
         {
-            // change text to restart
-            TextBlockStartRestart.Text = "Restart";
-
-            // hide radio buttons
-            foreach (RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
-            {
-                b.Visibility = Visibility.Hidden;
-            }
-
             // set the Icon select buttons to visible
-            this.VisibleOrHide(true);
-
-            // Run choose pieces method which will make player classes with chosen pieces.
-            this.ChoosePieces();
+            this.UpdateGui("choosePieces");
         }
 
         /// <summary>
@@ -509,52 +546,8 @@ namespace Monopoly
         {
             // Update enum for player order
             this.UpdateEnum();
-
-            // hide pieces to be chosen.
-            this.VisibleOrHide(false);
-
-            // hide confirm piece button.
-            btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
-
-            this.ShowPlayerControls();
-
-            // Place player images on the board on go / 10,10
-            foreach (Player p in currentPlayers)
-            {
-                Image img = new Image();
-                img.Source = new BitmapImage(new Uri(@"/Images/" + p.Piece + ".png", UriKind.Relative));
-                this.GetWrapPanel(10, 10).Children.Add(img);
-                img.Name = p.Piece + "Img";
-            }
-        }
-
-        /// <summary>
-        /// Display the necessary controls for a players turn
-        /// </summary>
-        private void ShowPlayerControls()
-        {
-            // Set Control buttons to visible. Dice, Trade, etc...
-            lblDisplayTurnOrChoice.Content = "Roll Your Dice";
-            lblCurrentPlayer.Visibility = Visibility.Visible;
-            lblDisplayTurnOrChoice.Visibility = Visibility.Visible;
-            imgCurrentPlayer.Visibility = Visibility.Visible;
-            imgDice.Visibility = Visibility.Visible;
-
-            // Display first player's turn by changing imgCurrentPlayer
-            this.ChangeImage(this.currentPlayersEnum.Current.Piece, this.imgCurrentPlayer);
-
-            // Make dice labels visible
-            foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-            {
-                if (vb.Child is Label)
-                {
-                    Label l = vb.Child as Label;
-                    if (l.Tag != null && l.Tag.ToString() == "DiceLabel")
-                    {
-                        l.Visibility = Visibility.Visible;
-                    }
-                }
-            }
+            this.UpdateGui("piecesChosen");
+            this.UpdateGui("startOfTurn");            
         }
 
         /// <summary>
@@ -563,40 +556,11 @@ namespace Monopoly
         /// <param name="button"> The button that was pressed </param>
         private void RestartGame(Button button)
         {
-            // Change text to Start
-            TextBlockStartRestart.Text = "Start";
-
-            // Set number of players radiobuttons to unchecked and visibile again            
-            foreach (RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
-            {
-                b.IsChecked = false;
-                b.Visibility = Visibility.Visible;
-            }
-
-            // Hide labels and buttons that are not needed when at menu.
-            imgCurrentPlayer.Visibility = Visibility.Hidden;
-            btnEndTurn.Visibility = Visibility.Hidden;
-            btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
-
-            // Delete all player image pieces on the board.
-            foreach (Player p in currentPlayers)
-            {
-                this.RemovePiece(p);
-            }
-
-            // Removes the Property listboxes.
-            foreach (ListBox l in stpListBox.Children.OfType<ListBox>())
-            {
-                l.Items.Clear();
-            }
-
             // Reset any variables to starting amounts.
             this.playerPieces = "null";
             this.diceResult[0] = 0;
             this.diceResult[1] = 0;
-            this.VisibleOrHide(false);
-            this.ChangeImage("default", this.imgCurrentPlayer);
-            this.Opacity1();
+            this.UpdateGui("freshWindow");
             this.numPlayers = 0;
             this.currentChoice = 1;
             currentPlayers.Clear();
@@ -685,19 +649,6 @@ namespace Monopoly
                 // Make a new player class with the number of that player and their chosen piece. Add them to the list of players.
                 currentPlayers.Add(new Player(this.currentChoice, this.playerPieces));
 
-                // make chosen piece hidden.                
-                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-                {
-                    if (vb.Child is Image)
-                    {
-                        Image i = vb.Child as Image;
-                        if (i.Tag != null && i.Tag.ToString() == this.playerPieces)
-                        {
-                            i.Visibility = Visibility.Hidden;
-                        }
-                    }
-                }
-
                 // Start the game if all players have chosen a piece.
                 // else if more players have pieces to choose increment the current players turn for choosing a piece.
                 if (this.currentChoice == this.numPlayers)
@@ -707,7 +658,7 @@ namespace Monopoly
                 else
                 {
                     this.currentChoice++;
-                    this.ChoosePieces();
+                    this.UpdateGui("chooseNextPiece");
                     this.playerPieces = null;
                 }
             }
@@ -715,25 +666,6 @@ namespace Monopoly
             {
                 MessageBox.Show("Please pick a piece.");
             }
-        }
-
-        /// <summary>
-        /// Finds the wrap panel at a given coordinate on the gridBoard
-        /// </summary>
-        /// <param name="x">The x coordinate</param>
-        /// <param name="y">The y coordinate</param>
-        /// <returns> The requested wrap panel object</returns>
-        private WrapPanel GetWrapPanel(int x, int y)
-        {
-            foreach (WrapPanel wp in GridBoard.Children)
-            {
-                if (wp.Tag.ToString() == x + "," + y)
-                {
-                    return wp;
-                }
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -762,10 +694,15 @@ namespace Monopoly
         /// <returns> The requested wrap panel object</returns>
         private WrapPanel GetWrapPanel(int distanceFromGo)
         {
+            if (distanceFromGo < 0)
+            {
+                distanceFromGo = distanceFromGo + 40;
+            }
+
             foreach (WrapPanel wp in GridBoard.Children)
             {
                 // We use a temporary variable to check if wp is the right distance from go/ the wrap panel we are looking for.
-                int potentialDistanceFromGo = NumbersFromString(wp.Name);
+                int potentialDistanceFromGo = this.NumbersFromString(wp.Name);
                 if (potentialDistanceFromGo == distanceFromGo && wp.Name != "WrapPanelJail11")
                 {
                     return wp;
@@ -842,47 +779,70 @@ namespace Monopoly
             this.DiceRoll();
             bool goneToJail = false;
 
-            // Set the DiceTotal
-            this.diceTotal = this.diceResult[0] + this.diceResult[1];
-
-            // Set labels to let the user know what they rolled.
-            lblDie1.Content = this.diceResult[0].ToString();
-            lblDie2.Content = this.diceResult[1].ToString();
-            lblTotal.Content = this.diceTotal.ToString();
-
-            // Check if the user rolled doubles and if so if it is 3 times in a row.
-            if (this.diceResult[0] == this.diceResult[1])
+            // Check if the player is in jail and if they are not on their third and final turn in jail.
+            if (this.currentPlayersEnum.Current.JailTurnCount != 0 && this.currentPlayersEnum.Current.JailTurnCount != 3)
             {
-                if (this.doublesCount == 3)
+                // If they rolled doubles, leave jail.
+                if (this.diceResult[0] == this.diceResult[1])
                 {
-                    // If they hit 3 doubles in a row send them to jail.
-                    MessageBox.Show("Go to jail.");
-                    this.GoToJail();
-                    goneToJail = true;
+                    // if you roll doubles you may leave jail, so we set jailTurnCount to 0
+                    this.currentPlayersEnum.Current.JailTurnCount = 0;
 
-                    // You can't continue moving from jail so hide dice, and show end turn button.
-                    imgDice.Visibility = Visibility.Hidden;
-                    btnEndTurn.Visibility = Visibility.Visible;
-                }
+                    // You don't keep moving with a doubles from jail.
+                    this.UpdateGui("leftJail");
+                    this.UpdateGui("doneMoving");
+                    this.MovePiece();
+                }                
                 else
                 {
-                    MessageBox.Show("You Rolled Doubles, Roll Again.");
-                    this.doublesCount++;
+                    // Increment the count for number of turns they have spent in jail and end their movement.
+                    this.currentPlayersEnum.Current.JailTurnCount++;
+                    this.UpdateGui("doneMoving");
                 }
+            }
+            else if (this.currentPlayersEnum.Current.JailTurnCount == 3)
+            {
+                // If you are on your 3rd turn in jail reset counter to 0 as you have to leave it this turn.
+                this.currentPlayersEnum.Current.JailTurnCount = 0;
 
+                // if it is their 3rd turn in jail they need to pay the $50 fine. they continue moving as normal but can't go again due to doubles.
+                this.Tax(50);
+                this.UpdateGui("doneMoving");
+                this.MovePiece();
             }
             else
             {
-                // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
-                imgDice.Visibility = Visibility.Hidden;
-                btnEndTurn.Visibility = Visibility.Visible;
-            }
+                // Check if the user rolled doubles and if so if it is 3 times in a row.
+                if (this.diceResult[0] == this.diceResult[1])
+                {
+                    if (this.doublesCount == 2)
+                    {
+                        // If they hit 3 doubles in a row send them to jail.
+                        MessageBox.Show("Go to jail.");
+                        this.GoToJail();
+                        goneToJail = true;
 
-            // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
-            if (!goneToJail)
-            {
-                this.MovePiece();
-            }
+                        // You can't continue moving from jail so hide dice, and show end turn button.
+                        this.UpdateGui("doneMoving");
+                    }
+                    else
+                    {
+                        MessageBox.Show("You Rolled Doubles, Roll Again.");
+                        this.doublesCount++;
+                    }
+                }
+                else
+                {
+                    // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
+                    this.UpdateGui("doneMoving");
+                }
+
+                // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
+                if (!goneToJail)
+                {
+                    this.MovePiece();
+                }
+            }            
         }
 
         /// <summary>
@@ -890,149 +850,353 @@ namespace Monopoly
         /// </summary>
         /// <param name="nameOfProperty"> The name of the property landed on</param>
         private void LandOnProperty(string nameOfProperty)
-        {
-            // Configure the message box to be displayed
+        {            
+            bool owned = false;
+            Player owner;
             Property property = this.GetProperty(nameOfProperty);
-            string messageBoxText = "Do you want to buy " + nameOfProperty + " for the price of $" + property.Price.ToString() + "?\nIf you do not buy this property, it will be put up for auction.";
-            string caption = "Buy Phase";
-            MessageBoxButton button = MessageBoxButton.YesNo;
 
-            // Display message box
-            MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button);
-
-            // Process message box results
-            switch (result)
+            // Check if property is owned.
+            foreach (Player p in currentPlayers)
             {
-                case MessageBoxResult.Yes:
-                    this.PurchaseProperty(property);
-                    break;
-
-                case MessageBoxResult.No:
-                    break;
-            }
-
-            if(property.Owned)
-            {
-                // Pay rent to the person who owns it
-                this.PayRent(property);
-            }
-        }
-
-        /// <summary>
-        /// If Yes was Pressed, Run this method that adds the property to there List box.
-        /// </summary>
-        /// <param name="property">The property to be purchased</param>
-        private void PurchaseProperty(Property property)
-        {
-            bool imageFound = false;
-            int currentLocation;
-
-            foreach (WrapPanel wp in GridBoard.Children)
-            {
-                foreach (Image i in wp.Children)
+                if (p.Properties.Contains(property))
                 {
-                    if (i.Name == this.currentPlayersEnum.Current.Piece + "Img")
-                    {
-                        imageFound = true;
-                        currentLocation = NumbersFromString(wp.Name);
-
-                        // Temp Place holder until we name the locations.
-                        ltbP1Owned.Items.Add(property.Name);
-                    }
-                }
-
-                if (imageFound)
-                {
-                    break;
+                    owned = true;
+                    owner = p;
                 }
             }
-        }
 
-        /// <summary>
-        /// Hides or shows menu items based on boolean selector
-        /// </summary>
-        /// <param name="v">Boolean selector for hide or show</param>
-        private void VisibleOrHide(bool v)
-        {
-            // used to either make every piece image hidden or visible.
-            if (v == true)
+            if (!owned)
             {
-                // Foreach loop that makes every image Visible.
-                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                // Configure the message box to be displayed
+                string messageBoxText = "Do you want to buy " + nameOfProperty + " for the price of $" + property.Price.ToString() + "?\nIf you do not buy this property, it will be put up for auction.";
+                string caption = "Buy Phase";
+                MessageBoxButton button = MessageBoxButton.YesNo;
+
+                // Display message box
+                MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button);
+
+                // Process message box results
+                switch (result)
                 {
-                    if (vb.Child is Image)
-                    {
-                        Image i = vb.Child as Image;
-                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer" && i.Tag.ToString() != "Dice")
-                        {
-                            i.Visibility = Visibility.Visible;
-                        }
-                    }
+                    case MessageBoxResult.Yes:
+                        this.PurchaseProperty(property);
+                        break;
+
+                    case MessageBoxResult.No:
+                        // TODO Auction
+                        break;
                 }
             }
             else
             {
-                // Foreach loop that makes every image hidden.
-                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-                {
-                    if (vb.Child is Image)
+                this.Tax(property.GetRentAmount(this.diceTotal));
+                MessageBox.Show("You paid $" + property.GetRentAmount(this.diceTotal).ToString() + " in rent.");
+            }            
+        }
+
+        /// <summary>
+        /// If Yes was Pressed, Run this method that adds the property to there owned properties list.
+        /// </summary>
+        /// <param name="property">The property to be purchased</param>
+        private void PurchaseProperty(Property property)
+        {
+            this.currentPlayersEnum.Current.BuyProperty(property, this.currentPlayersEnum.Current);
+            this.UpdateGui("boughtProperty");
+        }
+
+        /// <summary>
+        /// Based on the sent in instruction we will modify the GUI to show relevant controls to the current state requested.
+        /// </summary>
+        /// <param name="currentPartOfTurn">The step in turn the game is at.</param>
+        private void UpdateGui(string currentPartOfTurn)
+        {
+            switch (currentPartOfTurn)
+            {
+                case "leftJail":
+                    btnPayJailFee.Visibility = Visibility.Hidden;
+                    lblDisplayTurnOrChoice.Content = "Roll Your Dice";
+                    break;
+                case "startOfTurn":
+                    // Get rid of previous players jail button
+                    this.UpdateGui("leftJail");
+
+                    // remove previous dice labels.
+                    foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
                     {
-                        Image i = vb.Child as Image;
-                        if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer")
+                        if (vb.Child is Label)
                         {
-                            i.Visibility = Visibility.Hidden;
+                            Label l = vb.Child as Label;
+                            if (l.Tag != null && l.Tag.ToString() == "DiceLabel")
+                            {
+                                l.Visibility = Visibility.Hidden;
+                            }
                         }
                     }
-                }
-            }
 
-            // Also set labels visible/hidden
-            if (v == true)
-            {
-                // Foreach loop that makes every Label Visible.
-                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-                {
-                    if (vb.Child is Label)
+                    // Show buttons needed for a typical turn.
+                    // Set Control buttons to visible. Dice, Trade, etc...
+                    lblDisplayTurnOrChoice.Content = "Roll Your Dice";
+                    lblCurrentPlayer.Visibility = Visibility.Visible;
+                    lblDisplayTurnOrChoice.Visibility = Visibility.Visible;
+                    imgCurrentPlayer.Visibility = Visibility.Visible;
+                    imgDice.Visibility = Visibility.Visible;
+
+                    // Check if the player is in jail. If so show the button for paying the fee.
+                    if (this.currentPlayersEnum.Current.JailTurnCount > 0)
                     {
-                        Label l = vb.Child as Label;
-                        if (l.Tag != null)
+                        lblDisplayTurnOrChoice.Content = "Either pay the fee to leave jail or attempt to roll doubles.";
+                        btnPayJailFee.Visibility = Visibility.Visible;
+                    }
+
+                    if (this.currentPlayersEnum.Current.JailTurnCount == 3)
+                    {
+                        btnPayJailFee.Visibility = Visibility.Hidden;
+                        lblDisplayTurnOrChoice.Content = "Roll your dice, You will automatically pay the $50 Jail Fee.";
+                    }
+
+                    // ListBox of owned properties.
+                    // trade with other player button.
+                    // Hide end turn button
+                    btnEndTurn.Visibility = Visibility.Hidden;
+
+                    // Display player's turn by changing imgCurrentPlayer
+                    this.ChangeImage(this.currentPlayersEnum.Current.Piece, this.imgCurrentPlayer);
+                    
+                    // Fill in data
+                    lblBalance.Visibility = Visibility.Visible;
+                    lblMoney.Content = this.currentPlayersEnum.Current.Money.ToString();
+                    if (this.currentPlayersEnum.Current.Properties.Count != 0)
+                    {
+                        ListBoxPropertiesOwned.Visibility = Visibility.Visible;
+                        ListBoxPropertiesOwned.ItemsSource = this.currentPlayersEnum.Current.Properties;
+                        lblPropertiesYouOwn.Visibility = Visibility.Visible;                        
+                    }
+                    else
+                    {
+                        ListBoxPropertiesOwned.Visibility = Visibility.Hidden;
+                        lblPropertiesYouOwn.Visibility = Visibility.Hidden;
+                    }
+
+                    if (this.currentPlayersEnum.Current.GetOutOfJailCards.Count != 0)
+                    {
+                        foreach (Card c in this.currentPlayersEnum.Current.GetOutOfJailCards)
                         {
-                            if (l.Tag.ToString() != "CurrentPlayer" && l.Tag.ToString() != "DiceLabel")
+                            if (c.CardText == "This card may be kept until needed or sold.  Get out of jail free.")
+                            {
+                                imgGetOutOfJailChance.Visibility = Visibility.Visible;
+                            }
+                            else if (c.CardText == "Get out of Jail, free.  This card may be kept until needed or sold.")
+                            {
+                                imgGetOutOfJailCommunityChest.Visibility = Visibility.Visible;
+                            }
+                        }
+                    }
+                    
+                    break;
+                case "doneMoving":
+                    // Hide dice and show end turn button
+                    imgDice.Visibility = Visibility.Hidden;
+                    btnEndTurn.Visibility = Visibility.Visible;
+                    break;
+                case "rolledDice":
+                    // Make dice labels visible
+                    foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                    {
+                        if (vb.Child is Label)
+                        {
+                            Label l = vb.Child as Label;
+                            if (l.Tag != null && l.Tag.ToString() == "DiceLabel")
                             {
                                 l.Visibility = Visibility.Visible;
                             }
                         }
                     }
-                }
-            }
-            else
-            {
-                // Foreach loop that makes every Label hidden.
-                foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
-                {
-                    if (vb.Child is Label)
+
+                    lblDisplayTurnOrChoice.Content = "Trade with other players, or End your turn.";
+                    break;
+
+                case "freshWindow":
+                    // Change text to Start
+                    TextBlockStartRestart.Text = "Start";
+
+                    // Delete all player image pieces on the board.
+                    foreach (Player p in currentPlayers)
                     {
-                        Label l = vb.Child as Label;
-                        if (l.Tag == null)
-                        {
-                            l.Visibility = Visibility.Hidden;
-                        }
+                        this.RemovePiece(p);
+                    }
 
-                        if (l.Tag != null)
-                        {
-                            if (l.Tag.ToString() != "display")
-                            {
-                                l.Visibility = Visibility.Hidden;
-                            }
+                    this.ChangeImage("default", this.imgCurrentPlayer);
 
-                            if (l.Tag.ToString() == "display")
+                    // Hide labels and buttons that are not needed when at menu.
+                    imgCurrentPlayer.Visibility = Visibility.Hidden;
+                    btnEndTurn.Visibility = Visibility.Hidden;
+                    btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
+                    lblCurrentPlayer.Visibility = Visibility.Hidden;
+                    lblBalance.Visibility = Visibility.Hidden;
+                    lblMoney.Visibility = Visibility.Hidden;
+                    imgDice.Visibility = Visibility.Hidden;
+                    lblDiceTotal.Visibility = Visibility.Hidden;
+                    lblDie1.Visibility = Visibility.Hidden;
+                    lblDie2.Visibility = Visibility.Hidden;
+                    lblDieOne.Visibility = Visibility.Hidden;
+                    lblDieTwo.Visibility = Visibility.Hidden;
+                    lblTotal.Visibility = Visibility.Hidden;
+                    lblDisplayTurnOrChoice.Visibility = Visibility.Hidden;
+                    btnPayJailFee.Visibility = Visibility.Hidden;
+                    ListBoxPropertiesOwned.Visibility = Visibility.Hidden;
+                    lblPropertiesYouOwn.Visibility = Visibility.Hidden;
+                    imgGetOutOfJailChance.Visibility = Visibility.Hidden;
+                    imgGetOutOfJailCommunityChest.Visibility = Visibility.Hidden;
+
+                    // Foreach loop that makes every piece choice image hidden.
+                    foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                    {
+                        if (vb.Child is Image)
+                        {
+                            Image i = vb.Child as Image;
+                            if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer")
                             {
-                                l.Content = "Choose number of Players then press Start.";
+                                i.Visibility = Visibility.Hidden;
                             }
                         }
                     }
-                }
+
+                    // Show buttons needed at main menu/restarted game
+                    // Set number of players radiobuttons to unchecked and visibile again            
+                    foreach (RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
+                    {
+                        b.IsChecked = false;
+                        b.Visibility = Visibility.Visible;
+                    }
+
+                    // set opacity back to normal for piece images.
+                    this.Opacity1();
+                    break;
+
+                case "choosePieces":
+                    // hide radio buttons
+                    foreach (RadioButton b in StkRadioButtons.Children.OfType<RadioButton>())
+                    {
+                        b.Visibility = Visibility.Hidden;
+                    }
+
+                    // change text to restart
+                    TextBlockStartRestart.Text = "Restart";                    
+
+                    // Display buttons for choosing pieces.
+                    // Foreach loop that makes every Choose piece image Visible.
+                    foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                    {
+                        if (vb.Child is Image)
+                        {
+                            Image i = vb.Child as Image;
+                            if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer" && i.Tag.ToString() != "Dice")
+                            {
+                                i.Visibility = Visibility.Visible;
+                            }
+                        }
+                    }
+
+                    // Make confirm button visible
+                    btnConfirmPlayerPiece.Visibility = Visibility.Visible;
+
+                    // Change display of label to indicate to player who's turn it is to choose a piece.
+                    lblDisplayTurnOrChoice.Content = "Player " + this.currentChoice.ToString() + " please choose a piece.";
+                    break;
+
+                case "chooseNextPiece":
+                    // make chosen piece hidden.                
+                    foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                    {
+                        if (vb.Child is Image)
+                        {
+                            Image i = vb.Child as Image;
+                            if (i.Tag != null && i.Tag.ToString() == this.playerPieces)
+                            {
+                                i.Visibility = Visibility.Hidden;
+                            }
+                        }
+                    }
+
+                    // Change display of label to indicate to player who's turn it is to choose a piece.
+                    lblDisplayTurnOrChoice.Content = "Player " + this.currentChoice.ToString() + " please choose a piece.";
+                    break;
+
+                case "piecesChosen":
+                    // Place player images on the board on go / 10,10
+                    foreach (Player p in currentPlayers)
+                    {
+                        Image img = new Image();
+                        img.Source = new BitmapImage(new Uri(@"/Images/" + p.Piece + ".png", UriKind.Relative));
+                        img.Effect = new DropShadowEffect
+                        {
+                            Color = new Color { A = 255, R = 0, G = 0, B = 0 },
+                            Direction = 270,
+                            ShadowDepth = 5,
+                            Opacity = 1,
+                            BlurRadius = 15
+                        }; 
+                        this.GetWrapPanel("Go").Children.Add(img);
+                        img.Name = p.Piece + "Img";
+                    }
+
+                    // Foreach loop that makes every piece choice image hidden.
+                    foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                    {
+                        if (vb.Child is Image)
+                        {
+                            Image i = vb.Child as Image;
+                            if (i.Tag != null && i.Tag.ToString() != "CurrentPlayer")
+                            {
+                                i.Visibility = Visibility.Hidden;
+                            }
+                        }
+                    }
+
+                    // hide confirm piece button.
+                    btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
+                    break;
+
+                case "boughtProperty":
+                    lblMoney.Content = this.currentPlayersEnum.Current.Money.ToString();
+                    ListBoxPropertiesOwned.Visibility = Visibility.Visible;
+                    ListBoxPropertiesOwned.ItemsSource = null;
+                    ListBoxPropertiesOwned.Items.Clear();
+                    ListBoxPropertiesOwned.ItemsSource = this.currentPlayersEnum.Current.Properties;
+                    lblPropertiesYouOwn.Visibility = Visibility.Visible;
+                    break;
+
+                case "spentOrReceivedMoney":
+                    lblMoney.Content = this.currentPlayersEnum.Current.Money.ToString();
+                    break;
+
+                case "cardDrawn":
+                    foreach (Card c in this.currentPlayersEnum.Current.GetOutOfJailCards)
+                    {
+                        if (c.CardText == "Get out of Jail, free.  This card may be kept until needed or sold.")
+                        {
+                            imgGetOutOfJailCommunityChest.Visibility = Visibility.Visible;
+                        }
+                        else if (c.CardText == "This card may be kept until needed or sold.  Get out of jail free.")
+                        {
+                            imgGetOutOfJailChance.Visibility = Visibility.Visible;
+                        }
+                    }                      
+                    
+                    break;
+                case "Auction":
+                    // Show text boxes for bidding with for each player.
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Based on the sent in instruction we will modify the GUI to show relevant controls to the current state requested.
+        /// </summary>
+        /// <param name="playerToTradeWith">The player object to trade with</param>
+        private void UpdateGui(Player playerToTradeWith)
+        {
+            // Show gui needed for trade using the requested player to trade with.
         }
 
         /// <summary>
@@ -1062,6 +1226,15 @@ namespace Monopoly
             // Add two rolls to diceResult array
             this.diceResult[0] = roll.Next(1, 7);
             this.diceResult[1] = roll.Next(1, 7);
+
+            // Set the DiceTotal
+            this.diceTotal = this.diceResult[0] + this.diceResult[1];
+
+            // Set labels to let the user know what they rolled.
+            lblDie1.Content = this.diceResult[0].ToString();
+            lblDie2.Content = this.diceResult[1].ToString();
+            lblTotal.Content = this.diceTotal.ToString();
+            this.UpdateGui("rolledDice");
         }
 
         /// <summary>
@@ -1106,13 +1279,10 @@ namespace Monopoly
                 this.UpdateEnum();
             }
 
-            this.ShowPlayerControls();
+            this.UpdateGui("startOfTurn");
 
             // reset doubles count
             this.doublesCount = 0;
-
-            // Hide end turn button
-            btnEndTurn.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -1173,30 +1343,47 @@ namespace Monopoly
         /// <summary>
         /// Populates the Chance deck with all the cards.
         /// </summary>
-        private void PopulateChanceDeck()
+        /// <param name="typeOfDeck"> The type of deck to populate</param>
+        private void PopulateDeck(string typeOfDeck)
         {
+            List<string> cardsToSkip = new List<string>();
+
+            // Check if any player owns any card.
+            if (currentPlayers.Count > 0)
+            {
+                foreach (Player p in currentPlayers)
+                {
+                    if (p.GetOutOfJailCards.Count > 0)
+                    {
+                        // if they own any add all of them to the list of cards to not reshuffle into the deck.
+                        foreach (Card c in p.GetOutOfJailCards)
+                        {
+                            cardsToSkip.Add(c.CardText);
+                        }
+                    }
+                }
+            }
+
             string[] card = File.ReadAllLines(@"TextDataFiles\chanceDeck.txt");
             foreach (string s in card)
             {
                 string[] splitS = s.Split('/');
-                chanceDeck.Add(new ChanceCard(splitS[0], splitS[1]));
+
+                // Skip adding the card to the new deck if it should be skipped.
+                if (!cardsToSkip.Contains(splitS[0]))
+                {   
+                    // Check which deck to add it to.
+                    if (typeOfDeck == "Chance")
+                    {
+                        this.chanceDeck.Add(new Card(splitS[0], splitS[1]));
+                    }
+                    else
+                    {
+                        this.communityChestDeck.Add(new Card(splitS[0], splitS[1]));
+                    }
+                }
             }
         }
-
-        /// <summary>
-        /// Populates the Community chest deck list with all the cards.
-        /// </summary>
-        private void PopulateCommunityChestDeck()
-        {
-            string[] card = File.ReadAllLines(@"TextDataFiles\communityChestDeck.txt");
-            foreach (string s in card)
-            {
-                string[] splitS = s.Split('/');
-                communityChestDeck.Add(new CommunityChest(splitS[0], splitS[1]));
-            }
-        }
-
-
 
         /// <summary>
         /// Get the next railroad in front of the player
@@ -1204,26 +1391,28 @@ namespace Monopoly
         /// <returns> name of railroad to travel to.</returns>
         private string NextRailroad()
         {
-            int playerLocation = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
+            int playerLocation = this.NumbersFromString(this.FindCurrentPlayerWrapPanel().Name);
             int closestRailroad = 100;
-            int possibleclosestRailroad;
-            foreach( WrapPanel wp in GridBoard.Children)
+            int possibleShortestDistanceSoFar;
+            int shortestDistanceSoFar = 100;
+            foreach (WrapPanel wp in GridBoard.Children)
             {
-                if ( wp.Name.Contains("Railroad"))
+                if (wp.Name.Contains("Railroad"))
                 {
-                    possibleclosestRailroad = NumbersFromString(wp.Name) - playerLocation;
-                    if (possibleclosestRailroad < closestRailroad && possibleclosestRailroad > 0)
+                    possibleShortestDistanceSoFar = this.NumbersFromString(wp.Name) - playerLocation;
+                    if (possibleShortestDistanceSoFar < shortestDistanceSoFar && possibleShortestDistanceSoFar > 0)
                     {
-                        closestRailroad = possibleclosestRailroad;
+                        shortestDistanceSoFar = possibleShortestDistanceSoFar;
+                        closestRailroad = this.NumbersFromString(wp.Name);
                     }
-
                 }
-
             }
+
             if (closestRailroad != 100)
             {
-                return GetWrapPanel(closestRailroad + 1).Name;
+                return this.GetWrapPanel(closestRailroad).Name;
             }
+
             return "Reading Railroad";
         }
 
@@ -1233,84 +1422,58 @@ namespace Monopoly
         /// <returns> name of utility to travel to.</returns>
         private string NextUtility()
         {
-            int playerLocation = NumbersFromString(FindCurrentPlayerWrapPanel().Name);
+            int playerLocation = this.NumbersFromString(this.FindCurrentPlayerWrapPanel().Name);
             int closestUtility = 100;
-            int possibleclosestUtility;
+            int possibleShortestDistanceSoFar;
+            int shortestDistanceSoFar = 100;
             foreach (WrapPanel wp in GridBoard.Children)
             {
                 if (wp.Name.Contains("Utility"))
                 {
-                    possibleclosestUtility = NumbersFromString(wp.Name) - playerLocation;
-                    if (possibleclosestUtility < closestUtility && possibleclosestUtility > 0)
+                    possibleShortestDistanceSoFar = this.NumbersFromString(wp.Name) - playerLocation;
+                    if (possibleShortestDistanceSoFar < shortestDistanceSoFar && possibleShortestDistanceSoFar > 0)
                     {
-                        closestUtility = possibleclosestUtility;
+                        shortestDistanceSoFar = possibleShortestDistanceSoFar;
+                        closestUtility = this.NumbersFromString(wp.Name);
                     }
-
                 }
-
             }
+
             if (closestUtility != 100)
             {
-                return GetWrapPanel(closestUtility + 1).Name;
+                return this.GetWrapPanel(closestUtility).Name;
             }
-            return "Water Works";
-        }
 
-        private void BtnTest_Click(object sender, RoutedEventArgs e)
-        {
-            // use this to test events.
-            DrawCard("Chance");
+            return "Water Works Utility";
         }
 
         /// <summary>
-        /// Pays rent to the player who owns the property.
+        /// A button to be used for development purposes
         /// </summary>
-        /// <param name="prop">Property Owned</param>
-        private void PayRent(Property prop)
+        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
+        private void BtnTest_Click(object sender, RoutedEventArgs e)
         {
-            // Houses on owned property.
-            var houses = prop.Houses;
-            
-            // Player who landed on owned property.
-            var player = this.GetCurrentPlayer();
+            /* TESTDEV
+            // use this to test events.
 
-            foreach(Player p in currentPlayers)
-            {
-                foreach(Property pro in p.Properties)
-                {
-                    // If the player who landed on the property isn't the one who owns it.
-                    if(p != player)
-                    {
-                        // If the current property name is found in a player's owned properties list
-                        // Then pay them player rent.
-                        if (pro.Name == prop.Name)
-                        {
-                            if (houses == 1)
-                            {
-                                player.Money -= pro.OneHouseRent;
-                                p.Money += pro.OneHouseRent;
-                            }
+            // GoToJail();
+            // DrawCard("Chance");
+            // DrawCard("CommunityChest");
+            */
+        }
 
-                            if (houses == 1)
-                            {
-                                player.Money -= pro.TwoHouseRent;
-                                p.Money += pro.TwoHouseRent;
-                            }
-
-                            if (houses == 1)
-                            {
-                                player.Money -= pro.ThreeHouseRent;
-                                p.Money += pro.ThreeHouseRent;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // The player who landed on the property owns this property.
-                        break;
-                    }
-                }
-            }
+        /// <summary>
+        /// Pays the fee for jail and moves the player out of jail.
+        /// </summary>
+        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
+        private void BtnPayJailFee_Click(object sender, RoutedEventArgs e)
+        {
+            this.Tax(50);
+            this.currentPlayersEnum.Current.JailTurnCount = 0;
+            this.MovePiece("Just Visiting");
+            this.UpdateGui("leftJail");
         }
     }
 }
