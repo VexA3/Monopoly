@@ -171,7 +171,7 @@
             </Viewbox>
             <!--#endregion-->
             <!--#region Labels for display-->
-            <Viewbox Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="8" HorizontalAlignment="Center">
+            <Viewbox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" HorizontalAlignment="Center">
                 <Label x:Name="lblDisplayTurnOrChoice" Content="Choose number of Players and then select Start" FontWeight="Bold" Visibility="Visible" Tag="display"/>
             </Viewbox>
             <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="2">
@@ -235,6 +235,24 @@
             <Button x:Name="btnPayJailFee" Click="BtnPayJailFee_Click" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
                 <Viewbox>
                     <TextBlock>Pay $50 jail fee</TextBlock>
+                </Viewbox>
+            </Button>
+
+            <Button x:Name="btnPurchaseHouse" Click="BtnPurchaseHouse_Click" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible">
+                <Viewbox>
+                    <TextBlock>Purchase House</TextBlock>
+                </Viewbox>
+            </Button>
+
+            <Button x:Name="btnSellHouseOrMortgage" Click="BtnSellHouse_Click" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible">
+                <Viewbox>
+                    <TextBlock>Sell House</TextBlock>
+                </Viewbox>
+            </Button>
+
+            <Button x:Name="btnBid" Click="BtnBid_Click" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible">
+                <Viewbox>
+                    <TextBlock>Bid</TextBlock>
                 </Viewbox>
             </Button>
 

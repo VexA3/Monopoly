@@ -1540,5 +1540,20 @@ namespace Monopoly
             }
             
         }
+
+        private void BtnSellHouse_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnPurchaseHouse_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnBid_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO Extra Credit
+        }
     }
 }
