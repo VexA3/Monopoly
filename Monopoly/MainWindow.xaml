@@ -227,9 +227,9 @@
             </Button>
             <Viewbox  Grid.Column="4" Grid.ColumnSpan="4" Grid.Row="2" Grid.RowSpan="2">
                 <WrapPanel>
-                    <Image x:Name="imgGetOutOfJailCommunityChest"  Source="Images/CCGetOutOfJail.png" Visibility="Hidden"></Image>
+                    <Image x:Name="imgGetOutOfJailCommunityChest"  Source="Images/CCGetOutOfJail.png" Visibility="Hidden" MouseDown="ImgGetOutOfJail_MouseDown"></Image>
                     <Image x:Name="padding" Width="15" ></Image>
-                    <Image x:Name="imgGetOutOfJailChance" Source="Images/GetOutOfJail..png" Visibility="Hidden"></Image>
+                    <Image x:Name="imgGetOutOfJailChance" Source="Images/GetOutOfJail..png" Visibility="Hidden" MouseDown="ImgGetOutOfJail_MouseDown"></Image>
                 </WrapPanel>
             </Viewbox>
             <Button x:Name="btnPayJailFee" Click="BtnPayJailFee_Click" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">

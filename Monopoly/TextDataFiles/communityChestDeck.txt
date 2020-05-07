@@ -3,7 +3,7 @@ You have won second prize in a beauty contest.  Collect $10./gain10
 Doctor's Fee, Pay $50./lose50
 Advance to Go, Collect $200./advanceToGo
 From sale of stock, you get $45./gain45
-Xmas fun matures, collect $100./gain100
+Holiday fund matures, collect $100./gain100
 Your are assessed for street repairs.  $40 per house.  $115 per hotel./lose40PerHouse115PerHotel
 Grand opera opening.  Collect $50 from every player for opening night seats./gain50PerPlayer
 Get out of Jail, free.  This card may be kept until needed or sold./getOutOfJail

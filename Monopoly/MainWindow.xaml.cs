@@ -121,6 +121,9 @@ namespace Monopoly
 
              // Add to new location
             this.GetWrapPanel("Jail").Children.Add(currentPlayerImageLocation);
+
+            // When a player is sent to jail there turn is over.
+            this.UpdateGui("doneMoving");
         }
 
         /// <summary>
@@ -921,6 +924,10 @@ namespace Monopoly
                     // Get rid of previous players jail button
                     this.UpdateGui("leftJail");
 
+                    // remove get out of jail cards from previous players
+                    imgGetOutOfJailChance.Visibility = Visibility.Hidden;
+                    imgGetOutOfJailCommunityChest.Visibility = Visibility.Hidden;
+
                     // remove previous dice labels.
                     foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
                     {
@@ -1162,8 +1169,7 @@ namespace Monopoly
                     btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
                     break;
 
-                case "boughtProperty":
-                    lblMoney.Content = this.currentPlayersEnum.Current.Money.ToString();
+                case "boughtProperty":                    
                     ListBoxPropertiesOwned.Visibility = Visibility.Visible;
                     ListBoxPropertiesOwned.ItemsSource = null;
                     ListBoxPropertiesOwned.Items.Clear();
@@ -1171,6 +1177,7 @@ namespace Monopoly
                                                          orderby p.Group.ToString()
                                                          select p;
                     lblPropertiesYouOwn.Visibility = Visibility.Visible;
+                    this.UpdateGui("spentOrReceivedMoney");
                     break;
 
                 case "spentOrReceivedMoney":
@@ -1178,6 +1185,10 @@ namespace Monopoly
                     break;
 
                 case "cardDrawn":
+                    // First clear any ones already there.
+                    imgGetOutOfJailChance.Visibility = Visibility.Hidden;
+                    imgGetOutOfJailCommunityChest.Visibility = Visibility.Hidden;
+
                     foreach (Card c in this.currentPlayersEnum.Current.GetOutOfJailCards)
                     {
                         if (c.CardText == "Get out of Jail, free.  This card may be kept until needed or sold.")
@@ -1370,26 +1381,35 @@ namespace Monopoly
                     }
                 }
             }
-
-            string[] card = File.ReadAllLines(@"TextDataFiles\chanceDeck.txt");
-            foreach (string s in card)
+            // Check which deck to add it to.
+            if (typeOfDeck == "Chance")
             {
-                string[] splitS = s.Split('/');
+                string[] card = File.ReadAllLines(@"TextDataFiles\chanceDeck.txt");
+                foreach (string s in card)
+                {
+                    string[] splitS = s.Split('/');
 
-                // Skip adding the card to the new deck if it should be skipped.
-                if (!cardsToSkip.Contains(splitS[0]))
-                {   
-                    // Check which deck to add it to.
-                    if (typeOfDeck == "Chance")
-                    {
+                    // Skip adding the card to the new deck if it should be skipped.
+                    if (!cardsToSkip.Contains(splitS[0]))
+                    {                        
                         this.chanceDeck.Add(new Card(splitS[0], splitS[1]));
                     }
-                    else
+                }
+            }
+            else
+            {
+                string[] card = File.ReadAllLines(@"TextDataFiles\communityChestDeck.txt");
+                foreach (string s in card)
+                {
+                    string[] splitS = s.Split('/');
+
+                    // Skip adding the card to the new deck if it should be skipped.
+                    if (!cardsToSkip.Contains(splitS[0]))
                     {
                         this.communityChestDeck.Add(new Card(splitS[0], splitS[1]));
                     }
                 }
-            }
+            }            
         }
 
         /// <summary>
@@ -1461,7 +1481,7 @@ namespace Monopoly
         /// <param name="e">The event arguments for the event.</param>
         private void BtnTest_Click(object sender, RoutedEventArgs e)
         {
-            DrawCard("Chance");
+             DrawCard("Community Chest");
             /* TESTDEV
             // use this to test events.
 
@@ -1482,6 +1502,42 @@ namespace Monopoly
             this.currentPlayersEnum.Current.JailTurnCount = 0;
             this.MovePiece("Just Visiting");
             this.UpdateGui("leftJail");
+        }
+
+        /// <summary>
+        /// Pays the fee for jail and moves the player out of jail.
+        /// </summary>
+        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
+        private void ImgGetOutOfJail_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Only run this if the player is in jail.
+            if (this.currentPlayersEnum.Current.JailTurnCount != 0)
+            {
+                String cardType = (sender as Image).Name;
+
+
+                this.currentPlayersEnum.Current.JailTurnCount = 0;
+                this.MovePiece("Just Visiting");
+                this.UpdateGui("leftJail");
+
+                // Remove the card from players owned cards.
+                foreach (Card c in this.currentPlayersEnum.Current.GetOutOfJailCards)
+                {
+                    if (c.CardText == "Get out of Jail, free.  This card may be kept until needed or sold." && cardType.Contains("Community"))
+                    {
+                        this.currentPlayersEnum.Current.GetOutOfJailCards.Remove(c);
+                        break;
+                    }
+                    else if (c.CardText == "This card may be kept until needed or sold.  Get out of jail free." && cardType.Contains("Chance"))
+                    {
+                        this.currentPlayersEnum.Current.GetOutOfJailCards.Remove(c);
+                        break;
+                    }
+                }
+                UpdateGui("cardDrawn");
+            }
+            
         }
     }
 }
