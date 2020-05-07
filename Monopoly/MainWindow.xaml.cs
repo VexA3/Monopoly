@@ -1543,17 +1543,21 @@ namespace Monopoly
 
         private void BtnSellHouse_Click(object sender, RoutedEventArgs e)
         {
-
+            //This will sell house for selected property ListboxPropertiesOwned.Selected
+            // mortgage if no houeses.
         }
 
         private void BtnPurchaseHouse_Click(object sender, RoutedEventArgs e)
         {
-
+            // purchase house for selected property ListboxPropertiesOwned.Selected
+            // only works if you aren't adding a house that is 2 above lowest number of houses for a property group/color others for example 1, 1, 0 you have to put a 1 on the 0.
         }
 
         private void BtnBid_Click(object sender, RoutedEventArgs e)
         {
             //TODO Extra Credit
+            // This will be used in conjunction with a textinput to allow players to bid for a property. Check if bid is greater than previous bid. Show current bid, cycle to next player.
+
         }
     }
 }
