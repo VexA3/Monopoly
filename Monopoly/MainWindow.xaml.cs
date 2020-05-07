@@ -972,6 +972,7 @@ namespace Monopoly
                     
                     // Fill in data
                     lblBalance.Visibility = Visibility.Visible;
+                    lblMoney.Visibility = Visibility.Visible;
                     lblMoney.Content = this.currentPlayersEnum.Current.Money.ToString();
 
                     // ListBox of owned properties.
