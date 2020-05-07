@@ -971,14 +971,10 @@ namespace Monopoly
                     if (this.currentPlayersEnum.Current.Properties.Count != 0)
                     {
                         ListBoxPropertiesOwned.Visibility = Visibility.Visible;
-                        ListBoxPropertiesOwned.ItemsSource = this.currentPlayersEnum.Current.Properties;
+                        ListBoxPropertiesOwned.ItemsSource = from p in this.currentPlayersEnum.Current.Properties
+                                                             orderby p.Group.ToString()
+                                                             select p;
                         lblPropertiesYouOwn.Visibility = Visibility.Visible;
-
-                        // Loop through each item in the list box and color it based on it's group.
-                        for(int i = 0; i<ListBoxPropertiesOwned.Items.Count; i++)
-                        {
-                            //ListBoxPropertiesOwned.Items[i] = Brushes.Red;
-                        }
                     }
                     else
                     {
@@ -1171,7 +1167,9 @@ namespace Monopoly
                     ListBoxPropertiesOwned.Visibility = Visibility.Visible;
                     ListBoxPropertiesOwned.ItemsSource = null;
                     ListBoxPropertiesOwned.Items.Clear();
-                    ListBoxPropertiesOwned.ItemsSource = this.currentPlayersEnum.Current.Properties;
+                    ListBoxPropertiesOwned.ItemsSource = from p in this.currentPlayersEnum.Current.Properties
+                                                         orderby p.Group.ToString()
+                                                         select p;
                     lblPropertiesYouOwn.Visibility = Visibility.Visible;
                     break;
 

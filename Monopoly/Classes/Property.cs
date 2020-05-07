@@ -16,7 +16,7 @@ namespace Monopoly
     /// A class to hold property data
     /// </summary>
     public class Property
-    {
+    { 
         /// <summary>
         /// Price of railroads
         /// </summary>
