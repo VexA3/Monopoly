@@ -262,11 +262,11 @@ namespace Monopoly
         {
             if(this.houses < 5)
             {
-                return this.houses.ToString();
+                return " has " + this.houses.ToString() + " houses.";
             }
             else
             {
-                return "Hotel";
+                return "Has a hotel";
             }
         }
 
@@ -285,6 +285,19 @@ namespace Monopoly
         {
             get { return this.owner; }
             set { this.owner = value; }
+        }
+
+        /// <summary>
+        /// Gets the cost of purchasing a house for the property
+        /// </summary>
+        public int HousePrice
+        {
+            get { return this.housePrice; }
+        }
+
+        public int RentAmount
+        {
+            get { return GetRentAmount(0); }
         }
 
         /// <summary>

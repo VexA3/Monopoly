@@ -924,6 +924,9 @@ namespace Monopoly
                     // Get rid of previous players jail button
                     this.UpdateGui("leftJail");
 
+                    // Get rid of previous buy/sell house buttons
+                    this.UpdateGui("propertyUnselected");
+
                     // remove get out of jail cards from previous players
                     imgGetOutOfJailChance.Visibility = Visibility.Hidden;
                     imgGetOutOfJailCommunityChest.Visibility = Visibility.Hidden;
@@ -1203,8 +1206,28 @@ namespace Monopoly
                     }                      
                     
                     break;
+                case "propertySelected":
+                    btnPurchaseHouse.Visibility = Visibility.Visible;
+                    btnSellHouseOrMortgage.Visibility = Visibility.Visible;
+                    Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
+                    if(selectedProperty.Name.Contains("Railroad") || selectedProperty.Name.Contains("Utility"))
+                    {
+                        btnPurchaseHouse.Visibility = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        btnPurchaseHouse.Content = "Purchase a house for $" + selectedProperty.HousePrice;
+                    }                    
+                    break;
+
+                case "propertyUnselected":
+                    btnPurchaseHouse.Visibility = Visibility.Hidden;
+                    btnSellHouseOrMortgage.Visibility = Visibility.Hidden;
+                    break;
+
                 case "Auction":
                     // Show text boxes for bidding with for each player.
+                    btnBid.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -1549,6 +1572,9 @@ namespace Monopoly
 
         private void BtnPurchaseHouse_Click(object sender, RoutedEventArgs e)
         {
+            Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
+            // Update button content to show cost of a house.
+            
             // purchase house for selected property ListboxPropertiesOwned.Selected
             // only works if you aren't adding a house that is 2 above lowest number of houses for a property group/color others for example 1, 1, 0 you have to put a 1 on the 0.
         }
@@ -1558,6 +1584,16 @@ namespace Monopoly
             //TODO Extra Credit
             // This will be used in conjunction with a textinput to allow players to bid for a property. Check if bid is greater than previous bid. Show current bid, cycle to next player.
 
+        }
+
+        private void ListBoxPropertiesOwned_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // The property in the listbox that is selected
+            Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
+            if(selectedProperty != null)
+            {
+                UpdateGui("propertySelected");
+            }            
         }
     }
 }
