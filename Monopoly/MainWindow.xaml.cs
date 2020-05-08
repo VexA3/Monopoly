@@ -96,6 +96,26 @@ namespace Monopoly
         private int doublesCount;
 
         /// <summary>
+        /// current highest bid.
+        /// </summary>
+        private int highestBid = 0;
+
+        /// <summary>
+        /// Player who has the current highest bid;
+        /// </summary>
+        private Player playerWithHighestBid;
+
+        /// <summary>
+        /// Current property being bid on
+        /// </summary>
+        private Property propertyBeingBidOn;
+
+        /// <summary>
+        /// Whether the current player can still move after auction.
+        /// </summary>
+        private bool keepMovingAfterAuction = false;
+
+        /// <summary>
         /// Initializes a new instance of the MainWindow class
         /// </summary>
         public MainWindow()
@@ -586,6 +606,7 @@ namespace Monopoly
             this.doublesCount = 0;
             this.PopulateDeck("Chance");
             this.PopulateDeck("CommunityChest");
+            this.highestBid = 0;
         }
 
         /// <summary>
@@ -852,12 +873,14 @@ namespace Monopoly
                     {
                         MessageBox.Show("You Rolled Doubles, Roll Again.");
                         this.doublesCount++;
+                        this.keepMovingAfterAuction = true;
                     }
                 }
                 else
                 {
                     // If they haven't rolled doubles then their turn is over. Hide dice and show end turn button.
                     this.UpdateGui("doneMoving");
+                    this.keepMovingAfterAuction = false;
                 }
 
                 // if you go to jail their piece is already moved to jail so do not move them the dicetotal as well.
@@ -908,7 +931,8 @@ namespace Monopoly
                         break;
 
                     case MessageBoxResult.No:
-                        // TODO Auction
+                        this.propertyBeingBidOn = property;
+                        this.UpdateGui("Auction");
                         break;
                 }
             }
@@ -955,6 +979,10 @@ namespace Monopoly
                     imgGetOutOfJailChance.Visibility = Visibility.Hidden;
                     imgGetOutOfJailCommunityChest.Visibility = Visibility.Hidden;
 
+                    // Hide properties owned, will check later if needed to be shown
+                    ListBoxPropertiesOwned.Visibility = Visibility.Hidden;
+                    lblPropertiesYouOwn.Visibility = Visibility.Hidden;
+
                     // remove previous dice labels.
                     foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
                     {
@@ -967,6 +995,9 @@ namespace Monopoly
                             }
                         }
                     }
+
+                    // Hide end turn button
+                    btnEndTurn.Visibility = Visibility.Hidden;
 
                     // Show buttons needed for a typical turn.
                     // Set Control buttons to visible. Dice, Trade, etc...
@@ -989,10 +1020,6 @@ namespace Monopoly
                         lblDisplayTurnOrChoice.Content = "Roll your dice, You will automatically pay the $50 Jail Fee.";
                     }
 
-                    // trade with other player button.
-                    // Hide end turn button
-                    btnEndTurn.Visibility = Visibility.Hidden;
-
                     // Display player's turn by changing imgCurrentPlayer
                     this.ChangeImage(this.currentPlayersEnum.Current.Piece, this.imgCurrentPlayer);
 
@@ -1009,11 +1036,6 @@ namespace Monopoly
                             orderby p.Group.ToString()
                             select p;
                         lblPropertiesYouOwn.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        ListBoxPropertiesOwned.Visibility = Visibility.Hidden;
-                        lblPropertiesYouOwn.Visibility = Visibility.Hidden;
                     }
 
                     if (this.currentPlayersEnum.Current.GetOutOfJailCards.Count != 0)
@@ -1090,6 +1112,10 @@ namespace Monopoly
                     lblPropertiesYouOwn.Visibility = Visibility.Hidden;
                     imgGetOutOfJailChance.Visibility = Visibility.Hidden;
                     imgGetOutOfJailCommunityChest.Visibility = Visibility.Hidden;
+                    btnBid.Visibility = Visibility.Hidden;
+                    txtBoxBid.Visibility = Visibility.Hidden;
+                    btnSkipBid.Visibility = Visibility.Hidden;
+                    btnEndBidding.Visibility = Visibility.Hidden;
 
                     // Foreach loop that makes every piece choice image hidden.
                     foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
@@ -1241,8 +1267,11 @@ namespace Monopoly
 
                     break;
                 case "propertySelected":
+                    
+                    // make the upgrade buttons visible
                     btnPurchaseHouse.Visibility = Visibility.Visible;
                     btnSellHouseOrMortgage.Visibility = Visibility.Visible;
+
                     Property selectedProperty = ListBoxPropertiesOwned.SelectedItem as Property;
                     if ((selectedProperty.Name.Contains("Railroad") || selectedProperty.Name.Contains("Utility")) &&
                         !selectedProperty.IsMortgaged)
@@ -1259,6 +1288,20 @@ namespace Monopoly
                     {
                         TextBlockPurchaseOrUnmortgageHouse.Text =
                             "Purchase a house for $" + selectedProperty.HousePrice;
+                    }
+
+                    if (selectedProperty.IsMortgaged)
+                    {
+                        this.btnSellHouseOrMortgage.Visibility = Visibility.Hidden;
+                    }
+                    else if (selectedProperty.Houses == 0)
+                    {
+                        this.TextBlockSellOrMortgageHouse.Text =
+                            "Mortgage this property for $" + selectedProperty.Mortage;
+                    }
+                    else
+                    {
+                        this.TextBlockSellOrMortgageHouse.Text = "Sell house for $" + (selectedProperty.HousePrice / 2).ToString();
                     }
 
                     break;
@@ -1317,8 +1360,77 @@ namespace Monopoly
 
                     break;
                 case "Auction":
-                    // Show text boxes for bidding with for each player.
+                    // Reuse current choice for auction cycling, set currentchoice to current player's player number
+                    this.currentChoice = this.currentPlayersEnum.Current.PlayerNum;
+
+                    // Get rid of previous players jail button
+                    this.UpdateGui("leftJail");
+
+                    // Get rid of previous buy/sell house buttons
+                    this.UpdateGui("propertyUnselected");
+
+                    // remove get out of jail cards from previous players
+                    imgGetOutOfJailChance.Visibility = Visibility.Hidden;
+                    imgGetOutOfJailCommunityChest.Visibility = Visibility.Hidden;
+
+                    // Hide properties owned, will check later if needed to be shown
+                    ListBoxPropertiesOwned.Visibility = Visibility.Hidden;
+                    lblPropertiesYouOwn.Visibility = Visibility.Hidden;
+
+                    // remove previous dice labels.
+                    foreach (Viewbox vb in GridControls.Children.OfType<Viewbox>())
+                    {
+                        if (vb.Child is Label)
+                        {
+                            Label l = vb.Child as Label;
+                            if (l.Tag != null && l.Tag.ToString() == "DiceLabel")
+                            {
+                                l.Visibility = Visibility.Hidden;
+                            }
+                        }
+                    }
+
+                    this.UpdateGui("doneMoving");
+
+                    // Hide end turn button
+                    btnEndTurn.Visibility = Visibility.Hidden;
+
+                    // Display buttons and text input for bidding.
                     btnBid.Visibility = Visibility.Visible;
+                    txtBoxBid.Visibility = Visibility.Visible;
+                    btnSkipBid.Visibility = Visibility.Visible;
+
+                    // Change display of label to indicate to player who's turn it is to bid
+                    lblDisplayTurnOrChoice.Content = "Player " + this.currentChoice.ToString() + " Place your bid on " + this.propertyBeingBidOn.Name;
+                    break;
+
+                case "nextBid":
+                    lblDisplayTurnOrChoice.Content = "Player " + this.currentChoice.ToString() + " Place your bid on " + this.propertyBeingBidOn.Name + "Current bid is at $" + this.highestBid.ToString();
+                    this.txtBoxBid.Text = "Enter a bid amount.";
+                    this.ChangeImage(currentPlayers[this.currentChoice - 1].Piece, this.imgCurrentPlayer);
+                    break;
+                case "haveHighestBid":
+                    this.btnEndBidding.Visibility = Visibility.Visible;
+                    break;
+                case "endAuction":
+                    // check if the player was supposed to continue moving.
+                    if (this.keepMovingAfterAuction)
+                    {
+                        this.UpdateGui("startOfTurn");
+                        this.UpdateGui("rolledDice");
+                    }
+                    else
+                    {
+                        UpdateGui("startOfTurn");
+                        UpdateGui("rolledDice");
+                        UpdateGui("doneMoving");
+                    }
+
+                    this.UpdateGui("spentOrReceivedMoney");
+                    btnBid.Visibility = Visibility.Hidden;
+                    txtBoxBid.Visibility = Visibility.Hidden;
+                    btnSkipBid.Visibility = Visibility.Hidden;
+                    btnEndBidding.Visibility = Visibility.Hidden;
                     break;
             }
         }
@@ -1957,20 +2069,9 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// button to handle bidding submission.
-        /// </summary>
-        /// /// <param name="sender">The object that initiated the event.</param>
-        /// <param name="e">The event arguments for the event.</param>
-        private void BtnBid_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO Extra Credit
-            // This will be used in conjunction with a textinput to allow players to bid for a property. Check if bid is greater than previous bid. Show current bid, cycle to next player.
-        }
-
-        /// <summary>
         /// Event handler to update GUI on changing selected Property
         /// </summary>
-        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="sender">The object that initiated the event.</param>
         /// <param name="e">The event arguments for the event.</param>
         private void ListBoxPropertiesOwned_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1979,6 +2080,111 @@ namespace Monopoly
             if (selectedProperty != null)
             {
                 this.UpdateGui("propertySelected");
+            }
+        }
+
+        /// <summary>
+        /// button to handle bidding submission.
+        /// </summary>
+        /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
+        private void BtnBid_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO Extra Credit
+            // This will be used in conjunction with a textinput to allow players to bid for a property. Check if bid is greater than previous bid. Show current bid, cycle to next player.
+            bool isValid = true;
+            bool nextBidder = false;
+            foreach (char c in this.txtBoxBid.Text)
+            {
+                if (!char.IsDigit(c))
+                {
+                    MessageBox.Show("Please enter a valid bid containing only numbers.");
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (isValid)
+            {
+                if (Convert.ToInt32(txtBoxBid.Text) > currentPlayers[this.currentChoice - 1].Money)
+                {
+                    MessageBox.Show("You do not have enough money to bid that amount.");
+                }
+                else if (Convert.ToInt32(txtBoxBid.Text) <= this.highestBid)
+                {
+                    MessageBox.Show(
+                        "Either bid higher than the current highest bid of $" + this.highestBid.ToString() +
+                        " or choose skip bid or end bidding.");
+                }
+                else
+                {
+                    this.highestBid = Convert.ToInt32(txtBoxBid.Text);
+                    this.playerWithHighestBid = currentPlayers[this.currentChoice - 1];
+                    nextBidder = true;
+                    this.UpdateGui("haveHighestBid");
+                }
+            }
+
+            if (nextBidder)
+            {
+                // go back to first player if at last player bid.
+                if (this.currentChoice == this.numPlayers)
+                {
+                    this.currentChoice = 1;
+                }
+                else
+                {
+                    this.currentChoice++;
+                }
+
+                this.UpdateGui("nextBid");
+            }
+        }
+
+        /// <summary>
+        /// button to handle bidding submission.
+        /// </summary>
+        /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
+        private void BtnSkipBid_Click(object sender, RoutedEventArgs e)
+        {
+            // go back to first player if at last player bid.
+            if (this.currentChoice == this.numPlayers)
+            {
+                this.currentChoice = 1;
+            }
+            else
+            {
+                this.currentChoice++;
+            }
+
+            this.UpdateGui("nextBid");
+        }
+
+        /// <summary>
+        /// button to handle bidding submission.
+        /// </summary>
+        /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
+        private void BtnEndBidding_Click(object sender, RoutedEventArgs e)
+        {
+            this.playerWithHighestBid.BuyProperty(this.propertyBeingBidOn, this.playerWithHighestBid, this.highestBid);
+            MessageBox.Show(
+                this.playerWithHighestBid.Piece + " has won the auction for " + this.propertyBeingBidOn.Name +
+                " for the total $" + this.highestBid.ToString() + "!");
+            this.UpdateGui("endAuction");
+        }
+
+        /// <summary>
+        /// Text box to hold bid amount.
+        /// </summary>
+        /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
+        private void TxtBoxBid_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if ((sender as TextBox).Text == "Enter a bid amount.")
+            {
+                this.txtBoxBid.Text = string.Empty;
             }
         }
     }
