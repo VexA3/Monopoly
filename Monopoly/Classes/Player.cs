@@ -100,6 +100,14 @@ namespace Monopoly
         }
 
         /// <summary>
+        /// Gets the player number of the player
+        /// </summary>
+        public int PlayerNum
+        {
+            get { return this.playerNum; }
+        }
+
+        /// <summary>
         /// Gets or sets the value of number of turns in jail.
         /// </summary>
         public int JailTurnCount
@@ -118,6 +126,19 @@ namespace Monopoly
             this.money = this.money - prop.Price;
             prop.Owner = owner;
             this.properties.Add(prop);
+        }
+
+        /// <summary>
+        /// Add property to list of owned properties
+        /// </summary>
+        /// <param name="prop"> The property to add to the players owned properties </param>
+        /// <param name="owner"> The player that is the new owner of the property</param>
+        /// <param name="bidAmount"> The amount the property was bid at for</param>
+        public void BuyProperty(Property prop, Player owner, int bidAmount)
+        {
+            this.money = this.money - bidAmount;
+            prop.Owner = owner;
+            owner.properties.Add(prop);
         }
 
         /// <summary>
