@@ -1499,20 +1499,73 @@ namespace Monopoly
         }
 
         /// <summary>
+        /// Return whether the player can buy a house or hotel for the selected property group.
+        /// <param name="selectedProp"> The property the player is attempting to upgrade</param>
+        /// <returns> A boolean value of whether you can buy the upgrade or not.</returns>
+        private bool canBuyUpgrade(Property selectedProp)
+        {
+            int groupCount = 0;
+            int playerGroupCount = 0;
+            String groupColor = selectedProp.Group.ToString();
+
+            // First we check if the player owns all properties in the group.
+            foreach(Property p in allProperties)
+            {
+                if(p.Group.ToString() == groupColor)
+                {
+                    groupCount++;
+                }
+            }
+
+            foreach(Property p in currentPlayersEnum.Current.Properties)
+            {
+                if (p.Group.ToString() == groupColor)
+                {
+                    playerGroupCount++;
+                }
+            }
+            
+            // If they do own all properties in the group, we check if they are buying a house for a property in that group with the lowest amount of houses.
+            if(playerGroupCount == groupCount)
+            {
+                foreach (Property p in currentPlayersEnum.Current.Properties)
+                {
+                    if (p.Group.ToString() == groupColor)
+                    {
+                        if (selectedProp.Houses > p.Houses)
+                        {
+                            MessageBox.Show("You must first upgrade the other properties in this group to the same amount of houses.");
+                            return false;                            
+                        }                        
+                    }                
+                }
+            }
+            else
+            {
+                MessageBox.Show("You do not own all properties in that group");
+                return false;
+            }
+
+            return true;            
+        }
+
+        /// <summary>
         /// A button to be used for development purposes
         /// </summary>
         /// /// <param name="sender">The object that initiated the event.</param>
         /// <param name="e">The event arguments for the event.</param>
         private void BtnTest_Click(object sender, RoutedEventArgs e)
         {
-             DrawCard("Community Chest");
-            /* TESTDEV
+            /* TESTDEV*/
             // use this to test events.
 
             // GoToJail();
-            
-            // DrawCard("CommunityChest");
-            */
+            //DrawCard("Community Chest");
+            // DrawCard("CommunityChest");            
+            currentPlayersEnum.Current.BuyProperty(allProperties[2], currentPlayersEnum.Current);
+            currentPlayersEnum.Current.BuyProperty(allProperties[3], currentPlayersEnum.Current);
+            currentPlayersEnum.Current.BuyProperty(allProperties[4], currentPlayersEnum.Current);
+
         }
 
         /// <summary>
@@ -1573,8 +1626,23 @@ namespace Monopoly
         private void BtnPurchaseHouse_Click(object sender, RoutedEventArgs e)
         {
             Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
-            // Update button content to show cost of a house.
-            
+            SolidColorBrush selectedPropertyGroup = selectedProperty.Group;
+
+
+            if ( currentPlayersEnum.Current.Money >= selectedProperty.HousePrice)
+            {
+                if(canBuyUpgrade(selectedProperty))
+                {
+                    selectedProperty.Houses = 1;
+                    Tax(selectedProperty.HousePrice);
+                }             
+            }
+            else
+            {
+                MessageBox.Show("You do not have enough money to purchase a house.");
+            }
+
+            UpdateGui("boughtProperty");
             // purchase house for selected property ListboxPropertiesOwned.Selected
             // only works if you aren't adding a house that is 2 above lowest number of houses for a property group/color others for example 1, 1, 0 you have to put a 1 on the 0.
         }

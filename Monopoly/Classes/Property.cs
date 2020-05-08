@@ -369,6 +369,6 @@ namespace Monopoly
             }
 
             return rentAmount;
-        }
+        }        
     }
 }
