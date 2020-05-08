@@ -138,7 +138,12 @@
                     <TextBlock x:Name="TextBlockStartRestart">Start</TextBlock>
                 </Viewbox>
             </Button>
-            <Button x:Name="btnTest" Click="BtnTest_Click" Grid.Row="13" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible">
+            <Button x:Name="btnTest" Click="BtnTest_Click" Grid.Row="12" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
+                <Viewbox>
+                    <TextBlock>Test</TextBlock>
+                </Viewbox>
+            </Button>
+            <Button x:Name="btnTest2" Click="BtnTest2_Click" Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
                 <Viewbox>
                     <TextBlock>Test</TextBlock>
                 </Viewbox>
@@ -171,7 +176,7 @@
             </Viewbox>
             <!--#endregion-->
             <!--#region Labels for display-->
-            <Viewbox Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="8" HorizontalAlignment="Center">
+            <Viewbox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" HorizontalAlignment="Center">
                 <Label x:Name="lblDisplayTurnOrChoice" Content="Choose number of Players and then select Start" FontWeight="Bold" Visibility="Visible" Tag="display"/>
             </Viewbox>
             <Viewbox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="2">
@@ -232,9 +237,27 @@
                     <Image x:Name="imgGetOutOfJailChance" Source="Images/GetOutOfJail..png" Visibility="Hidden" MouseDown="ImgGetOutOfJail_MouseDown"></Image>
                 </WrapPanel>
             </Viewbox>
-            <Button x:Name="btnPayJailFee" Click="BtnPayJailFee_Click" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
+            <Button x:Name="btnPayJailFee" Click="BtnPayJailFee_Click" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
                 <Viewbox>
                     <TextBlock>Pay $50 jail fee</TextBlock>
+                </Viewbox>
+            </Button>
+
+            <Button x:Name="btnPurchaseHouse" Click="BtnPurchaseHouse_Click" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="Hidden">
+                <Viewbox>
+                    <TextBlock x:Name="TextBlockPurchaseOrUnmortgageHouse">Purchase House</TextBlock>
+                </Viewbox>
+            </Button>
+
+            <Button x:Name="btnSellHouseOrMortgage" Click="BtnSellHouse_Click" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="4" Visibility="Hidden">
+                <Viewbox>
+                    <TextBlock x:Name="TextBlockSellOrMortgageHouse">Sell House</TextBlock>
+                </Viewbox>
+            </Button>
+
+            <Button x:Name="btnBid" Click="BtnBid_Click" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
+                <Viewbox>
+                    <TextBlock>Bid</TextBlock>
                 </Viewbox>
             </Button>
 
@@ -247,21 +270,22 @@
             <Viewbox Grid.Column="4" Grid.RowSpan="1" Grid.ColumnSpan="4" Grid.Row="4" HorizontalAlignment="Right">
                 <Label x:Name="lblMoney" Content="" FontWeight="Bold" FontSize="28"/>
             </Viewbox>
-            <ListBox x:Name="ListBoxPropertiesOwned"  Visibility="Hidden" FontSize="30" Grid.Column="4" Grid.ColumnSpan="4" Grid.Row="6" Grid.RowSpan="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" FontStretch="UltraExpanded">
+            <ListBox x:Name="ListBoxPropertiesOwned"  Visibility="Hidden" FontSize="30" Grid.Column="4" Grid.ColumnSpan="4" Grid.Row="6" Grid.RowSpan="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" FontStretch="UltraExpanded" SelectionChanged="ListBoxPropertiesOwned_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,5">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Background="{Binding Group}"/>
-                            <TextBlock Text="{Binding Name}" />
-                            <TextBlock Grid.Column="1" Width="10"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>                           
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" Background="{Binding Group}"/>
+                            <TextBlock Grid.Column="1" Text="|"/>
                             <TextBlock Grid.Column="2" Text="{Binding ListBoxDisplay}" />
+                            <TextBlock Grid.Column="3" Text="| Rent is $"/>
+                            <TextBlock Grid.Column="4" Text="{Binding RentAmount}" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

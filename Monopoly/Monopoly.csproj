@@ -119,6 +119,8 @@
   <ItemGroup>
     <Resource Include="Images\CCGetOutOfJail.png" />
     <Resource Include="Images\GetOutOfJail..png" />
+    <Resource Include="Images\hotel.png" />
+    <Resource Include="Images\house.png" />
     <Content Include="TextDataFiles\communityChestDeck.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
