@@ -138,12 +138,12 @@
                     <TextBlock x:Name="TextBlockStartRestart">Start</TextBlock>
                 </Viewbox>
             </Button>
-            <Button x:Name="btnTest" Click="BtnTest_Click" Grid.Row="12" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible">
+            <Button x:Name="btnTest" Click="BtnTest_Click" Grid.Row="12" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
                 <Viewbox>
                     <TextBlock>Test</TextBlock>
                 </Viewbox>
             </Button>
-            <Button x:Name="btnTest2" Click="BtnTest2_Click" Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Visible">
+            <Button x:Name="btnTest2" Click="BtnTest2_Click" Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
                 <Viewbox>
                     <TextBlock>Test</TextBlock>
                 </Viewbox>
@@ -237,25 +237,25 @@
                     <Image x:Name="imgGetOutOfJailChance" Source="Images/GetOutOfJail..png" Visibility="Hidden" MouseDown="ImgGetOutOfJail_MouseDown"></Image>
                 </WrapPanel>
             </Viewbox>
-            <Button x:Name="btnPayJailFee" Click="BtnPayJailFee_Click" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
+            <Button x:Name="btnPayJailFee" Click="BtnPayJailFee_Click" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
                 <Viewbox>
                     <TextBlock>Pay $50 jail fee</TextBlock>
                 </Viewbox>
             </Button>
 
-            <Button x:Name="btnPurchaseHouse" Click="BtnPurchaseHouse_Click" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
+            <Button x:Name="btnPurchaseHouse" Click="BtnPurchaseHouse_Click" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Visibility="Hidden">
                 <Viewbox>
-                    <TextBlock>Purchase House</TextBlock>
+                    <TextBlock x:Name="TextBlockPurchaseOrUnmortgageHouse">Purchase House</TextBlock>
                 </Viewbox>
             </Button>
 
-            <Button x:Name="btnSellHouseOrMortgage" Click="BtnSellHouse_Click" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
+            <Button x:Name="btnSellHouseOrMortgage" Click="BtnSellHouse_Click" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="4" Visibility="Hidden">
                 <Viewbox>
-                    <TextBlock>Sell House</TextBlock>
+                    <TextBlock x:Name="TextBlockSellOrMortgageHouse">Sell House</TextBlock>
                 </Viewbox>
             </Button>
 
-            <Button x:Name="btnBid" Click="BtnBid_Click" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
+            <Button x:Name="btnBid" Click="BtnBid_Click" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Visibility="Hidden">
                 <Viewbox>
                     <TextBlock>Bid</TextBlock>
                 </Viewbox>

@@ -38,9 +38,9 @@ namespace Monopoly
         private int mortgage;
 
         /// <summary>
-        /// Keeps track if the property is owned.
+        /// Keeps track if the property is mortgaged.
         /// </summary>
-        private bool owned;
+        private bool isMortgaged;
 
         /// <summary>
         /// color of the group of properties on the board.
@@ -122,7 +122,6 @@ namespace Monopoly
             this.fourHouseRent = fourHouseRent;
             this.hotelRent = hotelRent;
             this.group = group;
-            this.owned = false;
             this.mortgage = price / 2;
         }
 
@@ -136,8 +135,7 @@ namespace Monopoly
             if (type == "railroad")
             {
                 this.name = name;
-                this.price = this.railroadPrice;
-                this.owned = false;
+                this.price = this.railroadPrice;                
                 this.mortgage = this.railroadPrice / 2;
                 this.group = Brushes.Gray;
             }
@@ -145,7 +143,6 @@ namespace Monopoly
             {
                 this.name = name;
                 this.price = this.utilityPrice;
-                this.owned = false;
                 this.mortgage = this.utilityPrice / 2;
                 this.group = Brushes.LightGray;
             }            
@@ -168,12 +165,12 @@ namespace Monopoly
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the property is owned.
+        /// Gets or sets a value indicating whether the property is mortgaged.
         /// </summary>
-        public bool Owned
+        public bool IsMortgaged
         {
-            get { return this.owned; }
-            set { this.owned = value; }
+            get { return this.isMortgaged; }
+            set { this.isMortgaged = value; }
         }
 
         /// <summary>
@@ -253,29 +250,14 @@ namespace Monopoly
         {
             get { return this.houses; }
             set { this.houses += value; }
-        }
-
-        /// <summary>
-        /// Returns the string of Number of houses or a hotel depending on what is on the property for displaying to the listbox
-        /// </summary>
-        private string houseNumberOrHotel()
-        {
-            if(this.houses < 5)
-            {
-                return " has " + this.houses.ToString() + " houses.";
-            }
-            else
-            {
-                return "Has a hotel";
-            }
-        }
+        }        
 
         /// <summary>
         /// Gets the string that should be displayed in the list box.
         /// </summary>
         public string ListBoxDisplay
         {
-            get { return this.houseNumberOrHotel(); }
+            get { return this.HouseNumberOrHotel(); }
         }
 
         /// <summary>
@@ -295,10 +277,13 @@ namespace Monopoly
             get { return this.housePrice; }
         }
 
+        /// <summary>
+        /// Gets the current rent of the property. Assuming dice roll 0 for utilities.
+        /// </summary>
         public int RentAmount
         {
-            get { return GetRentAmount(0); }
-        }
+            get { return this.GetRentAmount(0); }
+        }        
 
         /// <summary>
         /// Get the current rent of the property
@@ -340,7 +325,7 @@ namespace Monopoly
                     
                 if (count == 1)
                 {
-                    if(diceAmount != 0)
+                    if (diceAmount != 0)
                     {
                         rentAmount = diceAmount * 4;
                     }
@@ -387,6 +372,26 @@ namespace Monopoly
             }
 
             return rentAmount;
-        }        
+        }
+
+        /// <summary>
+        /// Returns the string of Number of houses or a hotel depending on what is on the property for displaying to the ListBox
+        /// </summary>
+        /// <returns> The string to be placed in ListBox for telling state of the property</returns>
+        private string HouseNumberOrHotel()
+        {
+            if (this.isMortgaged)
+            {
+                return " is mortgaged.";
+            }
+            else if (this.houses < 5)
+            {
+                return " has " + this.houses.ToString() + " houses.";
+            }
+            else
+            {
+                return "Has a hotel";
+            }
+        }
     }
 }
