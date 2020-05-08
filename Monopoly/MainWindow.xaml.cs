@@ -1182,6 +1182,7 @@ namespace Monopoly
                                                          select p;
                     lblPropertiesYouOwn.Visibility = Visibility.Visible;
                     this.UpdateGui("spentOrReceivedMoney");
+                    this.UpdateGui("drawHouses");
                     break;
 
                 case "spentOrReceivedMoney":
@@ -1224,7 +1225,52 @@ namespace Monopoly
                     btnPurchaseHouse.Visibility = Visibility.Hidden;
                     btnSellHouseOrMortgage.Visibility = Visibility.Hidden;
                     break;
+                case "clearHouses":
+                    foreach (Property p in allProperties)
+                    {
+                        if (GetWrapPanel(p.Name) != null)
+                        {
+                            List<Image> imagesToRemove = new List<Image>();
+                            foreach (Image i in GetWrapPanel(p.Name).Children)
+                            {
+                                if (!i.Name.Contains("Piece"))
+                                {
+                                    imagesToRemove.Add(i);
+                                }
+                            }
+                            foreach (Image i in imagesToRemove)
+                            {
+                                GetWrapPanel(p.Name).Children.Remove(i);
+                            }
+                        }
+                    }
+                    break;
+                case "drawHouses":
+                    // First clear any previous images.                    
+                    UpdateGui("clearHouses");
 
+                    foreach (Player p in currentPlayers)
+                    {
+                        foreach(Property prop in p.Properties)
+                        {
+                            if (0 < prop.Houses && prop.Houses < 5)
+                            {
+                                for(int i = 0; i <prop.Houses; i++)
+                                {
+                                    Image newImage = new Image();
+                                    newImage.Source = new BitmapImage(new Uri(@"/Images/house.png", UriKind.Relative));
+                                    GetWrapPanel(prop.Name).Children.Add(newImage);
+                                }                                
+                            }
+                            else if(prop.Houses == 5)
+                            {
+                                Image newImage = new Image();
+                                newImage.Source = new BitmapImage(new Uri(@"/Images/Hotel.png", UriKind.Relative));
+                                GetWrapPanel(prop.Name).Children.Add(newImage);
+                            }
+                        }
+                    }
+                    break;
                 case "Auction":
                     // Show text boxes for bidding with for each player.
                     btnBid.Visibility = Visibility.Visible;
@@ -1564,8 +1610,12 @@ namespace Monopoly
             // DrawCard("CommunityChest");            
             currentPlayersEnum.Current.BuyProperty(allProperties[2], currentPlayersEnum.Current);
             currentPlayersEnum.Current.BuyProperty(allProperties[3], currentPlayersEnum.Current);
-            currentPlayersEnum.Current.BuyProperty(allProperties[4], currentPlayersEnum.Current);
+            currentPlayersEnum.Current.BuyProperty(allProperties[4], currentPlayersEnum.Current);        
+        }
 
+        private void BtnTest2_Click(object sender, RoutedEventArgs e)
+        {
+            MovePiece("Vermont Avenue");
         }
 
         /// <summary>
@@ -1626,22 +1676,26 @@ namespace Monopoly
         private void BtnPurchaseHouse_Click(object sender, RoutedEventArgs e)
         {
             Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
-            SolidColorBrush selectedPropertyGroup = selectedProperty.Group;
-
-
-            if ( currentPlayersEnum.Current.Money >= selectedProperty.HousePrice)
-            {
-                if(canBuyUpgrade(selectedProperty))
+            if(selectedProperty !=null)
                 {
-                    selectedProperty.Houses = 1;
-                    Tax(selectedProperty.HousePrice);
-                }             
-            }
-            else
-            {
-                MessageBox.Show("You do not have enough money to purchase a house.");
-            }
+                    SolidColorBrush selectedPropertyGroup = selectedProperty.Group;
+            
+            
 
+
+                if ( currentPlayersEnum.Current.Money >= selectedProperty.HousePrice)
+                {
+                    if(canBuyUpgrade(selectedProperty))
+                    {
+                        selectedProperty.Houses = 1;
+                        Tax(selectedProperty.HousePrice);
+                    }             
+                } 
+                else
+                {
+                    MessageBox.Show("You do not have enough money to purchase a house.");
+                }
+            }
             UpdateGui("boughtProperty");
             // purchase house for selected property ListboxPropertiesOwned.Selected
             // only works if you aren't adding a house that is 2 above lowest number of houses for a property group/color others for example 1, 1, 0 you have to put a 1 on the 0.
@@ -1663,5 +1717,7 @@ namespace Monopoly
                 UpdateGui("propertySelected");
             }            
         }
+
+        
     }
 }

@@ -340,12 +340,26 @@ namespace Monopoly
                     
                 if (count == 1)
                 {
-                    rentAmount = diceAmount * 4;
+                    if(diceAmount != 0)
+                    {
+                        rentAmount = diceAmount * 4;
+                    }
+                    else
+                    {
+                        rentAmount = 4;
+                    }
                 }
-            else
-            {
-                rentAmount = diceAmount * 10;
-            }
+                else
+                {
+                    if (diceAmount != 0)
+                    {
+                        rentAmount = diceAmount * 10;
+                    }
+                    else
+                    {
+                        rentAmount = 10;
+                    }
+                }
             }
             else if (this.houses == 1)
             {
@@ -360,6 +374,10 @@ namespace Monopoly
                 rentAmount = this.threeHouseRent;
             }
             else if (this.houses == 4)
+            {
+                rentAmount = this.fourHouseRent;
+            }
+            else if (this.houses == 5)
             {
                 rentAmount = this.hotelRent;
             }
