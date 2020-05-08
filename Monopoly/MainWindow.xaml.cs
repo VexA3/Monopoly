@@ -3,6 +3,7 @@
 //     Company copyright tag.
 // </copyright>
 //-----------------------------------------------------------------------
+
 namespace Monopoly
 {
     using System;
@@ -47,7 +48,7 @@ namespace Monopoly
         /// <summary>
         /// List of the community chest cards in the game
         /// </summary>
-        private List<Card> communityChestDeck = new List<Card>();        
+        private List<Card> communityChestDeck = new List<Card>();
 
         /// <summary>
         /// Enum for the list of current players
@@ -129,7 +130,7 @@ namespace Monopoly
             // remove image from current location
             this.FindCurrentPlayerWrapPanel().Children.Remove(currentPlayerImageLocation);
 
-             // Add to new location
+            // Add to new location
             this.GetWrapPanel("Jail").Children.Add(currentPlayerImageLocation);
 
             // When a player is sent to jail there turn is over.
@@ -193,7 +194,8 @@ namespace Monopoly
 
                 case "backThreeSpaces":
                     // move back three spaces
-                    this.MovePiece(this.GetWrapPanel(this.NumbersFromString(this.FindCurrentPlayerWrapPanel().Name) - 3).Name);                    
+                    this.MovePiece(
+                        this.GetWrapPanel(this.NumbersFromString(this.FindCurrentPlayerWrapPanel().Name) - 3).Name);
                     break;
 
                 // + money
@@ -233,7 +235,7 @@ namespace Monopoly
 
                     MessageBox.Show("You recieved $50 from each player");
                     break;
-                
+
                 case "lose15":
                     this.Tax(15);
                     break;
@@ -355,7 +357,7 @@ namespace Monopoly
             this.GetWrapPanel(whereTo).Children.Add(currentPlayerImage);
 
             // Call the method related with the location we landed on.
-            this.LandOnSpace(this.GetWrapPanel(whereTo));            
+            this.LandOnSpace(this.GetWrapPanel(whereTo));
         }
 
         /// <summary>
@@ -482,7 +484,7 @@ namespace Monopoly
         {
             int foundNumber = Convert.ToInt32(Regex.Replace(text, "[^0-9]", string.Empty));
             return foundNumber;
-        }        
+        }
 
         /// <summary>
         /// Draws the specified card by displaying the card text and calling Action(card.Action)
@@ -561,7 +563,7 @@ namespace Monopoly
             // Update enum for player order
             this.UpdateEnum();
             this.UpdateGui("piecesChosen");
-            this.UpdateGui("startOfTurn");            
+            this.UpdateGui("startOfTurn");
         }
 
         /// <summary>
@@ -641,7 +643,8 @@ namespace Monopoly
         /// <param name="e">The event arguments for the event.</param>
         private void BtnRules_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("THE PLAY...Starting with the Banker, each player in turn throws thedice. The player with the highest total starts the play: \n Place your tokenon the corner marked “GO,”  throw the dice and move your token inthe direction of the arrow the number of spaces \nindicated by the dice.After you have completed your play, the turn passes to the left.Thetokens remain on the spaces occupied and \n proceed from that point onthe player’s next turn.Two or more tokens may rest on the same spaceat the same time.According to the\n space your token reaches, you may be entitled tobuy real estate or other properties — or obliged to pay rent, pay taxes, draw a \n  Chance or Community Chest card, “Go to Jail®,” etc.If you throw doubles, you move your token as usual, the sum of thetwo dice, \n and are subject to any privileges or penalties pertaining tothe space on which you land.Retaining the dice, throw again andmove \n your token as before.If you throw doubles three times insuccession, move your token immediately to the space marked “InJail”(see JAIL).\n “GO”...Each time a player’s token lands on or passes over GO, whether by throwing the dice or drawing a card, the Banker \n  payshim / her a $200 salary.The $200 is paid only once each time around the board. However, ifa player passing GO on the throw \n   of the dice lands 2 spaces beyond iton Community Chest, or 7 spaces beyond it on Chance, and draws the“Advance to GO”  card, \n he / she collects $200 for passing GO the firsttime and another $200 for reaching it the second time by instructionson the card.\n   BUYING PROPERTY...Whenever you land on an unowned propertyyou may buy that property from the Bank at its printed price. \n     You receive the Title Deed card showing ownership; place it face up infront of you.If you do not wish to buy the property, \n   the Banker sells it at auctionto the highest bidder. The buyer pays the Bank the amount of the bidin cash and receives the \n   Title Deed card for that property. Any player, including the one who declined the option to buy it at the printedprice, may \n     bid.Bidding may start at any price.PAYING RENT...When you land on property owned by anotherplayer, the owner collects rent \n     from you in accordance with the listprinted on its Title Deed card.If the property is mortgaged, no rent can be collected.\n      When aproperty is mortgaged, its Title Deed card is placed face down in frontof the owner.It is an advantage to hold all \n      the Title Deed cards in a color - group(e.g., Boardwalk and Park Place; or Connecticut, Vermont and OrientalAvenues) because \n      the owner may then charge double rent forunimproved properties in that color-group.This rule applies tounmortgaged properties \n     even if another property in that color-groupis mortgaged.It is even more advantageous to have houses or hotels on properties \n     because rents are much higher than for unimproved properties.The owner may not collect the rent if he / she fails to ask for it beforethe second player following throws the dice.“CHANCE” \n  AND “COMMUNITY CHEST”...When you land oneither of these spaces, take the top card from the deck indicated, follow the instructions \n  and return the card face down to the bottom ofthe deck.The “Get Out of Jail Free”  card is held until used and then returned to \n  the bottom of the deck. If the player who draws it does not wish touse it, he / she may sell it, at any time, to another player \n    at a priceagreeable to both.“INCOME TAX”...If you land here you have two options: You mayestimate your tax at $200 and pay \n    the Bank, or you may pay 10 % ofyour total worth to the Bank.Your total worth is all your cash onhand, printed prices of \n    mortgaged and unmortgaged properties andcost price of all buildings you own.You must decide which option you will take before you add upyour total worth.“JAIL”...You land in Jail \nwhen...(1) your token lands on the spacemarked “Go to Jail”; (2) you draw a card marked “Go to Jail”; or(3) you throw doubles three times in succession.When you are sent to Jail you cannot\n collect your $200 salary in thatmove since, regardless of where your token is on the board, you mustmove it directly into Jail. Yours turn ends when you are sent to Jail.If you are not “sent”  \nto Jail but in the ordinary course of play landon that space, you are “Just Visiting,”  you incur no penalty, and youmove ahead in the usual manner on your next turn.You get out of Jail by...(1) \nthrowing doubles on any of your nextthree turns; if you succeed in doing this you immediately moveforward the number of spaces shown by your doubles throw; eventhough you had thrown doubles, you do not take\n another turn; (2) using the “Get Out of Jail Free”  \ncard if you have it; (3) purchasingthe “Get Out of Jail Free”  card from another player and playing it; (4) paying a fine of $50 before you roll the dice on either of your\n nexttwo turns.If you do not throw doubles by your third turn, you must pay the$50 fine.You then get out of Jail and immediately move forward thenumber of spaces shown by your throw.\nEven though you are in Jail, you may buy and sell property, buyand sell houses and hotels and collect rents.“FREE PARKING”...A player landing on this place does not receiveany money, \nproperty or reward of any kind. This is just a “free”resting place.HOUSES...When you own all the properties in a color-group youmay buy houses from the Bank and erect them on those properties.\nIf you buy one house, you may put it on any one of thoseproperties.The next house you buy must be erected on one of theunimproved properties of this or any other complete color - group youmay own.\nThe price you must pay the Bank for each house is shown on yourTitle Deed card for the property on which you erect the house.      The owner still collects double rent from an opponent who lands onthe unimproved properties of his / her complete color - group. \n      Following the above rules, you may buy and erect at any time asmany houses as your judgement and financial standing will allow. \n      Butyou must build evenly, i.e., you cannot erect more than one house onany one property of any color - group until you have \n      built one house onevery property of that group.You may then begin on the second rowof houses, and so on, up to a limit \n      of four houses to a property.Forexample, you cannot build three houses on one property if you haveonly one house on \n     another property of that group.As you build evenly, you must also break down evenly if you sellhouses back to the Bank \n     (see SELLING PROPERTY).HOTELS...When a player has four houses on each property of acomplete color - group, he / she may buy a \n         hotel from the Bank anderect it on any property of the color - group.He / she returns the fourhouses from that property to \n            the Bank and pays the price for the hotelas shown on the Title Deed card.Only one hotel may be erected onany one property.\n            BUILDING SHORTAGES...When the Bank has no houses to sell, players wishing to build must wait for some player to return or sell \nhis / her houses to the Bank before building. If there are a limitednumber of houses and hotels available and two or more \n  players wishto buy more than the Bank has, the houses or hotels must be sold atauction to the highest bidder.\n\nSELLING PROPERTY...Unimproved properties, railroads andutilities(but not buildings) may be sold to any player as a \nprivate transaction for any amount the owner can get; however, no propertycan be sold to another player if buildings \nare standing on anyproperties of that color-group.Any buildings so located must be soldback to the Bank before the \nowner can sell any property of that color-group.Houses and hotels may be sold back to the Bank at any time \nfor one-half the price paid for them.All houses on one color-group must be sold one by one, evenly, \nin reverse of the manner in which they were erected.All hotels on one color-group may be sold at once, or \nthey may besold one house at a time (one hotel equals five houses), evenly, inreverse of the manner in which \nthey were erected.MORTGAGES...Unimproved properties can be mortgaged throughthe Bank at any time.Before an \nimproved property can be mortgaged, all the buildings on all the properties of its color-group must be \nsold back to the Bank at half price.The mortgage value is printed on eachTitle Deed card.No rent can be \ncollected on mortgaged properties or utilities, butrent can be collected on unmortgaged properties in the same \ngroup.In order to lift the mortgage, the owner must pay the Bank theamount of the mortgage plus 10% interest. \nWhen all the properties of acolor-group are no longer mortgaged, the owner may begin to buyback houses at full \nprice.The player who mortgages property retains possession of it and noother player may secure it by lifting \nthe mortgage from the Bank. However, the owner may sell this mortgaged property to anotherplayer at any agreed\nprice. If you are the new owner, you may lift themortgage at once if you wish by paying off the mortgage \nplus 10%interest to the Bank.If the mortgage is not lifted at once, you must paythe Bank 10% interest \nwhen you buy the property and if you lift themortgage later you must pay the Bank an additional 10% interest \nas well as the amount of the mortgage.BANKRUPTCY...You are declared bankrupt if you owe more thanyou can pay either \nto another player or to the Bank. If your debt is toanother player, you must turn over to that player all that \nyou have ofvalue and retire from the game.In making this settlement, if you ownhouses or hotels, you must return \nthese to the Bank in exchange formoney to the extent of one-half the amount paid for them; this cash isgiven to \nthe creditor.If you have mortgaged property you also turnthis property over to your creditor but the new owner \nmust at oncepay the Bank the amount of interest on the loan, which is 10% of thevalue of the property. \nThe new owner who does this may then, athis/her option, pay the principal or hold the property until some \nlater turn, then lift the mortgage. If he/she holds property in this way untila later turn, he/she must pay \nthe interest again upon lifting themortgage.Should you owe the Bank, instead of another player, more than you \ncan pay (because of taxes or penalties) even by selling off buildingsand mortgaging property, you must turn over \nall assets to the Bank. Inthis case, the Bank immediately sells by auction all property so taken,except buildings. \nA bankrupt player must immediately retire from thegame. The last player left in the game wins.\n\nMISCELLANEOUS...Money can be loaned to a player only by theBank and then only by mortgaging property. \nNo player may borrowfrom or lend money to another player");
+            MessageBox.Show(
+                "THE PLAY...Starting with the Banker, each player in turn throws thedice. The player with the highest total starts the play: \n Place your tokenon the corner marked “GO,”  throw the dice and move your token inthe direction of the arrow the number of spaces \nindicated by the dice.After you have completed your play, the turn passes to the left.Thetokens remain on the spaces occupied and \n proceed from that point onthe player’s next turn.Two or more tokens may rest on the same spaceat the same time.According to the\n space your token reaches, you may be entitled tobuy real estate or other properties — or obliged to pay rent, pay taxes, draw a \n  Chance or Community Chest card, “Go to Jail®,” etc.If you throw doubles, you move your token as usual, the sum of thetwo dice, \n and are subject to any privileges or penalties pertaining tothe space on which you land.Retaining the dice, throw again andmove \n your token as before.If you throw doubles three times insuccession, move your token immediately to the space marked “InJail”(see JAIL).\n “GO”...Each time a player’s token lands on or passes over GO, whether by throwing the dice or drawing a card, the Banker \n  payshim / her a $200 salary.The $200 is paid only once each time around the board. However, ifa player passing GO on the throw \n   of the dice lands 2 spaces beyond iton Community Chest, or 7 spaces beyond it on Chance, and draws the“Advance to GO”  card, \n he / she collects $200 for passing GO the firsttime and another $200 for reaching it the second time by instructionson the card.\n   BUYING PROPERTY...Whenever you land on an unowned propertyyou may buy that property from the Bank at its printed price. \n     You receive the Title Deed card showing ownership; place it face up infront of you.If you do not wish to buy the property, \n   the Banker sells it at auctionto the highest bidder. The buyer pays the Bank the amount of the bidin cash and receives the \n   Title Deed card for that property. Any player, including the one who declined the option to buy it at the printedprice, may \n     bid.Bidding may start at any price.PAYING RENT...When you land on property owned by anotherplayer, the owner collects rent \n     from you in accordance with the listprinted on its Title Deed card.If the property is mortgaged, no rent can be collected.\n      When aproperty is mortgaged, its Title Deed card is placed face down in frontof the owner.It is an advantage to hold all \n      the Title Deed cards in a color - group(e.g., Boardwalk and Park Place; or Connecticut, Vermont and OrientalAvenues) because \n      the owner may then charge double rent forunimproved properties in that color-group.This rule applies tounmortgaged properties \n     even if another property in that color-groupis mortgaged.It is even more advantageous to have houses or hotels on properties \n     because rents are much higher than for unimproved properties.The owner may not collect the rent if he / she fails to ask for it beforethe second player following throws the dice.“CHANCE” \n  AND “COMMUNITY CHEST”...When you land oneither of these spaces, take the top card from the deck indicated, follow the instructions \n  and return the card face down to the bottom ofthe deck.The “Get Out of Jail Free”  card is held until used and then returned to \n  the bottom of the deck. If the player who draws it does not wish touse it, he / she may sell it, at any time, to another player \n    at a priceagreeable to both.“INCOME TAX”...If you land here you have two options: You mayestimate your tax at $200 and pay \n    the Bank, or you may pay 10 % ofyour total worth to the Bank.Your total worth is all your cash onhand, printed prices of \n    mortgaged and unmortgaged properties andcost price of all buildings you own.You must decide which option you will take before you add upyour total worth.“JAIL”...You land in Jail \nwhen...(1) your token lands on the spacemarked “Go to Jail”; (2) you draw a card marked “Go to Jail”; or(3) you throw doubles three times in succession.When you are sent to Jail you cannot\n collect your $200 salary in thatmove since, regardless of where your token is on the board, you mustmove it directly into Jail. Yours turn ends when you are sent to Jail.If you are not “sent”  \nto Jail but in the ordinary course of play landon that space, you are “Just Visiting,”  you incur no penalty, and youmove ahead in the usual manner on your next turn.You get out of Jail by...(1) \nthrowing doubles on any of your nextthree turns; if you succeed in doing this you immediately moveforward the number of spaces shown by your doubles throw; eventhough you had thrown doubles, you do not take\n another turn; (2) using the “Get Out of Jail Free”  \ncard if you have it; (3) purchasingthe “Get Out of Jail Free”  card from another player and playing it; (4) paying a fine of $50 before you roll the dice on either of your\n nexttwo turns.If you do not throw doubles by your third turn, you must pay the$50 fine.You then get out of Jail and immediately move forward thenumber of spaces shown by your throw.\nEven though you are in Jail, you may buy and sell property, buyand sell houses and hotels and collect rents.“FREE PARKING”...A player landing on this place does not receiveany money, \nproperty or reward of any kind. This is just a “free”resting place.HOUSES...When you own all the properties in a color-group youmay buy houses from the Bank and erect them on those properties.\nIf you buy one house, you may put it on any one of thoseproperties.The next house you buy must be erected on one of theunimproved properties of this or any other complete color - group youmay own.\nThe price you must pay the Bank for each house is shown on yourTitle Deed card for the property on which you erect the house.      The owner still collects double rent from an opponent who lands onthe unimproved properties of his / her complete color - group. \n      Following the above rules, you may buy and erect at any time asmany houses as your judgement and financial standing will allow. \n      Butyou must build evenly, i.e., you cannot erect more than one house onany one property of any color - group until you have \n      built one house onevery property of that group.You may then begin on the second rowof houses, and so on, up to a limit \n      of four houses to a property.Forexample, you cannot build three houses on one property if you haveonly one house on \n     another property of that group.As you build evenly, you must also break down evenly if you sellhouses back to the Bank \n     (see SELLING PROPERTY).HOTELS...When a player has four houses on each property of acomplete color - group, he / she may buy a \n         hotel from the Bank anderect it on any property of the color - group.He / she returns the fourhouses from that property to \n            the Bank and pays the price for the hotelas shown on the Title Deed card.Only one hotel may be erected onany one property.\n            BUILDING SHORTAGES...When the Bank has no houses to sell, players wishing to build must wait for some player to return or sell \nhis / her houses to the Bank before building. If there are a limitednumber of houses and hotels available and two or more \n  players wishto buy more than the Bank has, the houses or hotels must be sold atauction to the highest bidder.\n\nSELLING PROPERTY...Unimproved properties, railroads andutilities(but not buildings) may be sold to any player as a \nprivate transaction for any amount the owner can get; however, no propertycan be sold to another player if buildings \nare standing on anyproperties of that color-group.Any buildings so located must be soldback to the Bank before the \nowner can sell any property of that color-group.Houses and hotels may be sold back to the Bank at any time \nfor one-half the price paid for them.All houses on one color-group must be sold one by one, evenly, \nin reverse of the manner in which they were erected.All hotels on one color-group may be sold at once, or \nthey may besold one house at a time (one hotel equals five houses), evenly, inreverse of the manner in which \nthey were erected.MORTGAGES...Unimproved properties can be mortgaged throughthe Bank at any time.Before an \nimproved property can be mortgaged, all the buildings on all the properties of its color-group must be \nsold back to the Bank at half price.The mortgage value is printed on eachTitle Deed card.No rent can be \ncollected on mortgaged properties or utilities, butrent can be collected on unmortgaged properties in the same \ngroup.In order to lift the mortgage, the owner must pay the Bank theamount of the mortgage plus 10% interest. \nWhen all the properties of acolor-group are no longer mortgaged, the owner may begin to buyback houses at full \nprice.The player who mortgages property retains possession of it and noother player may secure it by lifting \nthe mortgage from the Bank. However, the owner may sell this mortgaged property to anotherplayer at any agreed\nprice. If you are the new owner, you may lift themortgage at once if you wish by paying off the mortgage \nplus 10%interest to the Bank.If the mortgage is not lifted at once, you must paythe Bank 10% interest \nwhen you buy the property and if you lift themortgage later you must pay the Bank an additional 10% interest \nas well as the amount of the mortgage.BANKRUPTCY...You are declared bankrupt if you owe more thanyou can pay either \nto another player or to the Bank. If your debt is toanother player, you must turn over to that player all that \nyou have ofvalue and retire from the game.In making this settlement, if you ownhouses or hotels, you must return \nthese to the Bank in exchange formoney to the extent of one-half the amount paid for them; this cash isgiven to \nthe creditor.If you have mortgaged property you also turnthis property over to your creditor but the new owner \nmust at oncepay the Bank the amount of interest on the loan, which is 10% of thevalue of the property. \nThe new owner who does this may then, athis/her option, pay the principal or hold the property until some \nlater turn, then lift the mortgage. If he/she holds property in this way untila later turn, he/she must pay \nthe interest again upon lifting themortgage.Should you owe the Bank, instead of another player, more than you \ncan pay (because of taxes or penalties) even by selling off buildingsand mortgaging property, you must turn over \nall assets to the Bank. Inthis case, the Bank immediately sells by auction all property so taken,except buildings. \nA bankrupt player must immediately retire from thegame. The last player left in the game wins.\n\nMISCELLANEOUS...Money can be loaned to a player only by theBank and then only by mortgaging property. \nNo player may borrowfrom or lend money to another player");
         }
 
         /// <summary>
@@ -799,7 +802,8 @@ namespace Monopoly
             bool goneToJail = false;
 
             // Check if the player is in jail and if they are not on their third and final turn in jail.
-            if (this.currentPlayersEnum.Current.JailTurnCount != 0 && this.currentPlayersEnum.Current.JailTurnCount != 3)
+            if (this.currentPlayersEnum.Current.JailTurnCount != 0 &&
+                this.currentPlayersEnum.Current.JailTurnCount != 3)
             {
                 // If they rolled doubles, leave jail.
                 if (this.diceResult[0] == this.diceResult[1])
@@ -811,7 +815,7 @@ namespace Monopoly
                     this.UpdateGui("leftJail");
                     this.UpdateGui("doneMoving");
                     this.MovePiece();
-                }                
+                }
                 else
                 {
                     // Increment the count for number of turns they have spent in jail and end their movement.
@@ -861,7 +865,7 @@ namespace Monopoly
                 {
                     this.MovePiece();
                 }
-            }            
+            }
         }
 
         /// <summary>
@@ -869,7 +873,7 @@ namespace Monopoly
         /// </summary>
         /// <param name="nameOfProperty"> The name of the property landed on</param>
         private void LandOnProperty(string nameOfProperty)
-        {            
+        {
             bool owned = false;
             Player ownerOfProperty = null;
             Property property = this.GetProperty(nameOfProperty);
@@ -887,7 +891,9 @@ namespace Monopoly
             if (!owned)
             {
                 // Configure the message box to be displayed
-                string messageBoxText = "Do you want to buy " + nameOfProperty + " for the price of $" + property.Price.ToString() + "?\nIf you do not buy this property, it will be put up for auction.";
+                string messageBoxText = "Do you want to buy " + nameOfProperty + " for the price of $" +
+                                        property.Price.ToString() +
+                                        "?\nIf you do not buy this property, it will be put up for auction.";
                 string caption = "Buy Phase";
                 MessageBoxButton button = MessageBoxButton.YesNo;
 
@@ -909,9 +915,11 @@ namespace Monopoly
             else if (!property.IsMortgaged && this.currentPlayersEnum.Current != ownerOfProperty)
             {
                 this.Tax(property.GetRentAmount(this.diceTotal));
-                MessageBox.Show("You paid $" + property.GetRentAmount(this.diceTotal).ToString() + " in rent to " + ownerOfProperty.Piece.ToString() + ".");
+                MessageBox.Show(
+                    "You paid $" + property.GetRentAmount(this.diceTotal).ToString() + " in rent to " +
+                    ownerOfProperty.Piece.ToString() + ".");
                 ownerOfProperty.Money = property.GetRentAmount(this.diceTotal);
-            }            
+            }
         }
 
         /// <summary>
@@ -980,14 +988,14 @@ namespace Monopoly
                         btnPayJailFee.Visibility = Visibility.Hidden;
                         lblDisplayTurnOrChoice.Content = "Roll your dice, You will automatically pay the $50 Jail Fee.";
                     }
-                    
+
                     // trade with other player button.
                     // Hide end turn button
                     btnEndTurn.Visibility = Visibility.Hidden;
 
                     // Display player's turn by changing imgCurrentPlayer
                     this.ChangeImage(this.currentPlayersEnum.Current.Piece, this.imgCurrentPlayer);
-                    
+
                     // Fill in data
                     lblBalance.Visibility = Visibility.Visible;
                     lblMoney.Visibility = Visibility.Visible;
@@ -998,8 +1006,8 @@ namespace Monopoly
                     {
                         ListBoxPropertiesOwned.Visibility = Visibility.Visible;
                         ListBoxPropertiesOwned.ItemsSource = from p in this.currentPlayersEnum.Current.Properties
-                                                             orderby p.Group.ToString()
-                                                             select p;
+                            orderby p.Group.ToString()
+                            select p;
                         lblPropertiesYouOwn.Visibility = Visibility.Visible;
                     }
                     else
@@ -1016,13 +1024,14 @@ namespace Monopoly
                             {
                                 imgGetOutOfJailChance.Visibility = Visibility.Visible;
                             }
-                            else if (c.CardText == "Get out of Jail, free.  This card may be kept until needed or sold.")
+                            else if (c.CardText ==
+                                     "Get out of Jail, free.  This card may be kept until needed or sold.")
                             {
                                 imgGetOutOfJailCommunityChest.Visibility = Visibility.Visible;
                             }
                         }
                     }
-                    
+
                     break;
                 case "doneMoving":
                     // Hide dice and show end turn button
@@ -1115,7 +1124,7 @@ namespace Monopoly
                     }
 
                     // change text to restart
-                    TextBlockStartRestart.Text = "Restart";                    
+                    TextBlockStartRestart.Text = "Restart";
 
                     // Display buttons for choosing pieces.
                     // Foreach loop that makes every Choose piece image Visible.
@@ -1135,7 +1144,8 @@ namespace Monopoly
                     btnConfirmPlayerPiece.Visibility = Visibility.Visible;
 
                     // Change display of label to indicate to player who's turn it is to choose a piece.
-                    lblDisplayTurnOrChoice.Content = "Player " + this.currentChoice.ToString() + " please choose a piece.";
+                    lblDisplayTurnOrChoice.Content =
+                        "Player " + this.currentChoice.ToString() + " please choose a piece.";
                     break;
 
                 case "chooseNextPiece":
@@ -1153,7 +1163,8 @@ namespace Monopoly
                     }
 
                     // Change display of label to indicate to player who's turn it is to choose a piece.
-                    lblDisplayTurnOrChoice.Content = "Player " + this.currentChoice.ToString() + " please choose a piece.";
+                    lblDisplayTurnOrChoice.Content =
+                        "Player " + this.currentChoice.ToString() + " please choose a piece.";
                     break;
 
                 case "piecesChosen":
@@ -1169,7 +1180,7 @@ namespace Monopoly
                             ShadowDepth = 5,
                             Opacity = 1,
                             BlurRadius = 15
-                        }; 
+                        };
                         this.GetWrapPanel("Go").Children.Add(img);
                         img.Name = p.Piece + "Img";
                     }
@@ -1191,13 +1202,13 @@ namespace Monopoly
                     btnConfirmPlayerPiece.Visibility = Visibility.Hidden;
                     break;
 
-                case "boughtProperty":                    
+                case "boughtProperty":
                     ListBoxPropertiesOwned.Visibility = Visibility.Visible;
                     ListBoxPropertiesOwned.ItemsSource = null;
                     ListBoxPropertiesOwned.Items.Clear();
                     ListBoxPropertiesOwned.ItemsSource = from p in this.currentPlayersEnum.Current.Properties
-                                                         orderby p.Group.ToString()
-                                                         select p;
+                        orderby p.Group.ToString()
+                        select p;
                     lblPropertiesYouOwn.Visibility = Visibility.Visible;
                     this.UpdateGui("spentOrReceivedMoney");
                     this.UpdateGui("drawHouses");
@@ -1208,7 +1219,7 @@ namespace Monopoly
                     lblMoney.Content = this.currentPlayersEnum.Current.Money.ToString();
 
                     // Since this is ran anytime money changes for anyone we will check if any has lost the game.
-                    this.checkBankrupt();
+                    this.CheckBankrupt();
                     break;
 
                 case "cardDrawn":
@@ -1226,25 +1237,29 @@ namespace Monopoly
                         {
                             imgGetOutOfJailChance.Visibility = Visibility.Visible;
                         }
-                    }                      
-                    
+                    }
+
                     break;
                 case "propertySelected":
                     btnPurchaseHouse.Visibility = Visibility.Visible;
                     btnSellHouseOrMortgage.Visibility = Visibility.Visible;
                     Property selectedProperty = ListBoxPropertiesOwned.SelectedItem as Property;
-                    if ((selectedProperty.Name.Contains("Railroad") || selectedProperty.Name.Contains("Utility")) && !selectedProperty.IsMortgaged)
+                    if ((selectedProperty.Name.Contains("Railroad") || selectedProperty.Name.Contains("Utility")) &&
+                        !selectedProperty.IsMortgaged)
                     {
                         btnPurchaseHouse.Visibility = Visibility.Hidden;
                     }
                     else if (selectedProperty.IsMortgaged)
                     {
-                        TextBlockPurchaseOrUnmortgageHouse.Text = "Unmortgage the property for $" + Convert.ToInt32(Convert.ToDouble(selectedProperty.Mortage) * 1.1);
+                        TextBlockPurchaseOrUnmortgageHouse.Text =
+                            "Unmortgage the property for $" +
+                            Convert.ToInt32(Convert.ToDouble(selectedProperty.Mortage) * 1.1);
                     }
                     else
                     {
-                        TextBlockPurchaseOrUnmortgageHouse.Text = "Purchase a house for $" + selectedProperty.HousePrice;
-                    }                    
+                        TextBlockPurchaseOrUnmortgageHouse.Text =
+                            "Purchase a house for $" + selectedProperty.HousePrice;
+                    }
 
                     break;
 
@@ -1289,7 +1304,7 @@ namespace Monopoly
                                     Image newImage = new Image();
                                     newImage.Source = new BitmapImage(new Uri(@"/Images/house.png", UriKind.Relative));
                                     this.GetWrapPanel(prop.Name).Children.Add(newImage);
-                                }                                
+                                }
                             }
                             else if (prop.Houses == 5)
                             {
@@ -1299,6 +1314,7 @@ namespace Monopoly
                             }
                         }
                     }
+
                     break;
                 case "Auction":
                     // Show text boxes for bidding with for each player.
@@ -1319,18 +1335,19 @@ namespace Monopoly
         /// <summary>
         /// Check if anyone has gone bankrupt
         /// </summary>
-        private void checkBankrupt()
+        private void CheckBankrupt()
         {
             // TODO Ideally if you are going bankrupt we would give the option to sell/mortgage items to not go under. 
             List<Player> bankruptPlayers = new List<Player>();
-            foreach(Player p in currentPlayers)
+            foreach (Player p in currentPlayers)
             {
-                if(p.Money < 0)
+                if (p.Money < 0)
                 {
                     bankruptPlayers.Add(p);
                 }
             }
-            if(bankruptPlayers.Contains(currentPlayersEnum.Current))
+
+            if (bankruptPlayers.Contains(this.currentPlayersEnum.Current))
             {
                 // increment enum of current players, if false or end of enum then reupdate enum.
                 if (!this.currentPlayersEnum.MoveNext())
@@ -1343,43 +1360,43 @@ namespace Monopoly
                 // reset doubles count
                 this.doublesCount = 0;
             }
+
             foreach (Player p in bankruptPlayers)
             {
                 // add any houses or hotels back to hotel/house count
-                foreach(Property prop in p.Properties)
+                foreach (Property prop in p.Properties)
                 {
-                    if(prop.Houses != 5)
+                    if (prop.Houses != 5)
                     {
-                        numHousesLeft += prop.Houses;
+                        this.numHousesLeft += prop.Houses;
                     }
                     else
                     {
-                        numHotelsLeft += 1;
+                        this.numHotelsLeft += 1;
                     }
                 }
+
                 // Declare their bankruptcy
                 MessageBox.Show(p.Piece + " has gone bankrupt!");
 
                 // Remove their piece from the board.
-                RemovePiece(p);
+                this.RemovePiece(p);
 
                 // remove them current list of players
                 currentPlayers.Remove(p);
 
                 // If one player remains they win.
-                if(currentPlayers.Count == 1)
+                if (currentPlayers.Count == 1)
                 {
                     MessageBox.Show(currentPlayers[0].Piece + "wins the game!");
+
                     // restart the game.
-                    RestartGame(btnStart);
+                    this.RestartGame(this.btnStart);
                 }
 
                 // Fix the enumerator
                 this.UpdateEnum();
-
-                
-                
-            }            
+            }
         }
 
         /// <summary>
@@ -1518,7 +1535,18 @@ namespace Monopoly
                 else
                 {
                     string[] splitS = s.Split('_');
-                    allProperties.Add(new Property(splitS[0], Convert.ToInt32(splitS[1]), Convert.ToInt32(splitS[2]), Convert.ToInt32(splitS[3]), Convert.ToInt32(splitS[4]), Convert.ToInt32(splitS[5]), Convert.ToInt32(splitS[6]), Convert.ToInt32(splitS[7]), Convert.ToInt32(splitS[8]), new SolidColorBrush((Color)ColorConverter.ConvertFromString(splitS[10]))));
+                    allProperties.Add(
+                        new Property(
+                            splitS[0],
+                            Convert.ToInt32(splitS[1]),
+                            Convert.ToInt32(splitS[2]),
+                            Convert.ToInt32(splitS[3]),
+                            Convert.ToInt32(splitS[4]),
+                            Convert.ToInt32(splitS[5]),
+                            Convert.ToInt32(splitS[6]),
+                            Convert.ToInt32(splitS[7]),
+                            Convert.ToInt32(splitS[8]),
+                            new SolidColorBrush((Color)ColorConverter.ConvertFromString(splitS[10]))));
                 }
             }
         }
@@ -1546,6 +1574,7 @@ namespace Monopoly
                     }
                 }
             }
+
             // Check which deck to add it to.
             if (typeOfDeck == "Chance")
             {
@@ -1556,7 +1585,7 @@ namespace Monopoly
 
                     // Skip adding the card to the new deck if it should be skipped.
                     if (!cardsToSkip.Contains(splitS[0]))
-                    {                        
+                    {
                         this.chanceDeck.Add(new Card(splitS[0], splitS[1]));
                     }
                 }
@@ -1574,7 +1603,7 @@ namespace Monopoly
                         this.communityChestDeck.Add(new Card(splitS[0], splitS[1]));
                     }
                 }
-            }            
+            }
         }
 
         /// <summary>
@@ -1641,44 +1670,46 @@ namespace Monopoly
 
         /// <summary>
         /// Return whether the player can buy a house or hotel for the selected property group.
+        /// </summary>
         /// <param name="selectedProp"> The property the player is attempting to upgrade</param>
         /// <returns> A boolean value of whether you can buy the upgrade or not.</returns>
-        private bool canBuyUpgrade(Property selectedProp)
+        private bool CanBuyUpgrade(Property selectedProp)
         {
             int groupCount = 0;
             int playerGroupCount = 0;
-            String groupColor = selectedProp.Group.ToString();            
+            string groupColor = selectedProp.Group.ToString();
 
             // First we check if the player owns all properties in the group.
-            foreach(Property p in allProperties)
+            foreach (Property p in allProperties)
             {
-                if(p.Group.ToString() == groupColor)
+                if (p.Group.ToString() == groupColor)
                 {
                     groupCount++;
                 }
             }
 
-            foreach(Property p in currentPlayersEnum.Current.Properties)
+            foreach (Property p in this.currentPlayersEnum.Current.Properties)
             {
                 if (p.Group.ToString() == groupColor)
                 {
                     playerGroupCount++;
                 }
             }
-            
+
             // If they do own all properties in the group, we check if they are buying a house for a property in that group with the lowest amount of houses.
-            if(playerGroupCount == groupCount)
+            if (playerGroupCount == groupCount)
             {
-                foreach (Property p in currentPlayersEnum.Current.Properties)
+                foreach (Property p in this.currentPlayersEnum.Current.Properties)
                 {
                     if (p.Group.ToString() == groupColor)
                     {
                         if (selectedProp.Houses > p.Houses)
                         {
-                            MessageBox.Show("You must first upgrade the other properties in this group to the same amount of houses.");
-                            return false;                            
-                        }                        
-                    }                
+                            MessageBox.Show(
+                                "You must first upgrade the other properties in this group to the same amount of houses.");
+                            return false;
+                        }
+                    }
                 }
             }
             else
@@ -1687,30 +1718,32 @@ namespace Monopoly
                 return false;
             }
 
-            return true;            
+            return true;
         }
 
         /// <summary>
         /// Return whether the player can sell a house or hotel for the selected property group.
+        /// </summary>
         /// <param name="selectedProp"> The property the player is attempting to upgrade</param>
         /// <returns> A boolean value of whether you can sell the upgrade or not.</returns>
-        private bool canSellUpgrade(Property selectedProp)
+        private bool CanSellUpgrade(Property selectedProp)
         {
-            String groupColor = selectedProp.Group.ToString();
+            string groupColor = selectedProp.Group.ToString();
 
             // If they do own all properties in the group, we check if they are buying a house for a property in that group with the lowest amount of houses.
-
-            foreach (Property p in currentPlayersEnum.Current.Properties)
+            foreach (Property p in this.currentPlayersEnum.Current.Properties)
             {
                 if (p.Group.ToString() == groupColor)
                 {
                     if (selectedProp.Houses < p.Houses)
                     {
-                        MessageBox.Show("You must first downgrade the other properties in this group to the same amount of houses.");
+                        MessageBox.Show(
+                            "You must first downgrade the other properties in this group to the same amount of houses.");
                         return false;
                     }
                 }
             }
+
             return true;
         }
 
@@ -1722,12 +1755,13 @@ namespace Monopoly
         private void BtnTest_Click(object sender, RoutedEventArgs e)
         {
             /* TESTDEV*/
+
             // use this to test events.
 
             // GoToJail();
             // DrawCard("Community Chest");
             // DrawCard("Chance");        
-            
+
             // Buy all of lightcyan group
             // currentPlayersEnum.Current.BuyProperty(allProperties[3], currentPlayersEnum.Current);
             // currentPlayersEnum.Current.BuyProperty(allProperties[4], currentPlayersEnum.Current);        
@@ -1755,7 +1789,7 @@ namespace Monopoly
         /// <param name="e">The event arguments for the event.</param>
         private void BtnPayJailFee_Click(object sender, RoutedEventArgs e)
         {
-            if(currentPlayersEnum.Current.Money >=50)
+            if (this.currentPlayersEnum.Current.Money >= 50)
             {
                 this.Tax(50);
                 this.currentPlayersEnum.Current.JailTurnCount = 0;
@@ -1766,21 +1800,19 @@ namespace Monopoly
             {
                 MessageBox.Show("You do not have enough money to pay the fee to leave jail");
             }
-            
         }
 
         /// <summary>
         /// Pays the fee for jail and moves the player out of jail.
         /// </summary>
-        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="sender">The object that initiated the event.</param>
         /// <param name="e">The event arguments for the event.</param>
         private void ImgGetOutOfJail_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Only run this if the player is in jail.
             if (this.currentPlayersEnum.Current.JailTurnCount != 0)
             {
-                String cardType = (sender as Image).Name;
-
+                string cardType = (sender as Image).Name;
 
                 this.currentPlayersEnum.Current.JailTurnCount = 0;
                 this.MovePiece("Just Visiting");
@@ -1789,111 +1821,127 @@ namespace Monopoly
                 // Remove the card from players owned cards.
                 foreach (Card c in this.currentPlayersEnum.Current.GetOutOfJailCards)
                 {
-                    if (c.CardText == "Get out of Jail, free.  This card may be kept until needed or sold." && cardType.Contains("Community"))
+                    if (c.CardText == "Get out of Jail, free.  This card may be kept until needed or sold." &&
+                        cardType.Contains("Community"))
                     {
                         this.currentPlayersEnum.Current.GetOutOfJailCards.Remove(c);
                         break;
                     }
-                    else if (c.CardText == "This card may be kept until needed or sold.  Get out of jail free." && cardType.Contains("Chance"))
+                    else if (c.CardText == "This card may be kept until needed or sold.  Get out of jail free." &&
+                             cardType.Contains("Chance"))
                     {
                         this.currentPlayersEnum.Current.GetOutOfJailCards.Remove(c);
                         break;
                     }
                 }
-                UpdateGui("cardDrawn");
+
+                this.UpdateGui("cardDrawn");
             }
-            
         }
 
-        private void mortgage(Property propToMortgage)
+        /// <summary>
+        /// Sets a property to mortgaged and gives the player money for it.
+        /// </summary>
+        /// <param name="propToMortgage">The property to mortgage.</param>
+        private void MortgageProperty(Property propToMortgage)
         {
             propToMortgage.IsMortgaged = true;
-            Pay(propToMortgage.Mortage);
+            this.Pay(propToMortgage.Mortage);
         }
 
+        /// <summary>
+        /// Button to initiate selling of house/hotels or mortgaging of a property.
+        /// </summary>
+        /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
         private void BtnSellHouse_Click(object sender, RoutedEventArgs e)
         {
             // This will sell house for selected property ListboxPropertiesOwned.Selected
             // mortgage if no houses exist on the property..
-
-            Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
+            Property selectedProperty = this.ListBoxPropertiesOwned.SelectedItem as Property;
             if (selectedProperty != null)
             {
                 SolidColorBrush selectedPropertyGroup = selectedProperty.Group;
-                if(canSellUpgrade(selectedProperty))
+                if (this.CanSellUpgrade(selectedProperty))
                 {
                     if (selectedProperty.Houses > 0)
                     {
                         // Add to number of hotels or houses left depending on what was sold.
                         if (selectedProperty.Houses == 5)
                         {
-                            numHotelsLeft += 1;
+                            this.numHotelsLeft += 1;
                         }
                         else
                         {
-                            numHousesLeft += 1;
-                        }                        
+                            this.numHousesLeft += 1;
+                        }
+
                         selectedProperty.Houses = -1;
-                        Pay(selectedProperty.HousePrice / 2);
-                        
+                        this.Pay(selectedProperty.HousePrice / 2);
                     }
                     else if (selectedProperty.Houses == 0)
                     {
-                        mortgage(selectedProperty);
+                        this.MortgageProperty(selectedProperty);
                     }
-                }                
+                }
             }
-            UpdateGui("boughtProperty");
+
+            this.UpdateGui("boughtProperty");
         }
 
+        /// <summary>
+        /// Button to handle purchasing of hotels/houses and un-mortgaging.
+        /// </summary>
+        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
         private void BtnPurchaseHouse_Click(object sender, RoutedEventArgs e)
         {
-            Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
-            if(selectedProperty !=null)
+            Property selectedProperty = this.ListBoxPropertiesOwned.SelectedItem as Property;
+            if (selectedProperty != null)
             {
                 // Check if the property is mortgaged, if so you must lift the mortgage first.
                 if (selectedProperty.IsMortgaged)
                 {
-                    int mortgageCost = Convert.ToInt32(Convert.ToDouble(selectedProperty.Mortage) * 1.1); 
-                    if (currentPlayersEnum.Current.Money >= mortgageCost)
+                    int mortgageCost = Convert.ToInt32(Convert.ToDouble(selectedProperty.Mortage) * 1.1);
+                    if (this.currentPlayersEnum.Current.Money >= mortgageCost)
                     {
                         selectedProperty.IsMortgaged = false;
-                        Tax(mortgageCost);
+                        this.Tax(mortgageCost);
                     }
                 }
                 else
                 {
                     SolidColorBrush selectedPropertyGroup = selectedProperty.Group;
 
-                    if (currentPlayersEnum.Current.Money >= selectedProperty.HousePrice)
+                    if (this.currentPlayersEnum.Current.Money >= selectedProperty.HousePrice)
                     {
-                        if (canBuyUpgrade(selectedProperty))
+                        if (this.CanBuyUpgrade(selectedProperty))
                         {
                             // Check if bank has remaining houses/hotels depending on how many houses are on the property currently.
                             if (selectedProperty.Houses == 4)
                             {
-                                if (numHotelsLeft == 0)
+                                if (this.numHotelsLeft == 0)
                                 {
                                     MessageBox.Show("The bank has no remaining hotels to sell.");
                                 }
                                 else
                                 {
-                                    numHotelsLeft -= 1;
+                                    this.numHotelsLeft -= 1;
                                     selectedProperty.Houses = 1;
-                                    Tax(selectedProperty.HousePrice);
+                                    this.Tax(selectedProperty.HousePrice);
                                 }
                             }
                             else
                             {
-                                if (numHousesLeft == 0)
+                                if (this.numHousesLeft == 0)
                                 {
                                     MessageBox.Show("The bank has no remaining houses to sell.");
                                 }
                                 else
                                 {
-                                    numHousesLeft -= 1;
+                                    this.numHousesLeft -= 1;
                                     selectedProperty.Houses = 1;
-                                    Tax(selectedProperty.HousePrice);
+                                    this.Tax(selectedProperty.HousePrice);
                                 }
                             }
                         }
@@ -1902,28 +1950,36 @@ namespace Monopoly
                     {
                         MessageBox.Show("You do not have enough money to purchase a house.");
                     }
-                }                
+                }
             }
 
-            UpdateGui("boughtProperty");
+            this.UpdateGui("boughtProperty");
         }
 
+        /// <summary>
+        /// button to handle bidding submission.
+        /// </summary>
+        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
         private void BtnBid_Click(object sender, RoutedEventArgs e)
         {
-            //TODO Extra Credit
+            // TODO Extra Credit
             // This will be used in conjunction with a textinput to allow players to bid for a property. Check if bid is greater than previous bid. Show current bid, cycle to next player.
         }
 
+        /// <summary>
+        /// Event handler to update GUI on changing selected Property
+        /// </summary>
+        /// /// <param name="sender">The object that initiated the event.</param>
+        /// <param name="e">The event arguments for the event.</param>
         private void ListBoxPropertiesOwned_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // The property in the listbox that is selected
-            Property selectedProperty = (ListBoxPropertiesOwned.SelectedItem as Property);
-            if(selectedProperty != null)
+            Property selectedProperty = this.ListBoxPropertiesOwned.SelectedItem as Property;
+            if (selectedProperty != null)
             {
-                UpdateGui("propertySelected");
-            }            
+                this.UpdateGui("propertySelected");
+            }
         }
-
-        
     }
 }
